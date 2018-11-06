@@ -16,7 +16,7 @@ class App extends Component {
         <BrowserRouter>
             <div className="App">
                 <Switch>
-                    <PropsRoute exact path="/" redirectTo='/app/schedule' auth={setAuth} component={AuthLogin} />
+                    <PropsRoute exact path="/" redirectTo='/app/announce' auth={setAuth} component={AuthLogin} />
                     <PrivateRoute path="/app" redirectTo='/' auth={setAuth} component={AccessPage} />
                     <Route component={NoMatch}/>
                 </Switch>

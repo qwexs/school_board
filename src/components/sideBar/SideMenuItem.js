@@ -3,7 +3,10 @@ import "../../App.css"
 
 class SideMenuItem extends Component {
 
-    state = {color: "#EEEEEE", selected: false};
+    static defaultColor = "#edf0f2";
+    static overColor = "#f5f8fa";
+
+    state = {color: SideMenuItem.defaultColor, selected: false};
 
     onClick = () => {
         this.props.onClick(this);
@@ -11,17 +14,17 @@ class SideMenuItem extends Component {
 
     onOver = () => {
         if (!this.state.selected)
-            this.setState({color: "#f5f5f5"});
+            this.setState({color: SideMenuItem.overColor});
     };
 
     onOut = () => {
         if (!this.state.selected)
-            this.setState({color: "#EEEEEE"});
+            this.setState({color: SideMenuItem.defaultColor});
     };
 
     shouldComponentUpdate(nextProps, nextState) {
         if (this.state.selected !== nextState.selected) {
-            nextState.color = nextState.selected ? "#FFFFFF" : "#EEEEEE";
+            nextState.color = nextState.selected ? "#FFFFFF" : SideMenuItem.defaultColor;
         }
         return true;
     }

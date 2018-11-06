@@ -3,6 +3,7 @@
 @import "../node_modules/@blueprintjs/core/lib/css/blueprint.css";
 @import "./views/styles/table.css";
 @import "./views/styles/schedule.css";
+@import "./views/styles/announce.css";
 
 .App {
     text-align: center;
@@ -29,8 +30,8 @@
     top: 0; /* Stay at the top */
     left: 0;
     overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 40px;
-    background: #bdbdbd;
+    padding-top: 100px;
+    background: #d6d9db;
     background-size: cover;
     box-shadow: inset -15px 0 1em -18px #1f1f1f;
 }
@@ -59,20 +60,22 @@
     width: 100%;
     display: block;
     border: 1px solid lightgrey;
-    background: #EEEEEE;
+    background: #f5f8fa;
     margin: 0;
     align-content: center;
     cursor: pointer;
 }
 
 .side-menu {
-    /*min-width: 50px;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     width: 150px;
     height: 100%;
     overflow-y:auto;
     overflow-x: hidden;
     position: absolute;
-    background: #eeeeee;
+    background: #edf0f2;
     border: 1px solid lightgrey;
     /*white-space: nowrap;*/
     /*display: block;*/
@@ -82,7 +85,7 @@
 .footer-apply {
     width: calc(100% - 450px);
     height: 45px;
-    background: #eeeeee;
+    background: #f5f8fa;
     position: absolute;
     overflow: hidden;
     right: 0;

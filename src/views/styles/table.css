@@ -775,8 +775,8 @@ Licensed under the terms of the LICENSE file distributed with this project.
   background-color:rgba(138, 155, 168, 0.1); }
 
 .bp3-table-selection-region{
-  border:1px solid #137cbd;
-  background-color:rgba(19, 124, 189, 0.1); }
+  border:1px solid rgba(23, 153, 234, 0.21);
+  background-color: rgba(21, 162, 245, 0.04); }
   .bp3-table-column-headers .bp3-table-selection-region{
     background-color:transparent; }
   .bp3-table-row-headers .bp3-table-selection-region{
@@ -828,7 +828,7 @@ Licensed under the terms of the LICENSE file distributed with this project.
   right:0;
   bottom:0;
   left:0;
-  overflow:auto;
+  overflow:hidden;
   -webkit-user-select:none;
      -moz-user-select:none;
       -ms-user-select:none;

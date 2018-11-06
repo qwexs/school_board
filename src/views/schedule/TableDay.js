@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import { Example } from "@blueprintjs/docs-theme";
 import { Column, ColumnHeaderCell, EditableCell, EditableName, Table } from "@blueprintjs/table";
+import {SelectionModes} from "@blueprintjs/table/lib/cjs/regions";
 
 class TableDay extends PureComponent {
 
@@ -23,6 +24,10 @@ class TableDay extends PureComponent {
         this.setState(day);
     }
 
+    onSelectionHandler = () => {
+
+    };
+
     render() {
         const columns = this.state.columnNames.map((_, index) => {
             return (
@@ -31,7 +36,10 @@ class TableDay extends PureComponent {
         });
         return (
             <Example options={false} showOptionsBelowExample={true} {...this.props}>
-                <Table enableColumnResizing={false} columnWidths={[150,50]} numRows={7} >{columns}</Table>
+                <Table enableColumnResizing={false} enableRowResizing={false} onSelection={this.onSelectionHandler}
+                       selectionModes={SelectionModes.ROWS_AND_CELLS}
+                       enableMultipleSelection={false}
+                       columnWidths={[150,50]} numRows={7} >{columns}</Table>
             </Example>
         );
     }
@@ -40,7 +48,7 @@ class TableDay extends PureComponent {
         const dataKey = TableDay.dataKey(rowIndex, columnIndex);
         const value = this.state.sparseCellData[dataKey];
         return (
-            <EditableCell
+            <EditableCell truncated={true}
                 value={value == null ? "" : value}
             />
         );
@@ -57,52 +65,6 @@ class TableDay extends PureComponent {
         return <ColumnHeaderCell name={this.state.columnNames[columnIndex]} nameRenderer={nameRenderer} />;
     };
 
-    // isValidValue(value) {
-    //     return /^[a-zA-Z]*$/.test(value);
-    // }
-
-    // nameValidator = (index) => {
-    //     return (name) => {
-    //         const intent = this.isValidValue(name) ? null : Intent.DANGER;
-    //         this.setArrayState("sparseColumnIntents", index, intent);
-    //         this.setArrayState("columnNames", index, name);
-    //     };
-    // };
-
-    // nameSetter = (index) => {
-    //     return (name) => {
-    //         this.setArrayState("columnNames", index, name);
-    //     };
-    // };
-
-    // cellValidator = (rowIndex, columnIndex) => {
-    //     const dataKey = TableDay.dataKey(rowIndex, columnIndex);
-    //     return (value) => {
-    //         const intent = this.isValidValue(value) ? null : Intent.DANGER;
-    //         this.setSparseState("sparseCellIntent", dataKey, intent);
-    //         this.setSparseState("sparseCellData", dataKey, value);
-    //     };
-    // };
-
-    // cellSetter = (rowIndex, columnIndex) => {
-    //     const dataKey = TableDay.dataKey(rowIndex, columnIndex);
-    //     return (value) => {
-    //         this.setSparseState("sparseCellData", dataKey, value);
-    //         this.setSparseState("sparseCellIntent", dataKey);
-    //     };
-    // };
-
-    // setArrayState(key, index, value) {
-    //     const values = this.state[key].slice();
-    //     values[index] = value;
-    //     this.setState({ [key]: values });
-    // }
-
-    // setSparseState(stateKey, dataKey, value) {
-    //     const stateData = this.state[stateKey];
-    //     const values = { ...stateData, [dataKey]: value };
-    //     this.setState({ [stateKey]: values });
-    // }
 }
 
 export default TableDay;

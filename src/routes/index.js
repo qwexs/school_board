@@ -1,5 +1,7 @@
 import React from 'react';
-import {SchedulePage, StatusPage} from "../views";
+import {StatusPage} from "../views";
+import Announce from "../views/announce/Announce";
+import Schedule from "../views/schedule/Schedule";
 
 const routes = [
     {
@@ -10,12 +12,12 @@ const routes = [
     {
         title: "Расписание уроков",
         path: "/app/schedule",
-        component: SchedulePage
+        component: Schedule
     },
     {
         title: "Анонсы и события",
-        path: "/app/anons",
-        component: () => <div/>
+        path: "/app/announce",
+        component: Announce
     },
     {
         title: "Распорядок дня",
