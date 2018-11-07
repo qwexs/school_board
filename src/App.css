@@ -10,7 +10,7 @@
 }
 
 .Main {
-    margin-left: 300px;
+    margin-left: 270px;
     /*position: relative;*/
 }
 
@@ -24,7 +24,7 @@
 .container-menu {
     display: inline-block;
     height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 300px; /* Set the width of the sidebar */
+    width: 270px; /* Set the width of the sidebar */
     position: fixed; /* Fixed Sidebar (stay in place on scroll) */
     z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
@@ -83,7 +83,7 @@
 }
 
 .footer-apply {
-    width: calc(100% - 450px);
+    width: calc(100% - 420px);
     height: 45px;
     background: #f5f8fa;
     position: absolute;

@@ -1,5 +1,4 @@
 import React, {PureComponent} from 'react';
-import { Example } from "@blueprintjs/docs-theme";
 import { Column, ColumnHeaderCell, EditableCell, EditableName, Table } from "@blueprintjs/table";
 import {SelectionModes} from "@blueprintjs/table/lib/cjs/regions";
 
@@ -35,12 +34,10 @@ class TableDay extends PureComponent {
             );
         });
         return (
-            <Example options={false} showOptionsBelowExample={true} {...this.props}>
-                <Table enableColumnResizing={false} enableRowResizing={false} onSelection={this.onSelectionHandler}
-                       selectionModes={SelectionModes.ROWS_AND_CELLS}
-                       enableMultipleSelection={false}
-                       columnWidths={[150,50]} numRows={7} >{columns}</Table>
-            </Example>
+            <Table enableColumnResizing={false} enableRowResizing={false} onSelection={this.onSelectionHandler}
+                   selectionModes={SelectionModes.ROWS_AND_CELLS}
+                   enableMultipleSelection={false}
+                   columnWidths={[150,50]} numRows={7} >{columns}</Table>
         );
     }
 

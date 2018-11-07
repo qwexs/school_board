@@ -1,26 +1,25 @@
 .announce-container {
-    width: calc(100% - 470px);
+    width: calc(100% - 420px);
     height: calc(100% - 45px);
-    margin-left: 170px;
+    margin-left: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /*justify-content: flex-start;*/
-    /*padding-top: 10px;*/
     position: absolute;
     overflow-y:auto;
     overflow-x: hidden;
     padding-top: 30px;
-    padding-bottom: 30px;
 }
 
 .announce-card {
-    width: 40%;
-    min-width: 300px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    width: 100%;
     background: #f5f8fa;
-    padding-bottom: 10px;
+}
+
+.announce-card-container {
+    width: 80%;
+    min-width: 250px;
+    max-width: 500px;
 }
 
 .announce-card-header {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class AnnounceItem extends Component {
+class AnnounceSideItem extends Component {
     render() {
         const {item} = this.props;
         return (
@@ -11,4 +11,4 @@ class AnnounceItem extends Component {
     }
 }
 
-export default AnnounceItem;
+export default AnnounceSideItem;

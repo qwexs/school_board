@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import SideMenu from "../../components/sideBar/SideMenu";
-import AnnounceItem from "./AnnounceItem";
+import AnnounceSideItem from "./AnnounceSideItem";
 import xml2json from "../../utils/xml2json";
 import AnnounceList from "./AnnounceList";
 import FooterApply from "../../components/footer/FooterApply";
@@ -32,7 +32,7 @@ class Announce extends Component {
         return (
             <div>
                 <SideMenu items={this.state.list} onChangeItem={this.onChangeItem}>
-                    <AnnounceItem/>
+                    <AnnounceSideItem/>
                 </SideMenu>
                 <AnnounceList list={this.state.selectedItem}/>
                 <FooterApply>
