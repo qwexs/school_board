@@ -11,7 +11,8 @@ class Announce extends Component {
         super(props);
         this.state = {
             list: [],
-            selectedItem: null
+            selectedItem: null,
+            isOpen: false
         };
     }
 
@@ -20,12 +21,24 @@ class Announce extends Component {
         const currentList = data["anonsFlow"]["eventDay"];
         this.setState({
             list: currentList,
-            selectedItem: currentList[0]
+            selectedItem: currentList[0],
         });
     }
 
     onChangeItem = (target) => {
         this.setState({selectedItem: target.props.item});
+    };
+
+    onSaveDialogHandler = () => {
+        this.setState({isOpen: false});
+    };
+
+    onCancelDialogHandler = () => {
+        this.setState({isOpen: false});
+    };
+
+    onAddClickHandler = (event) => {
+        this.setState({isOpen: true})
     };
 
     render() {
@@ -34,9 +47,9 @@ class Announce extends Component {
                 <SideMenu items={this.state.list} onChangeItem={this.onChangeItem}>
                     <AnnounceSideItem/>
                 </SideMenu>
-                <AnnounceList list={this.state.selectedItem}/>
+                <AnnounceList list={this.state.selectedItem} isOpen={this.state.isOpen} onCloseDialog={this.onSaveDialogHandler}/>
                 <FooterApply>
-                    <Button minimal icon="add-to-artifact" >Создать анонс</Button>
+                    <Button minimal icon="add-to-artifact" onClick={this.onAddClickHandler}>Создать анонс</Button>
                     <Button minimal icon="undo">Отменить</Button>
                     <Button minimal icon="edit" >Сохранить изменения</Button>
                 </FooterApply>

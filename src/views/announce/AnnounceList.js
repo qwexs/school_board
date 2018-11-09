@@ -1,7 +1,10 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import AnnounceBlock from "./AnnounceBlock";
 import AnnounceDialog from "./AnnounceDialog";
+import {ID} from "../../utils/ID";
+import {reorder} from "../../utils/reorder";
+import PropTypes from "prop-types";
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     margin: `0 0 ${25}px 0`,
@@ -10,91 +13,119 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     ...draggableStyle
 });
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
-
-class AnnounceList extends Component {
+class AnnounceList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            items: null,
-            isEdit: false,
+            collectionList: [],
+            items: [],
+            isOpen: false,
             content: null
         };
     }
 
-    deleteItems = [];
+    componentDidMount() {
 
-    getItems = (props) => {
-        const {list} = props;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {list} = nextProps;
         const education = list && list.education;
-        let ev = education && education.ev;
-        if (ev && !Array.isArray(ev))
-            ev = [ev];
+        let collectionList = education && education.ev;
+        if (collectionList && !Array.isArray(collectionList))
+            collectionList = [collectionList];
 
+        collectionList.map((item, index) => item.id = ID()); //FIXME: fetch id
+        this.setState({
+            isOpen: nextProps.isOpen,
+            collectionList,
+            items: this.getItems(collectionList)
+        });
+    }
+
+    getItems = (collectionList) => {
         const result = [];
-
-        ev && ev.map((item, index) => {
-            if (!this.deleteItems.includes(item.__text)) {
-                result.push({
+        collectionList
+            .map((item, index) => {
+                return result.push({
                     id: `item-${index}`,
                     content: <AnnounceBlock item={item}
                                             onEditClickHandler={this.onEditClickHandler}
                                             onRemoveClickHandler={this.onRemoveClickHandler}/>
                 })
-                }
             });
-
         return result;
-
     };
 
     onEditClickHandler = (item) => {
         this.setState({
-            isEdit: true,
+            isOpen: true,
             content: item
         });
     };
 
-    onRemoveClickHandler = (item) => {
-        this.deleteItems.push(item.text);
+    onRemoveClickHandler = (itemTarget) => {
+        const collectionList = this.state.collectionList.filter(item => item !== itemTarget);
         this.setState({
-            items: this.getItems(this.props),
+            collectionList,
+            items: this.getItems(collectionList)
         });
     };
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            items: this.getItems(nextProps),
-        });
-    }
 
     onDragEnd = (result) => {
         if (!result.destination) {
             return;
         }
 
-        const items = reorder(
-            this.state.items,
+        const collectionList = reorder(
+            this.state.collectionList,
             result.source.index,
             result.destination.index
         );
 
         this.setState({
-            items,
+            collectionList,
+            items: this.getItems(collectionList)
         });
     };
 
-    render() {
-        const {isEdit} = this.state;
-        if (isEdit) {
-            this.state.isEdit = false;
+    onSaveDialogHandler = (content) => {
+        const collectionList = this.state.collectionList;
+        if (!content.hasOwnProperty("id")) { //is new
+            collectionList.push({
+                id: ID(),
+                _timeDay: content.title,
+                __text: content.description
+            });
+            this.props.onCloseDialog();
+        } else {
+            collectionList.filter(item => {
+                if (item.id === content.id) {
+                    item.__text = content.description;
+                    item._timeDay = content.title;
+                    return true;
+                }
+                return false;
+            });
         }
+
+        this.setState({
+            isOpen: false,
+            content: null,
+            collectionList
+        });
+    };
+
+    onCancelDialogHandler = () => {
+        this.setState({
+            isOpen: false,
+            content: null
+        });
+
+        this.props.onCloseDialog();
+    };
+
+    render() {
         return (
             <div className="announce-container">
                 <DragDropContext
@@ -104,7 +135,7 @@ class AnnounceList extends Component {
                     <Droppable droppableId="droppable">
                         {(provided) => (
                             <div ref={provided.innerRef} className="announce-card-container">
-                                {this.state.items && this.state.items.map((item, index) => (
+                                { this.getItems(this.state.collectionList).map((item, index) => (
                                     <Draggable key={index} draggableId={item.id} index={index}>
                                         {(provided, snapshot) => (
                                             <div ref={provided.innerRef}
@@ -121,14 +152,19 @@ class AnnounceList extends Component {
                                     </Draggable>
                                 ))}
                             </div>
-                            )}
+                        )}
                     </Droppable>
                 </DragDropContext>
 
-                <AnnounceDialog isOpen={isEdit} content={this.state.content}/>
+                <AnnounceDialog isOpen={this.state.isOpen} content={this.state.content}
+                                onSave={this.onSaveDialogHandler} onCancel={this.onCancelDialogHandler}/>
             </div>
         );
     }
 }
+
+AnnounceList.propTypes = {
+    onCloseDialog: PropTypes.func
+};
 
 export default AnnounceList;

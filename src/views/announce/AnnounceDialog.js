@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import {handleStringChange} from "@blueprintjs/docs-theme";
-import {AnchorButton, Button, Classes, Code, Dialog, H5, Intent, Switch, TextArea, Tooltip} from "@blueprintjs/core";
+import PropTypes from 'prop-types';
+import {AnchorButton, Button, Classes, Dialog, FormGroup, InputGroup, Intent, TextArea} from "@blueprintjs/core";
 
 class AnnounceDialog extends PureComponent {
 
@@ -11,38 +12,54 @@ class AnnounceDialog extends PureComponent {
         enforceFocus: true,
         isOpen: false,
         usePortal: true,
+        content: {title: "", description: ""}
     };
 
     componentWillReceiveProps(nextProps) {
-        this.setState({isOpen: nextProps.isOpen});
+        let {content} = nextProps;
+        if (content == null) {
+            content = {title: "", description: ""};
+        }
+        this.setState({isOpen: nextProps.isOpen, content});
     }
 
     render() {
-        const {content} = this.props;
-        if (!content) return null;
-        console.log(content);
+        let {content} = this.state;
         return (
             <div>
                 <Dialog
                     icon="add-to-artifact"
-                    onClose={this.handleClose}
+                    onClose={this.onCancelSaveHandler}
                     title={content.title}
                     {...this.state}
                 >
-                    <div className={Classes.DIALOG_BODY} style={{height:300}}>
-                        <TextArea style={{height:"100%"}} fill={true} onChange={this.onInputChange} value={content.text} />
+                    <div className={Classes.DIALOG_BODY} style={{height: 300}}>
+                        <FormGroup
+                            label="Заголовок"
+                            labelFor="text-input"
+                            labelInfo="(время и место)"
+                        >
+                            <InputGroup id="text-input" placeholder="12:00 - 12:40 актовый зал"
+                                        onChange={this.onInputChangeTitle}
+                                        value={this.state.content.title}/>
+                        </FormGroup>
+
+                        <FormGroup
+                            label="Описание события"
+                        >
+                            <TextArea style={{height: 210}} fill={true}
+                                      onChange={this.onInputChangeDescription}
+                                      value={this.state.content.description}/>
+                        </FormGroup>
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Tooltip content="This button is hooked up to close the dialog.">
-                                <Button onClick={this.handleClose}>Close</Button>
-                            </Tooltip>
+                            <Button onClick={this.onCancelSaveHandler}>Отмена</Button>
                             <AnchorButton
                                 intent={Intent.PRIMARY}
-                                href="https://www.palantir.com/palantir-foundry/"
-                                target="_blank"
+                                onClick={this.onClickSaveHandler}
                             >
-                                Visit the Foundry website
+                                Сохранить
                             </AnchorButton>
                         </div>
                     </div>
@@ -51,10 +68,32 @@ class AnnounceDialog extends PureComponent {
         );
     }
 
-    onInputChange = handleStringChange(content => this.setState({ content }));
+    onClickSaveHandler = () => {
+        this.props.onSave(this.state.content);
+    };
 
-    handleClose = () => this.setState({ isOpen: false });
+    onCancelSaveHandler = () => {
+        this.props.onCancel(this);
+    };
+
+    onInputChangeTitle = handleStringChange(text => {
+        const {content} = this.state;
+        content.title = text;
+        this.setState({...content});
+    });
+
+    onInputChangeDescription = handleStringChange(text => {
+        const {content} = this.state;
+        content.description = text;
+        this.setState({...content});
+    });
+
 }
+
+AnnounceDialog.propTypes = {
+    onSave: PropTypes.func,
+    onCancel: PropTypes.func
+};
 
 
 export default AnnounceDialog;
