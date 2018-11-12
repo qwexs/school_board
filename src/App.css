@@ -2,16 +2,9 @@
 @import "../node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css";
 @import "../node_modules/@blueprintjs/core/lib/css/blueprint.css";
 @import "./views/styles/table.css";
-@import "./views/styles/schedule.css";
-@import "./views/styles/announce.css";
 
 .App {
     text-align: center;
-}
-
-.Main {
-    margin-left: 270px;
-    /*position: relative;*/
 }
 
 .disable-select {
@@ -19,81 +12,4 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-
-.container-menu {
-    display: inline-block;
-    height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 270px; /* Set the width of the sidebar */
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1; /* Stay on top */
-    top: 0; /* Stay at the top */
-    left: 0;
-    overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 100px;
-    background: #d6d9db;
-    background-size: cover;
-    box-shadow: inset -15px 0 1em -18px #1f1f1f;
-}
-
-.button-menu {
-    right: 0;
-    width: 100%;
-    float: right;
-    position: relative;
-    padding-bottom: 20px;
-}
-
-.button-menu Button {
-    height: 40px;
-    /*overflow: hidden;*/
-    /*text-decoration: none;*/
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: dimgrey;
-    font-size: 14px;
-    float: right;
-}
-
-.sideBar_items {
-    height: 50px;
-    width: 100%;
-    display: block;
-    border: 1px solid lightgrey;
-    background: #f5f8fa;
-    margin: 0;
-    align-content: center;
-    cursor: pointer;
-}
-
-.side-menu {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 150px;
-    height: 100%;
-    overflow-y:auto;
-    overflow-x: hidden;
-    position: absolute;
-    background: #edf0f2;
-    border: 1px solid lightgrey;
-    /*white-space: nowrap;*/
-    /*display: block;*/
-    /*position: relative;*/
-}
-
-.footer-apply {
-    width: calc(100% - 420px);
-    height: 45px;
-    background: #f5f8fa;
-    position: absolute;
-    overflow: hidden;
-    right: 0;
-    bottom: 0;
-    margin:0 auto;
-    border: 1px solid lightgrey;
-    box-shadow: 0 -5px 1em -10px #1f1f1f;
-    justify-content: flex-end;
-    display: inline-flex;
-    padding-right: 40px;
 }

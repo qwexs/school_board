@@ -1,43 +1,47 @@
 import React, {Component} from 'react';
-import "../../App.css"
+import "../../App.css";
+import Radium from 'radium';
+
+const defaultColor = "#edf0f2",
+    overColor = "#f5f8fa";
 
 class SideMenuItem extends Component {
 
-    static defaultColor = "#edf0f2";
-    static overColor = "#f5f8fa";
-
-    state = {color: SideMenuItem.defaultColor, selected: false};
+    state = {selected: false};
 
     onClick = () => {
         this.props.onClick(this);
     };
 
-    onOver = () => {
-        if (!this.state.selected)
-            this.setState({color: SideMenuItem.overColor});
+    style = {
+        width: "100%",
+        display: "block",
+        border: "1px solid lightgrey",
+        backgroundColor: defaultColor,
+        selected: {
+            backgroundColor: 'white',
+            ':hover':{
+                backgroundColor: "white",
+            }
+        },
+        ':hover':{
+            backgroundColor: overColor,
+        },
+        margin: 0,
+        alignContent: "center",
+        cursor: "pointer",
     };
-
-    onOut = () => {
-        if (!this.state.selected)
-            this.setState({color: SideMenuItem.defaultColor});
-    };
-
-    shouldComponentUpdate(nextProps, nextState) {
-        if (this.state.selected !== nextState.selected) {
-            nextState.color = nextState.selected ? "#FFFFFF" : SideMenuItem.defaultColor;
-        }
-        return true;
-    }
 
 
     render() {
         return (
-            <div className="sideBar_items" style={{background: this.state.color}}
-                 onMouseOver={this.onOver} onMouseOut={this.onOut} onClick={this.onClick}>
+            <div className="bp3-text-large"  style={[this.style, this.state.selected && this.style.selected]}
+                 onClick={this.onClick}
+                >
                 {this.props.children}
             </div>
         );
     }
 }
 
-export default SideMenuItem;
+export default Radium(SideMenuItem);

@@ -27,7 +27,7 @@ class AnnounceDialog extends PureComponent {
         let {content} = this.state;
         return (
             <div>
-                <Dialog
+                <Dialog className="bp3-ui-text"
                     icon="add-to-artifact"
                     onClose={this.onCancelSaveHandler}
                     title={content.title}
@@ -39,7 +39,7 @@ class AnnounceDialog extends PureComponent {
                             labelFor="text-input"
                             labelInfo="(время и место)"
                         >
-                            <InputGroup id="text-input" placeholder="12:00 - 12:40 актовый зал"
+                            <InputGroup id="text-input"
                                         onChange={this.onInputChangeTitle}
                                         value={this.state.content.title}/>
                         </FormGroup>
@@ -54,13 +54,13 @@ class AnnounceDialog extends PureComponent {
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.onCancelSaveHandler}>Отмена</Button>
                             <AnchorButton
                                 intent={Intent.PRIMARY}
                                 onClick={this.onClickSaveHandler}
                             >
                                 Сохранить
                             </AnchorButton>
+                            <Button onClick={this.onCancelSaveHandler}>Отмена</Button>
                         </div>
                     </div>
                 </Dialog>

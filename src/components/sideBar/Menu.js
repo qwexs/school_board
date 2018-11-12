@@ -1,23 +1,20 @@
-import React, {Component} from 'react';
+import React from 'react';
 import MenuButton from "./MenuButton";
 import {withRouter} from "react-router-dom";
 
-class Menu extends Component {
+export default withRouter(React.memo(({...props}) => {
 
-    menuClickHandler = (event, path) => {
-        this.props.history.push(path);
+    const menuClickHandler = (event, path) => {
+        props.history.push(path);
     };
 
-    render() {
-        const {routes} = this.props;
-        return (
-            <div className="container-menu">
-                {routes.map((item, index) =>
-                      <MenuButton key={index} path={item.path} label={item.title} onClick={this.menuClickHandler}/>
-                )}
-            </div>
+    const {routes, style} = props;
+    return (
+        <div style={style} className="bp3-text-large">
+            {routes.map((item, index) =>
+                  <MenuButton key={index} path={item.path} label={item.title} onClick={menuClickHandler}/>
+            )}
+        </div>
 
-        );
-    }
-}
-export default withRouter(Menu);
+    );
+}));

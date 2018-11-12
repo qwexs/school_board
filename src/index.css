@@ -9,6 +9,30 @@ body {
 * {
     box-sizing: border-box;
 }
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background: rgba(245, 248, 250, 0.2);
+    border: 1px solid #e1e4e6;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: linear-gradient(to left, #e4e4e4, #f7f7f7);
+    border: 1px solid #aaa;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f8f8f8;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(to left, #d6d9db, #d6d9db);
+}
 * {
   font-size: 1em;
   line-height: 1.4em;

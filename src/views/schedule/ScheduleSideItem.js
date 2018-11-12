@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 
-class AnnounceSideItem extends Component {
+class ScheduleSideItem extends Component {
     render() {
         const {item, sideItem} = this.props;
         return (
             <div className="disable-select" style={sideItem}>
-                {item._name}
+                {item._id}
             </div>
         );
     }
 }
 
-export default AnnounceSideItem;
+export default ScheduleSideItem;

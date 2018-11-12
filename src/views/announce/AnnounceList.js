@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import AnnounceBlock from "./AnnounceBlock";
+import AnnounceItem from "./AnnounceItem";
 import AnnounceDialog from "./AnnounceDialog";
 import {ID} from "../../utils/ID";
 import {reorder} from "../../utils/reorder";
@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     margin: `0 0 ${25}px 0`,
-    background: isDragging ? "#A7B6C2" : null,
+    // background: isDragging ? "#A7B6C2" : null,
     width: "100%",
     ...draggableStyle
 });
@@ -18,7 +18,6 @@ class AnnounceList extends PureComponent {
         super(props);
         this.state = {
             collectionList: [],
-            items: [],
             isOpen: false,
             content: null
         };
@@ -28,7 +27,7 @@ class AnnounceList extends PureComponent {
 
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps, nextContext) {
         const {list} = nextProps;
         const education = list && list.education;
         let collectionList = education && education.ev;
@@ -39,7 +38,6 @@ class AnnounceList extends PureComponent {
         this.setState({
             isOpen: nextProps.isOpen,
             collectionList,
-            items: this.getItems(collectionList)
         });
     }
 
@@ -49,9 +47,9 @@ class AnnounceList extends PureComponent {
             .map((item, index) => {
                 return result.push({
                     id: `item-${index}`,
-                    content: <AnnounceBlock item={item}
-                                            onEditClickHandler={this.onEditClickHandler}
-                                            onRemoveClickHandler={this.onRemoveClickHandler}/>
+                    content: <AnnounceItem style={this.props.announceItem} item={item}
+                                           onEditClickHandler={this.onEditClickHandler}
+                                           onRemoveClickHandler={this.onRemoveClickHandler}/>
                 })
             });
         return result;
@@ -68,7 +66,6 @@ class AnnounceList extends PureComponent {
         const collectionList = this.state.collectionList.filter(item => item !== itemTarget);
         this.setState({
             collectionList,
-            items: this.getItems(collectionList)
         });
     };
 
@@ -85,7 +82,6 @@ class AnnounceList extends PureComponent {
 
         this.setState({
             collectionList,
-            items: this.getItems(collectionList)
         });
     };
 
@@ -126,16 +122,18 @@ class AnnounceList extends PureComponent {
     };
 
     render() {
+        const {announceContainer} = this.props;
         return (
-            <div className="announce-container">
+            <div style={{
+                width: "100%",
+                height: "100%"
+            }}>
                 <DragDropContext
-                    onDragStart={this.onDragStart}
-                    onDragUpdate={this.onDragUpdate}
                     onDragEnd={this.onDragEnd}>
                     <Droppable droppableId="droppable">
                         {(provided) => (
-                            <div ref={provided.innerRef} className="announce-card-container">
-                                { this.getItems(this.state.collectionList).map((item, index) => (
+                            <div ref={provided.innerRef} style={announceContainer}>
+                                {this.getItems(this.state.collectionList).map((item, index) => (
                                     <Draggable key={index} draggableId={item.id} index={index}>
                                         {(provided, snapshot) => (
                                             <div ref={provided.innerRef}

@@ -1,7 +1,7 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import SideMenuItem from "./SideMenuItem";
 
-class SideMenu extends Component {
+class SideMenu extends PureComponent {
 
     prevItem;
 
@@ -22,13 +22,13 @@ class SideMenu extends Component {
     }
 
     render() {
-        const {items} = this.props;
+        const {items, sideMenuContainer} = this.props;
         return (
-            <div className="side-menu">
+            <div style={sideMenuContainer}>
                 {items.map((item, index) => {
                     return (
                         <SideMenuItem key={index} item={item} onClick={this.onClickHandler}>
-                            {React.cloneElement(this.props.children, { item })}
+                            {React.cloneElement(this.props.children, {item})}
                         </SideMenuItem>
                     )
                 })}

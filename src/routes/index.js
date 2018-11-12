@@ -2,6 +2,7 @@ import React from 'react';
 import {StatusPage} from "../views";
 import Announce from "../views/announce/Announce";
 import Schedule from "../views/schedule/Schedule";
+import Elective from "../views/electives/Elective";
 
 const routes = [
     {
@@ -22,7 +23,7 @@ const routes = [
     {
         title: "Распорядок дня",
         path: "/app/electives",
-        component: () => <div/>
+        component: Elective
     },
     {
         title: "Галерея",
