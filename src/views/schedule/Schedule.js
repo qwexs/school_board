@@ -21,12 +21,12 @@ const styles = {
     tableContainer: {
         display: "flex",
         flexWrap: "wrap",
-        margin: "0 auto",
         alignItems: "center",
         justifyContent: "space-evenly",
         overflowY: "auto",
         overflowX: "hidden",
-        padding: 30,
+        padding: "0 5% 0 5%",
+        height: "100%",
     },
     tableCell: {
         boxSizing: "border-box",
@@ -61,7 +61,7 @@ class Schedule extends PureComponent {
 
     handleResizeView = (entries) => {
         if (entries) {
-            this.setState({vWidth: entries[0].contentRect.width + styles.tableContainer.padding * 2});
+            this.setState({vWidth: entries[0].contentRect.width});
         }
     };
 

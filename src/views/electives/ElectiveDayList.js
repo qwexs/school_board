@@ -20,10 +20,13 @@ const styles = {
         width: "80%",
         margin: "0 auto",
         minWidth: "150px",
-        maxWidth: "450px"
+        maxWidth: "450px",
+        paddingTop: 30,
+        paddingBottom: 30
     },
 
     itemStyle: {
+        height: 100,
         background: "#f5f8fa",
         padding: "5px"
     },
@@ -64,8 +67,10 @@ class ElectiveDayList extends PureComponent {
     };
 
     render() {
+
         return (
             <div style={styles.groupItemStyle}>
+                {this.props.list._id}
                 <DragDropContext
                     onDragEnd={this.onDragEnd}>
                     <Droppable droppableId="droppable">

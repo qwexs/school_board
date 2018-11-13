@@ -14,7 +14,7 @@ const styles = {
         overflowY: "auto",
         overflowX: "hidden",
         flexGrow: 1,
-        padding: "30px 10px 10px 10px",
+        padding: "30px 10px 30px 10px",
         height: "100%"
     },
     sideItem: {

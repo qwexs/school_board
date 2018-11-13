@@ -25,11 +25,16 @@ class ElectiveWeekList extends PureComponent {
     render() {
         const {contentStyle} = this.props;
         return (
-            <div style={contentStyle}>
-                {
-                    this.state.collectionList.map((itemList, index) =>
-                        <ElectiveDayList key={index} list={itemList} {...contentStyle}/>)
-                }
+            <div style={{
+                width: "100%",
+                height: "100%"
+            }}>
+                <div style={contentStyle}>
+                    {
+                        this.state.collectionList.map((itemList, index) =>
+                            <ElectiveDayList key={index} list={itemList} {...contentStyle}/>)
+                    }
+                </div>
             </div>
         );
     }

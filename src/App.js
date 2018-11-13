@@ -67,7 +67,6 @@ const styles = {
     sideMenuContainer: {
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
         justifyContent: "start",
         margin: "0 auto",
         flexShrink: "0",

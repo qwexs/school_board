@@ -5,6 +5,7 @@
 
 .App {
     text-align: center;
+    overflow-x: hidden;
 }
 
 .disable-select {
@@ -12,4 +13,15 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.button-menu Button {
+    height: 40px;
+    /*overflow: hidden;*/
+    /*text-decoration: none;*/
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: dimgrey;
+    font-size: 14px;
+    float: right;
 }
