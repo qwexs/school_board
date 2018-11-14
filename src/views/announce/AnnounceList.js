@@ -48,14 +48,14 @@ class AnnounceList extends PureComponent {
                 return result.push({
                     id: `item-${index}`,
                     content: <AnnounceItem style={this.props.announceItem} item={item}
-                                           onEditClickHandler={this.onEditClickHandler}
-                                           onRemoveClickHandler={this.onRemoveClickHandler}/>
+                                           onItemEditedClick={this.onItemEditedClick}
+                                           onItemRemoveClick={this.onRemoveClickHandler}/>
                 })
             });
         return result;
     };
 
-    onEditClickHandler = (item) => {
+    onItemEditedClick = (item) => {
         this.setState({
             isOpen: true,
             content: item

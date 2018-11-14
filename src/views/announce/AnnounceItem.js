@@ -36,7 +36,7 @@ class AnnounceItem extends PureComponent {
     };
 
     render() {
-        const {style, onRemoveClickHandler, onEditClickHandler} = this.props;
+        const {style, onItemRemoveClick, onItemEditedClick} = this.props;
         return (
             <Card style={style} interactive={true} elevation={Elevation.ONE}
                   onMouseOver={this.onOverHandler} onMouseLeave={this.onOutHandler}>
@@ -44,11 +44,11 @@ class AnnounceItem extends PureComponent {
                     {
                         this.state.isRoll &&
                         <div style={{display: "flex", justifyContent: "flex-end", top: 0, paddingRight: 0}}>
-                            <Button minimal icon="edit"
-                                    onClick={() => onEditClickHandler(this.state.content)}>
+                            <Button minimal icon="edit" title="Редактировать"
+                                    onClick={() => onItemEditedClick(this.state.content)}>
                             </Button>
-                            <Button minimal icon="cross"
-                                    onClick={() => onRemoveClickHandler(this.props.item)}>
+                            <Button minimal icon="cross" title="Удалить"
+                                    onClick={() => onItemRemoveClick(this.props.item)}>
                             </Button>
 
                         </div>

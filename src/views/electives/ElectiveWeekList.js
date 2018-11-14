@@ -20,6 +20,8 @@ class ElectiveWeekList extends PureComponent {
             // isOpen: nextProps.isOpen,
             collectionList,
         });
+
+        this.listContainer.scrollTop = 0;
     }
 
     render() {
@@ -29,7 +31,7 @@ class ElectiveWeekList extends PureComponent {
                 width: "100%",
                 height: "100%"
             }}>
-                <div style={contentStyle}>
+                <div style={contentStyle} ref={(ref) => this.listContainer = ref}>
                     {
                         this.state.collectionList.map((itemList, index) =>
                             <ElectiveDayList key={index} list={itemList} {...contentStyle}/>)

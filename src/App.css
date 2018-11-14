@@ -2,13 +2,16 @@
 @import "../node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css";
 @import "../node_modules/@blueprintjs/core/lib/css/blueprint.css";
 @import "./views/styles/table.css";
+@import "./views/styles/blueprint-datetime.css";
 
 .App {
     text-align: center;
     overflow-x: hidden;
+    color: #10161A;
 }
 
 .disable-select {
+    -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -25,3 +28,6 @@
     font-size: 14px;
     float: right;
 }
+
+.bp3-timepicker{
+    white-space:nowrap; }

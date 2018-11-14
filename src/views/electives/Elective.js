@@ -19,7 +19,7 @@ const styles = {
         display: "flex",
         flexDirection: "row",
         width: "30vw",
-        minWidth: 350,
+        minWidth: 200,
         height: 120,
         margin: "auto",
         overflow: "hidden",
@@ -75,11 +75,11 @@ class Elective extends PureComponent {
                 <ResizeSensor onResize={this.handleResizeView}>
                     <ElectiveWeekList list={this.state.selectedItem} {...styles}/>
                 </ResizeSensor>
-                <FooterApply width={this.state.vWidth}>
+                {/*<FooterApply width={this.state.vWidth}>
                     <Button minimal icon="add-to-artifact" onClick={this.onAddDialogHandler}>Создать событие</Button>
                     <Button minimal icon="undo">Отменить</Button>
                     <Button minimal icon="edit">Сохранить изменения</Button>
-                </FooterApply>
+                </FooterApply>*/}
             </div>
         );
     }
