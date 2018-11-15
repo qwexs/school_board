@@ -17,7 +17,6 @@ class ElectiveWeekList extends PureComponent {
         collectionList.map((item) => item.id = ID()); //FIXME: fetch id
 
         this.setState({
-            // isOpen: nextProps.isOpen,
             collectionList,
         });
 

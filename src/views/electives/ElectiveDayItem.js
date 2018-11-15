@@ -150,7 +150,7 @@ class ElectiveDayItem extends PureComponent {
 
     render() {
         const itemStyle = {
-            height: this.state.data.id ? 130 : 50,
+            height: this.state.data.id ? 150 : 50,
                 background: "#f5f8fa",
                 padding: "5px"
         };
