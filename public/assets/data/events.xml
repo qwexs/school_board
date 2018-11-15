@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <eventsDay>
 	<school>
-		<elective 	id="Театральная студия" place="Кабинет 101а" teacher="Старцева  Лариса Владимировна(0,1,3), Овчинникова Татьяна Викторовна (2,4)" ic="iconElective\01.swf">
+		<elective 	id="Театральная студия" place="Кабинет 101а" teacher="Старцева  Лариса Владимировна, Овчинникова Татьяна Викторовна" ic="iconElective\01.swf">
 			<sunday id="Понедельник">
 				<less klass="1а">15.00 15.30</less>
 				<less klass="2а">13.10 13.40</less>
@@ -48,7 +48,7 @@
 			<sunday id="Пятница">
 			</sunday>
 		</elective>
-		<elective 	id="Ритмика" place="Кабинет 101а" teacher="Старцева Лариса Владимировна (0), Егорова Дарья Викторовна (1)" ic="iconElective\03.swf">
+		<elective 	id="Ритмика" place="Кабинет 101а" teacher="Старцева Лариса Владимировна, Егорова Дарья Викторовна" ic="iconElective\03.swf">
 			<sunday id="Понедельник">
 				<less klass="1б">15.30 16.00</less>
 			</sunday>
@@ -803,7 +803,7 @@
 				<less klass="3в">12.55 13.15</less>
 
 
-				
+
 
 			</sunday>
 		</elective>

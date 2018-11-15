@@ -40,12 +40,6 @@ const styles = {
         minWidth: "35vw",
         maxWidth: "450px",
     },
-
-    itemStyle: {
-        height: 150,
-        background: "#f5f8fa",
-        padding: "5px"
-    },
 };
 
 class ElectiveDayList extends PureComponent {
@@ -61,12 +55,10 @@ class ElectiveDayList extends PureComponent {
 
     componentWillReceiveProps(nextProps, nextContext) {
         let {list: {less}} = nextProps;
-
+        let collectionList = [];
         if (less !== undefined) {
             if (!Array.isArray(less))
                 less = [less];
-
-            const collectionList = [];
             less.map(item => {
                 const timeRange = item.__text;
                 const start = new Date();
@@ -84,8 +76,12 @@ class ElectiveDayList extends PureComponent {
                 });
                 return item;
             });
-            this.setState({collectionList});
         }
+        else
+        {
+            collectionList = [{data:{id: null}}];
+        }
+        this.setState({collectionList});
     }
 
     handleDraggableStop = () => {
@@ -115,6 +111,10 @@ class ElectiveDayList extends PureComponent {
         this.setState({collectionList});
     };
 
+    handleClickItemAdd = () => {
+        // add
+    };
+
     render() {
         return (
             <div style={styles.groupItemStyle}>
@@ -128,10 +128,10 @@ class ElectiveDayList extends PureComponent {
                                            className="bp3-label bp3-monospace-text">
                                         {this.props.list._id}
                                     </label>
-                                    <Button minimal title="Добавить" icon="add-to-artifact"/>
+                                    <Button minimal title="Добавить" icon="add-to-artifact" onClick={this.handleClickItemAdd}/>
                                 </div>
                                 {this.state.collectionList.map((item, index) => (
-                                    <Draggable key={index} draggableId={`item-${index}`} index={index} isDragDisabled={this.state.isDragDisabled}>
+                                    <Draggable key={index} draggableId={`item-${index}`} index={index} isDragDisabled={this.state.isDragDisabled || !item.id}>
                                         {(provided, snapshot) => (
                                             <div ref={provided.innerRef}
                                                  {...provided.draggableProps}
