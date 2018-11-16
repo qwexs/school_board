@@ -14,16 +14,17 @@ const style = {
     boxShadow: "0 -5px 1em -10px #1f1f1f",
     justifyContent: "flex-end",
     display: "flex",
-    paddingRight: "1%"
-
+    paddingRight: "1%",
+    zIndex: 1,
+    transition: "transform 200ms ease-out"
 };
 
 export default class FooterApply extends PureComponent {
 
     render() {
-        const {children, width} = this.props;
+        const {children, width, visible} = this.props;
         return (
-            <div style={[style, {width: width}]}>
+            <div style={[style, {width: width, transform: visible ? "translateY(0)" : "translateY(100%)"}]}>
                 {children.map((element, index) => {
                     return (
                         <div key={index}

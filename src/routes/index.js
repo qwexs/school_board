@@ -3,6 +3,7 @@ import {StatusPage} from "../views";
 import Announce from "../views/announce/Announce";
 import Schedule from "../views/schedule/Schedule";
 import Elective from "../views/electives/Elective";
+import Gallery from "../views/gallery/Gallery";
 
 const routes = [
     {
@@ -28,7 +29,7 @@ const routes = [
     {
         title: "Галерея",
         path: "/app/gallery",
-        component: () => <div/>
+        component: Gallery
     },
     {
         title: "Праздники",
