@@ -3,7 +3,7 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import galleryJSON from "./gallery.json";
 import GallerySideItem from "./GallerySideItem";
 import GalleryAlbum from "./GalleryAlbum";
-import FooterApply from "../../components/footer/FooterApply";
+import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor} from "@blueprintjs/core";
 import FooterBarProvider, {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 
@@ -63,16 +63,16 @@ class Gallery extends PureComponent {
                         </SideMenu>
                         <ResizeSensor onResize={this.handleResizeView}>
                             <GalleryAlbum item={this.state.selectedItem}
-                                          onSelected={setOpen}
+                                          setOpen={setOpen}
                                           action={action}
                                           {...styles}/>
                         </ResizeSensor>
 
-                        <FooterApply width={this.state.vWidth} isOpen={isOpen}>
+                        <FooterBar width={this.state.vWidth} isOpen={isOpen}>
                             <Button minimal icon="multi-select" onClick={() => setAction(FooterBarProvider.ACTION_SELECT_ALL)}>Выбрать все</Button>
                             <Button minimal icon="disable" onClick={() => setAction(FooterBarProvider.ACTION_UN_SELECT_ALL)}>Снять выделение</Button>
                             <Button minimal icon="trash" onClick={() => setAction(FooterBarProvider.ACTION_DELETE)}>Удалить</Button>
-                        </FooterApply>
+                        </FooterBar>
 
                     </div>
                 )}

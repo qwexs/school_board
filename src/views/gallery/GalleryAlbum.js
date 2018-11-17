@@ -36,7 +36,7 @@ class GalleryAlbum extends PureComponent {
     selectPhoto = (event, obj) => {
         const {photos} = this.state;
         photos[obj.index].selected = !photos[obj.index].selected;
-        this.props.onSelected(photos.filter(item => item.selected).length > 0);
+        this.props.setOpen(photos.filter(item => item.selected).length > 0);
         this.setState({photos});
     };
 
@@ -57,9 +57,5 @@ class GalleryAlbum extends PureComponent {
         );
     }
 }
-
-GalleryAlbum.propTypes = {
-    onSelected: PropTypes.func
-};
 
 export default GalleryAlbum;

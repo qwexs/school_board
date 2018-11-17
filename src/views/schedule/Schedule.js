@@ -3,7 +3,7 @@ import xml2json from "../../utils/xml2json";
 import ScheduleSideItem from "./ScheduleSideItem";
 import SideMenu from "../../components/sideBar/SideMenu";
 import TableList from "./TableList";
-import FooterApply from "../../components/footer/FooterApply";
+import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor} from "@blueprintjs/core";
 
 const styles = {
@@ -75,10 +75,10 @@ class Schedule extends PureComponent {
                 <ResizeSensor onResize={this.handleResizeView}>
                     <TableList days={this.state.selectedItem} {...styles}/>
                 </ResizeSensor>
-                <FooterApply width={this.state.vWidth}>
+                <FooterBar width={this.state.vWidth}>
                     <Button minimal icon="undo">Отменить</Button>
                     <Button minimal icon="edit">Сохранить изменения</Button>
-                </FooterApply>
+                </FooterBar>
             </div>
         );
     }

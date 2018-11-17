@@ -3,7 +3,7 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import ElectiveSideItem from "./ElectiveSideItem";
 import xml2json from "../../utils/xml2json";
 import ElectiveWeekList from "./ElectiveWeekList";
-import FooterApply from "../../components/footer/FooterApply";
+import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor} from "@blueprintjs/core";
 
 const styles = {
@@ -75,10 +75,10 @@ class Elective extends PureComponent {
                 <ResizeSensor onResize={this.handleResizeView}>
                     <ElectiveWeekList list={this.state.selectedItem} {...styles}/>
                 </ResizeSensor>
-                <FooterApply width={this.state.vWidth}>
+                <FooterBar width={this.state.vWidth}>
                     <Button minimal icon="undo">Отменить</Button>
                     <Button minimal icon="edit">Сохранить изменения</Button>
-                </FooterApply>
+                </FooterBar>
             </div>
         );
     }

@@ -3,7 +3,7 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import AnnounceSideItem from "./AnnounceSideItem";
 import xml2json from "../../utils/xml2json";
 import AnnounceList from "./AnnounceList";
-import FooterApply from "../../components/footer/FooterApply";
+import FooterBar from "../../components/footer/FooterBar";
 import {Button} from "@blueprintjs/core";
 import {ResizeSensor} from "@blueprintjs/core";
 
@@ -86,11 +86,11 @@ class Announce extends PureComponent {
                     <AnnounceList list={this.state.selectedItem} isOpen={this.state.isOpen}
                                   onCloseDialog={this.onCloseDialogHandler} {...styles}/>
                 </ResizeSensor>
-                <FooterApply width={this.state.vWidth}>
+                <FooterBar width={this.state.vWidth}>
                     <Button minimal icon="add-to-artifact" onClick={this.onAddDialogHandler}>Создать анонс</Button>
                     <Button minimal icon="undo">Отменить</Button>
                     <Button minimal icon="edit">Сохранить изменения</Button>
-                </FooterApply>
+                </FooterBar>
             </div>
         );
     }

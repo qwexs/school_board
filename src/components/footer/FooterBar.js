@@ -19,7 +19,7 @@ const style = {
     transition: "transform 200ms ease-out"
 };
 
-export default class FooterApply extends PureComponent {
+export default class FooterBar extends PureComponent {
 
     render() {
         const {children, width, isOpen} = this.props;
@@ -39,4 +39,4 @@ export default class FooterApply extends PureComponent {
 
 }
 
-FooterApply = Radium(FooterApply);
+FooterBar = Radium(FooterBar);
