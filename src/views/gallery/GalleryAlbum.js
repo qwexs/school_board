@@ -2,11 +2,12 @@ import React, {PureComponent} from 'react';
 import Gallery from "react-photo-gallery";
 import SelectedImage from "./SelectImage";
 import * as PropTypes from "prop-types";
+import FooterBarProvider from "../../components/footer/FooterBarProvider";
 
 class GalleryAlbum extends PureComponent {
 
     state = {
-        photos: []
+        photos: [],
     };
 
     componentDidMount() {
@@ -14,15 +15,29 @@ class GalleryAlbum extends PureComponent {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const {item: {photos}} = nextProps;
+        let {action, item: {photos}} = nextProps;
+
+        switch (action) {
+            case FooterBarProvider.ACTION_SELECT_ALL:
+                photos.map(item => item.selected = true);
+                break;
+            case FooterBarProvider.ACTION_UNSELECT_ALL:
+                photos.map(item => item.selected = false);
+                break;
+            case FooterBarProvider.ACTION_DELETE:
+                photos = photos.filter(item => !item.selected);
+                break;
+            default:
+        }
+
         this.setState({photos});
     }
 
     selectPhoto = (event, obj) => {
-        let photos = this.state.photos;
+        const {photos} = this.state;
         photos[obj.index].selected = !photos[obj.index].selected;
-        this.forceUpdate();
         this.props.onSelected(photos.filter(item => item.selected).length > 0);
+        this.setState({photos});
     };
 
     render() {
@@ -31,7 +46,7 @@ class GalleryAlbum extends PureComponent {
             <div style={{
                 width: "100%",
                 height: "100%"
-            }}>
+            }} className="disable-select">
                 <div style={contentStyle}>
                     <Gallery
                         photos={this.state.photos}

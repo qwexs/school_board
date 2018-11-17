@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import Radium from "radium";
+import {FooterPanelConsumer} from "./FooterBarProvider";
 
 const style = {
     height: "10vh",
@@ -22,18 +23,22 @@ const style = {
 export default class FooterApply extends PureComponent {
 
     render() {
-        const {children, width, visible} = this.props;
+        const {children, width} = this.props;
         return (
-            <div style={[style, {width: width, transform: visible ? "translateY(0)" : "translateY(100%)"}]}>
-                {children.map((element, index) => {
-                    return (
-                        <div key={index}
-                             style={{height: "100%", paddingRight: 0, display: "flex", alignSelf: "center"}}>
-                            {element}
-                        </div>
-                    );
-                })}
-            </div>
+            <FooterPanelConsumer>
+                {({isOpen}) => (
+                    <div style={[style, {width: width, transform: isOpen ? "translateY(0)" : "translateY(100%)"}]}>
+                        {children.map((element, index) => {
+                            return (
+                                <div key={index}
+                                     style={{height: "100%", paddingRight: 0, display: "flex", alignSelf: "center"}}>
+                                    {element}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </FooterPanelConsumer>
         );
     }
 

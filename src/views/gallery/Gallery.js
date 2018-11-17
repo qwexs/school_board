@@ -5,6 +5,7 @@ import GallerySideItem from "./GallerySideItem";
 import GalleryAlbum from "./GalleryAlbum";
 import FooterApply from "../../components/footer/FooterApply";
 import {Button, ResizeSensor} from "@blueprintjs/core";
+import FooterBarProvider, {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 
 const styles = {
     sideItem: {
@@ -37,12 +38,7 @@ class Gallery extends PureComponent {
             selectedItem: currentList[0],
             isOpen: false,
             vWidth: 0,
-            footerVisible: false,
         };
-    }
-
-    componentDidMount() {
-
     }
 
     handleResizeView = (entries) => {
@@ -55,38 +51,33 @@ class Gallery extends PureComponent {
         this.setState({selectedItem: target.props.item});
     };
 
-    handleChangeAlbum = (isSelected) => {
-        this.setState({footerVisible: isSelected});
-    };
-
-    handleSelectAll = () => {
-
-    };
-
-    handleUnSelect = () => {
-
-    };
-
-    handleRemove = () => {
-
-    };
-
     render() {
         const {windowStyle} = this.props;
         return (
-            <div style={windowStyle}>
-                <SideMenu items={this.state.list} onChangeItem={this.onChangeItem} {...this.props}>
-                    <GallerySideItem {...styles}/>
-                </SideMenu>
-                <ResizeSensor onResize={this.handleResizeView}>
-                    <GalleryAlbum item={this.state.selectedItem} onSelected={this.handleChangeAlbum} {...styles}/>
-                </ResizeSensor>
-                <FooterApply width={this.state.vWidth} visible={this.state.footerVisible}>
-                    <Button minimal icon="multi-select" onClick={this.handleSelectAll}>Выбрать все</Button>
-                    <Button minimal icon="disable" onClick={this.handleUnSelect}>Снять выделение</Button>
-                    <Button minimal icon="trash" onClick={this.handleRemove}>Удалить</Button>
-                </FooterApply>
-            </div>
+            <FooterBarProvider>
+                <FooterPanelConsumer>
+                    {({setOpen, isOpen, setAction, action}) => (
+                    <div style={windowStyle}>
+                        <SideMenu items={this.state.list} onChangeItem={this.onChangeItem} {...this.props}>
+                            <GallerySideItem {...styles}/>
+                        </SideMenu>
+                        <ResizeSensor onResize={this.handleResizeView}>
+                            <GalleryAlbum item={this.state.selectedItem}
+                                          onSelected={setOpen}
+                                          action={action}
+                                          {...styles}/>
+                        </ResizeSensor>
+
+                        <FooterApply width={this.state.vWidth}>
+                            <Button minimal icon="multi-select" onClick={() => setAction(FooterBarProvider.ACTION_SELECT_ALL)}>Выбрать все</Button>
+                            <Button minimal icon="disable" onClick={() => setAction(FooterBarProvider.ACTION_UNSELECT_ALL)}>Снять выделение</Button>
+                            <Button minimal icon="trash" onClick={() => setAction(FooterBarProvider.ACTION_DELETE)}>Удалить</Button>
+                        </FooterApply>
+
+                    </div>
+                )}
+                </FooterPanelConsumer>
+            </FooterBarProvider>
         );
     }
 }
