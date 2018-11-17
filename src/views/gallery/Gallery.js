@@ -68,9 +68,9 @@ class Gallery extends PureComponent {
                                           {...styles}/>
                         </ResizeSensor>
 
-                        <FooterApply width={this.state.vWidth}>
+                        <FooterApply width={this.state.vWidth} isOpen={isOpen}>
                             <Button minimal icon="multi-select" onClick={() => setAction(FooterBarProvider.ACTION_SELECT_ALL)}>Выбрать все</Button>
-                            <Button minimal icon="disable" onClick={() => setAction(FooterBarProvider.ACTION_UNSELECT_ALL)}>Снять выделение</Button>
+                            <Button minimal icon="disable" onClick={() => setAction(FooterBarProvider.ACTION_UN_SELECT_ALL)}>Снять выделение</Button>
                             <Button minimal icon="trash" onClick={() => setAction(FooterBarProvider.ACTION_DELETE)}>Удалить</Button>
                         </FooterApply>
 

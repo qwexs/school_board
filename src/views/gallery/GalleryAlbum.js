@@ -21,7 +21,7 @@ class GalleryAlbum extends PureComponent {
             case FooterBarProvider.ACTION_SELECT_ALL:
                 photos.map(item => item.selected = true);
                 break;
-            case FooterBarProvider.ACTION_UNSELECT_ALL:
+            case FooterBarProvider.ACTION_UN_SELECT_ALL:
                 photos.map(item => item.selected = false);
                 break;
             case FooterBarProvider.ACTION_DELETE:

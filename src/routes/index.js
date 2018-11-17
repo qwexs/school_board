@@ -7,9 +7,14 @@ import Gallery from "../views/gallery/Gallery";
 
 const routes = [
     {
-        title: "Статус подключния",
+        title: "Подключния",
         path: "/app/status",
         component: StatusPage,
+    },
+    {
+        title: "Новости",
+        path: "/app/news",
+        component: ()=><div/>,
     },
     {
         title: "Расписание уроков",
