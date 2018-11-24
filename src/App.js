@@ -9,8 +9,17 @@ import PropsRoute from "./components/routes/PropsRoute";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import {setAuth} from "./components/authentication/setAuth";
 import Radium from 'radium';
+import axios from "axios";
 
 class App extends Component {
+
+    componentDidMount() {
+        axios.create({
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
 
   render() {
     return (

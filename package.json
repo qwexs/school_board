@@ -1,18 +1,25 @@
 {
   "name": "iboo_admin_panel",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "^3.7.0",
     "@blueprintjs/datetime": "^3.3.1",
     "@blueprintjs/docs-theme": "^3.0.3",
     "@blueprintjs/table": "^3.3.0",
+    "@types/mongoose": "^5.3.1",
     "@types/react": "^16.7.3",
     "axios": "^0.18.0",
+    "bluebird": "^3.5.3",
     "classnames": "^2.2.6",
+    "cookie-parser": "~1.4.3",
+    "express": "~4.16.4",
+    "express-photo-gallery": "^1.0.9",
     "file-system": "^2.2.2",
     "fs": "^0.0.1-security",
+    "http-errors": "~1.6.2",
     "jimp": "^0.5.6",
+    "mongoose": "^5.3.12",
     "prop-types": "^15.6.2",
     "radium": "^0.25.0",
     "react": "^16.6.1",
@@ -23,14 +30,15 @@
     "react-router-dom": "4.3.1",
     "react-scripts": "2.1.1",
     "react-swf": "^1.0.7",
-    "x2js": "^3.2.1",
-    "xml2js": "^0.4.19"
+    "x2js": "^3.2.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "client": "react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "nodemon server/server.js --ignore src/",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -42,6 +50,10 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/express": "^4.16.0",
+    "concurrently": "^4.1.0",
+    "debug": "~2.6.9",
     "react-app-rewire-sass": "^1.2.3"
-  }
+  },
+  "proxy": "http://localhost:4200/"
 }

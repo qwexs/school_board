@@ -25,3 +25,4 @@ yarn-error.log*
 iboo_admin_panel.iml
 package-lock.json
 /src/App.test.js
+/server/data/

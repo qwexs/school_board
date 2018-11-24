@@ -1,5 +1,4 @@
 const { injectBabelPlugin } = require("react-app-rewired");
-const rewireSass = require('react-app-rewire-sass');
 
 /* config-overrides.js */
 module.exports = function override(config, env) {

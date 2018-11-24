@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusPage} from "../views";
+import {StatusPage} from "../views/index";
 import Announce from "../views/announce/Announce";
 import Schedule from "../views/schedule/Schedule";
 import Elective from "../views/electives/Elective";
