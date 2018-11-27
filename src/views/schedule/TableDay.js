@@ -23,8 +23,8 @@ class TableDay extends PureComponent {
         this.setState(day);
     }
 
-    onSelectionHandler = () => {
-
+    handleConfirmData = (dataKey, text) => {
+        this.props.onConfirm(this.props.index, dataKey, text);
     };
 
     render() {
@@ -34,7 +34,7 @@ class TableDay extends PureComponent {
             );
         });
         return (
-            <Table enableColumnResizing={false} enableRowResizing={false} onSelection={this.onSelectionHandler}
+            <Table enableColumnResizing={false} enableRowResizing={false}
                    selectionModes={SelectionModes.ROWS_AND_CELLS}
                    enableMultipleSelection={false}
                    columnWidths={[150,50]} numRows={7} >{columns}</Table>
@@ -45,7 +45,7 @@ class TableDay extends PureComponent {
         const dataKey = TableDay.dataKey(rowIndex, columnIndex);
         const value = this.state.sparseCellData[dataKey];
         return (
-            <EditableCell truncated={true}
+            <EditableCell truncated={true} onConfirm={(text) => value !== text && this.handleConfirmData(dataKey, text)}
                 value={value == null ? "" : value}
             />
         );

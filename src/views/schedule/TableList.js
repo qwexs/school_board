@@ -4,31 +4,34 @@ import TableDay from "./TableDay";
 export default React.memo(({...props}) => {
 
     const {days, tableContainer, tableCell} = props;
-    const day = days["den"];
+    const lessons = (days && days.days) || [];
+    let sparseCellData;
+
+    const handleConfirmData = (index, dataKey, text) => {
+        const keys = dataKey.split('-');
+        lessons[index]["less"][Number(keys[0])][Number(keys[1]) ? "cab" : "text"] = text;
+        console.log("lessons ", lessons);
+        props.onConfirm(lessons);
+    };
+
     return (
-        <div style={{
-            width: "100%",
-            height: "100%"
-        }}>
-            <div style={tableContainer}>
-                {day && day.map((item, index) => {
-                    let sparseCellData = {};
-                    item["ur"].map((ur, index) =>
-                        Object.assign(sparseCellData, {[index+"-0"]:ur["__text"] || "" , [index+"-1"]:ur["_cab"]}));
+        <div style={tableContainer}>
+            {lessons && lessons.map((item, index) => {
+                sparseCellData = {};
+                item["less"].map((item, index) =>
+                    Object.assign(sparseCellData, {[index + "-0"]: item["text"] || "", [index + "-1"]: item["cab"]}));
 
-                    const dayData = {
-                        columnNames: [item._id, "каб."],
-                        sparseCellData: sparseCellData
-                    };
+                const dayData = {
+                    columnNames: [item.title, "каб."],
+                    sparseCellData: sparseCellData
+                };
 
-                    return (
-                        <div key={index} style={tableCell}>
-                            <TableDay day={dayData} />
-                        </div>
-                    );
-                })}
-            </div>
+                return (
+                    <div key={index} style={tableCell}>
+                        <TableDay index={index} day={dayData} onConfirm={handleConfirmData}/>
+                    </div>
+                );
+            })}
         </div>
-
     );
 });

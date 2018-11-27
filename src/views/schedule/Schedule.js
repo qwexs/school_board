@@ -1,10 +1,15 @@
 import React, {PureComponent} from 'react';
-import xml2json from "../../utils/xml2json";
 import ScheduleSideItem from "./ScheduleSideItem";
 import SideMenu from "../../components/sideBar/SideMenu";
-import TableList from "./TableList";
 import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor} from "@blueprintjs/core";
+import axios from "axios";
+import ScheduleHeaderBar from "./ScheduleHeaderBar";
+import Radium from "radium";
+import ScheduleList from "./ScheduleContent";
+import FooterBarProvider, {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
+import * as ReactDOM from "react-dom";
+import scheduleJSON from './scheduleData';
 
 const styles = {
     sideItem: {
@@ -18,70 +23,132 @@ const styles = {
         textOverflow: "ellipsis",
         padding: "0 5px 0 5px",
     },
-    tableContainer: {
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        overflowY: "auto",
-        overflowX: "hidden",
-        padding: "0 5% 0 5%",
-        height: "100%",
-    },
-    tableCell: {
-        boxSizing: "border-box",
+    headerBar: {
+        backgroundColor: "#edf0f2",
         padding: 10,
-        overflow: "hidden",
+        border: "1px solid lightgrey",
+        height: 50
     }
+
 };
 
-
 class Schedule extends PureComponent {
+
+    static ACTION_ADD_ITEM = "addItem";
+    static ACTION_REMOVE_ITEM = "removeItem";
+    static ACTION_CHANGE_ITEM = "changeItem";
+
     constructor(props) {
         super(props);
         this.state = {
             list: [],
-            selectedItem: {},
-            vWidth: 0
+            selectedItem: null,
+            vWidth: ""
         };
+
+        this.scheduleList = React.createRef();
     }
 
     componentDidMount() {
-        const raspData = xml2json("/assets/data/rasp.xml");
-        const currentList = raspData["school"]["klass"];
-        this.setState({
-            list: currentList,
-            selectedItem: currentList[0]
-        });
+        this.refreshAll();
+        // const raspData = xml2json("/assets/data/rasp.xml");
+        // const currentList = raspData["school"]["klass"];
+        // console.log(currentList);
+        // console.log(JSON.stringify(currentList));
+
+        // this.setState({
+        //     list: currentList,
+        //     selectedItem: currentList[0]
+        // });
+        // this.setState({
+        //     list: [scheduleJSON],
+        //     selectedItem: scheduleJSON
+        // });
     }
 
-    onChangeItem = (target) => {
+    componentWillReceiveProps(nextProps, nextContext) {
+        console.log(nextProps);
+    }
+
+    handleChangeItem = (target) => {
         this.setState({selectedItem: target.props.item});
     };
 
     handleResizeView = (entries) => {
+        const element = ReactDOM.findDOMNode(this.scheduleList);
+        const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
         if (entries) {
-            this.setState({vWidth: entries[0].contentRect.width});
+            this.setState({vWidth: `calc(${entries[0].contentRect.width}px + ${offsetScroll ? 1 : 0}vw`});
         }
+    };
+
+    handleAddKlass = () => {
+        this.setState({
+            // list: [scheduleJSON],
+            selectedItem: JSON.parse(JSON.stringify(scheduleJSON))
+        });
+    };
+
+    handleRemoveKlass = () => {
+
+    };
+
+    handleSaveData = () => {
+        axios.post('/schedule', this.scheduleList.getData()).then(this.refreshAll);
+    };
+
+    refreshAll = () => {
+        axios.get('/schedule').then(res => {
+            const currentList = res.data;
+            this.setState({
+                list: currentList,
+                selectedItem: currentList[0]
+            });
+            // console.log(res.data);
+        });
+    };
+
+    refreshItem = () => {
+        axios.get(`/schedule/${this.state.selectedItem.days._id}`).then((res) => this.setState({selectedItem: res.data}))
     };
 
     render() {
         const {windowStyle, sideMenuContainer} = this.props;
         return (
-            <div style={windowStyle}>
-                <SideMenu {...{sideMenuContainer}} items={this.state.list} onChangeItem={this.onChangeItem}>
-                    <ScheduleSideItem {...styles}/>
-                </SideMenu>
-                <ResizeSensor onResize={this.handleResizeView}>
-                    <TableList days={this.state.selectedItem} {...styles}/>
-                </ResizeSensor>
-                <FooterBar width={this.state.vWidth}>
-                    <Button minimal icon="undo">Отменить</Button>
-                    <Button minimal icon="edit">Сохранить изменения</Button>
-                </FooterBar>
-            </div>
+            <FooterPanelConsumer>
+                {({setOpen, isOpen, setAction, action}) => (
+                    <div style={[windowStyle]}>
+                        <SideMenu {...{sideMenuContainer}}
+                                  items={this.state.list}
+                                  headerBar={
+                                      <ScheduleHeaderBar style={styles.headerBar}
+                                                         onAdd={()=> this.setState({
+                                                             selectedItem: JSON.parse(JSON.stringify(scheduleJSON))
+                                                         }, () => setAction(Schedule.ACTION_ADD_ITEM, false))}
+                                                         />
+                                  }
+                                  onChangeItem={(target) => this.setState({selectedItem: target.props.item},
+                                      () => setAction(Schedule.ACTION_CHANGE_ITEM, false))}>
+                            <ScheduleSideItem {...styles}/>
+                        </SideMenu>
+
+                            <ResizeSensor onResize={this.handleResizeView}>
+                                <ScheduleList ref={(item) => this.scheduleList = item}
+                                              listData={this.state.selectedItem}
+                                              setOpen={setOpen}
+                                              action={action}
+                                              refresh={this.refreshAll}
+                                              {...styles}/>
+                            </ResizeSensor>
+                        <FooterBar width={this.state.vWidth} isOpen={isOpen}>
+                            <Button minimal icon="undo" onClick={() => setOpen(false)}>Отменить</Button>
+                            <Button minimal icon="edit" onClick={this.handleSaveData}>Сохранить изменения</Button>
+                        </FooterBar>
+                    </div>
+                )}
+            </FooterPanelConsumer>
         );
     }
 }
 
-export default Schedule;
+export default Radium(Schedule);

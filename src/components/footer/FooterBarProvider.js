@@ -6,10 +6,6 @@ export const FooterPanelConsumer = FooterPanelContext.Consumer;
 
 class FooterBarProvider extends Component {
 
-    static ACTION_SELECT_ALL = "selectAll";
-    static ACTION_UN_SELECT_ALL = "unSelectAll";
-    static ACTION_DELETE = "deleteFile";
-
     constructor(props) {
         super(props);
 
@@ -23,8 +19,8 @@ class FooterBarProvider extends Component {
         const {children} = this.props;
         return (
             <FooterPanelProvider value={{
-                setOpen: value => this.setState({isOpen: value, action:""}),
-                setAction: value => this.setState({action: value, isOpen: value !== FooterBarProvider.ACTION_UN_SELECT_ALL}),
+                setOpen: isOpen => this.setState({isOpen, action: ""}),
+                setAction: (action, isOpen = true) => this.setState({action, isOpen}),
                 isOpen: this.state.isOpen,
                 action: this.state.action
             }}>

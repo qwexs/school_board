@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
-    id: {
+    index: {
        type: 'Number'
     },
     days: {
-        type: 'Array'
+        type: 'Mixed'
     },
     name: {
         type: 'String'

@@ -32,6 +32,7 @@ const styles = {
         // flexGrow: 1,
         height: "100%",
         overflowY: "auto",
+
     },
 
 };

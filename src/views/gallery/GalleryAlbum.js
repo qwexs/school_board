@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react';
 import Gallery from "react-photo-gallery";
 import SelectedImage from "./SelectImage";
-import FooterBarProvider from "../../components/footer/FooterBarProvider";
 
 class GalleryAlbum extends PureComponent {
 
@@ -13,13 +12,13 @@ class GalleryAlbum extends PureComponent {
         let {action, item: {photos}} = nextProps;
 
         switch (action) {
-            case FooterBarProvider.ACTION_SELECT_ALL:
+            case Gallery.ACTION_SELECT_ALL:
                 photos.map(item => item.selected = true);
                 break;
-            case FooterBarProvider.ACTION_UN_SELECT_ALL:
+            case Gallery.ACTION_UN_SELECT_ALL:
                 photos.map(item => item.selected = false);
                 break;
-            case FooterBarProvider.ACTION_DELETE:
+            case Gallery.ACTION_DELETE:
                 photos = photos.filter(item => !item.selected);
                 break;
             default:

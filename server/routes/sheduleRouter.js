@@ -3,18 +3,30 @@ const router = express.Router();
 
 const Schedule = require('../models/schedule');
 
-router.get('/', (req, res) => {
-    Schedule.find({}).then((docs) => {
-        res.send(docs);
+
+router.route('/')
+    .get((req, res) => {
+        Schedule.find({}).then((doc) => {
+            res.status(200).json(doc);
+        });
+    })
+    .post((req, res) => {
+        console.log(req.body);
+        const {days, name} = req.body;
+        const newSchedule = new Schedule({name, days});
+        newSchedule.save()
+            .then(doc => {
+                res.status(201).json({ data: doc })
+            })
+            .catch(err => {
+                res.status(500).json({ message: err.message })
+            })
     });
-});
 
 router.route('/:id')
     .get((req, res) => {
-        //read
-        const {id} = req.params;
-        Schedule.findOne({"id": id}, (err, docs) => {
-            res.send({data:docs});
+        Schedule.findOne({_id: req.params}, (err, docs) => {
+            res.status(200).json({data: docs});
         })
     })
     .post((req, res) => {
@@ -22,6 +34,14 @@ router.route('/:id')
     })
     .put((req, res) => {
         //edit
+    })
+    .delete((req, res) => {
+        Schedule.find({_id: req.params.id}).remove().exec((err, docs) => {
+            res.send({status: "ok"});
+        });
     });
 
+// Schedule.findOne({_id: "5bfd86b1c106440da468e077"}).then((doc)=>{
+//     doc.remove().then((res) => console.log("remove res", res));
+// })
 module.exports = router;

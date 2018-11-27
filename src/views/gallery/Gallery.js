@@ -30,13 +30,16 @@ const styles = {
 
 class Gallery extends PureComponent {
 
+    static ACTION_SELECT_ALL = "selectAll";
+    static ACTION_UN_SELECT_ALL = "unSelectAll";
+    static ACTION_DELETE = "deleteFile";
+
     constructor(props) {
         super(props);
         const currentList = galleryJSON.albums;
         this.state = {
             list: currentList,
             selectedItem: currentList[0],
-            isOpen: false,
             vWidth: 0,
         };
     }
@@ -69,9 +72,9 @@ class Gallery extends PureComponent {
                         </ResizeSensor>
 
                         <FooterBar width={this.state.vWidth} isOpen={isOpen}>
-                            <Button minimal icon="multi-select" onClick={() => setAction(FooterBarProvider.ACTION_SELECT_ALL)}>Выбрать все</Button>
-                            <Button minimal icon="disable" onClick={() => setAction(FooterBarProvider.ACTION_UN_SELECT_ALL)}>Снять выделение</Button>
-                            <Button minimal icon="trash" onClick={() => setAction(FooterBarProvider.ACTION_DELETE)}>Удалить</Button>
+                            <Button minimal icon="multi-select" onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать все</Button>
+                            <Button minimal icon="disable" onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>Снять выделение</Button>
+                            <Button minimal icon="trash" onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
                         </FooterBar>
 
                     </div>

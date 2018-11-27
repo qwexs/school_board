@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import "../../App.css";
 import Radium from 'radium';
 
-const defaultColor = "#edf0f2",
-    overColor = "#f5f8fa";
+const defaultColor = "#E1E8ED",
+    overColor = "#EBF1F5";
 
-class SideMenuItem extends Component {
+class SideMenuItem extends PureComponent {
 
     state = {selected: false};
 
@@ -19,7 +19,7 @@ class SideMenuItem extends Component {
         border: "1px solid lightgrey",
         backgroundColor: defaultColor,
         selected: {
-            backgroundColor: 'white',
+            backgroundColor: '#F5F8FA',
             ':hover':{
                 backgroundColor: "white",
             }

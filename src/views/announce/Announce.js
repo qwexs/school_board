@@ -32,7 +32,7 @@ const styles = {
         minWidth: 150,
         maxWidth: 500,
         margin: "0 auto",
-        background: "#f5f8fa",
+        background: "#F5F8FA",
         padding: "5px"
     }
 };

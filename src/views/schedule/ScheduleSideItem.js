@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 
 class ScheduleSideItem extends Component {
     render() {
-        const {item, sideItem} = this.props;
+        const {item, sideItem, onClick} = this.props;
         return (
-            <div className="disable-select" style={sideItem}>
-                {item._id}
+            <div className="disable-select" style={sideItem} onClick={onClick}>
+                {item.name}
             </div>
         );
     }
