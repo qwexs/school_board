@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 
 class ScheduleSideItem extends Component {
     render() {
-        const {item, sideItem, onClick} = this.props;
+        const {item, sideItem} = this.props;
         return (
-            <div className="disable-select" style={sideItem} onClick={onClick}>
+            <div className="disable-select" style={sideItem}>
                 {item.name}
             </div>
         );

@@ -96,7 +96,7 @@ const AccessPage = React.memo(() => {
                             <Switch>
                                 {routes.map((item, index) => (
                                     <PropsRoute key={index} path={item.path} title={item.title} component={item.component} {...styles}
-                                                setAction={setAction} action={action}/>
+                                                setAction={setAction} action={action} setOpen={setOpen} isOpen={isOpen}/>
                                 ))}
                                 <Route component={NoMatch}/>
                             </Switch>

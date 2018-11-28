@@ -1,11 +1,9 @@
 import React, {PureComponent} from 'react';
 import TableList from "./TableList";
 import {Button, EditableText, H4, Intent, Popover, PopoverInteractionKind} from "@blueprintjs/core";
-import axios from "axios";
 import Radium from "radium";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import PropTypes from "prop-types";
-import IsNoPage from "../../components/IsNoPage";
 import Schedule from "./Schedule";
 
 const styles = {
@@ -35,80 +33,77 @@ class ScheduleContent extends PureComponent {
 
     state = {
         text: "",
-        edited: false,
-        maxLength: 13,
-        contentHeight: 0
     };
 
     getData() {
-        return {name: this.state.text, days: this._data};
+        return {name: this.state.text, days: this.props.listData.days, _id: this.props.listData['_id']};
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.listData && nextProps.action === Schedule.ACTION_CHANGE_ITEM)
-            this.setState({text: nextProps.listData.name});
-        else if (nextProps.action === Schedule.ACTION_REMOVE_ITEM) {
-
+        const {action, listData} = nextProps;
+        switch (action) {
+            case Schedule.ACTION_ADD_ITEM:
+                this.setState({text: ""});
+                break;
+            case Schedule.ACTION_CANCEL_SAVE:
+            case Schedule.ACTION_CHANGE_ITEM:
+                this.setState({text: listData && listData.name});
+                break;
         }
     }
 
     handleChangeTitle = (text) => {
-        this.setState({text, edited: true}, () => this.props.setOpen(true));
+        this.setState({text});
     };
 
-    handleConfirmData = (data) => {
-        this._data = data;
-        this.props.setOpen(true);
-    };
-
-    handleRemoveKlass = () => {
-        axios.delete(`/schedule/${this.props.listData._id}`).then(this.props.refresh);
+    handleConfirmData = () => {
+        this.props.setAction(Schedule.ACTION_EDIT_ITEM);
     };
 
     render() {
         return (
-            <IsNoPage notEmpty={this.props.listData}>
-                <FooterPanelConsumer>
-                    {({isOpen, setAction}) => (
-                        <div style={[styles.listContainer, {paddingBottom: isOpen ? 60 : 0}]}>
-                            <div style={{display: "flex", width: "100%"}}>
-                                <div style={{marginTop: 10, width: "100%"}}>
-                                    <Popover interactionKind={PopoverInteractionKind.CLICK}
-                                             content={
-                                                 <div style={{padding: 5}}>
-                                                     <Button icon="trash" text={"Удалить класс"} minimal
-                                                             onClick={this.handleRemoveKlass}/>
-                                                 </div>
+            <FooterPanelConsumer>
+                {({isOpen}) => (
+                    <div style={[styles.listContainer, {paddingBottom: isOpen ? 60 : 0}]}>
+                        <div style={{display: "flex", width: "100%"}}>
+                            <div style={{marginTop: 10, width: "100%"}}>
+                                <Popover interactionKind={PopoverInteractionKind.HOVER}
+                                         content={
+                                             <div style={{padding: 5}}>
+                                                 <Button icon="trash" text={"Удалить класс"} minimal
+                                                         onClick={this.props.onRemoveKlass}/>
+                                             </div>
 
-                                             }
-                                             target={
-                                                 <H4>
-                                                     <EditableText intent={Intent.NONE}
-                                                                   placeholder={"Название класса..."}
-                                                                   value={this.state.text}
-                                                                   maxLength={this.state.maxLength}
-                                                                   minWidth={180}
-                                                                   onChange={this.handleChangeTitle}/>
-                                                 </H4>
-                                             }/>
-                                    <div style={{
-                                        width: "90%", margin: "auto",
-                                        borderBottom: "2px solid silver"
-                                    }}/>
-                                </div>
+                                         }
+                                         target={
+                                             <H4>
+                                                 <EditableText intent={Intent.NONE}
+                                                               placeholder={"Название класса..."}
+                                                               value={this.state.text}
+                                                               maxLength={15}
+                                                               minWidth={180}
+                                                               onConfirm={this.handleConfirmData}
+                                                               onChange={this.handleChangeTitle}/>
+                                             </H4>
+                                         }/>
+                                <div style={{
+                                    width: "90%", margin: "auto",
+                                    borderBottom: "2px solid silver"
+                                }}/>
                             </div>
-
-                            <TableList days={this.props.listData} onConfirm={this.handleConfirmData} {...styles}/>
                         </div>
-                    )}
-                </FooterPanelConsumer>
-            </IsNoPage>
+
+                        <TableList days={this.props.listData} onConfirm={this.handleConfirmData} {...styles}/>
+                    </div>
+                )}
+            </FooterPanelConsumer>
         );
     }
 }
 
 ScheduleContent.propTypes = {
-    listData: PropTypes.object
+    listData: PropTypes.object,
+    onRemoveKlass: PropTypes.func
 };
 
 ScheduleContent.defaultProps = {

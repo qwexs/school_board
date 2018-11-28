@@ -22,7 +22,7 @@
     "mongoose": "^5.3.12",
     "prop-types": "^15.6.2",
     "radium": "^0.25.0",
-    "react": "^16.6.1",
+    "react": "^16.6.3",
     "react-app-rewired": "^1.6.2",
     "react-beautiful-dnd": "^10.0.0",
     "react-dom": "^16.6.0",
@@ -55,5 +55,5 @@
     "debug": "~2.6.9",
     "react-app-rewire-sass": "^1.2.3"
   },
-  "proxy": "http://localhost:4200/"
+  "proxy": "http://localhost:4200"
 }

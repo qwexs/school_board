@@ -25,15 +25,17 @@ router.route('/')
 
 router.route('/:id')
     .get((req, res) => {
-        Schedule.findOne({_id: req.params}, (err, docs) => {
-            res.status(200).json({data: docs});
-        })
+        Schedule.findOne({_id: req.params.id}, (err, doc) => {
+            res.status(200).json(doc);
+        });
     })
     .post((req, res) => {
         //create
     })
     .put((req, res) => {
-        //edit
+        Schedule.findByIdAndUpdate(req.params.id, { $set: { name:req.body.name, days: req.body.days }}, { new: true }, function (err, doc) {
+            res.send(doc);
+        });
     })
     .delete((req, res) => {
         Schedule.find({_id: req.params.id}).remove().exec((err, docs) => {

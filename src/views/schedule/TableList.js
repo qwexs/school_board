@@ -10,8 +10,7 @@ export default React.memo(({...props}) => {
     const handleConfirmData = (index, dataKey, text) => {
         const keys = dataKey.split('-');
         lessons[index]["less"][Number(keys[0])][Number(keys[1]) ? "cab" : "text"] = text;
-        console.log("lessons ", lessons);
-        props.onConfirm(lessons);
+        props.onConfirm();
     };
 
     return (

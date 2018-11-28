@@ -7,7 +7,7 @@ const styles = {
         fontSize: "12pt",
         color: "#808080",
         float: "left",
-        textAlign: "start",
+        textAlign: "left",
         paddingTop: "5%",
         paddingLeft: "10%"
     },
@@ -16,7 +16,7 @@ const styles = {
         fontWeight: "500",
         width: "100%",
         color: "#808080",
-        textAlign: "start",
+        textAlign: "left",
         float: "left",
         paddingTop: 7,
         paddingLeft: "17%",
@@ -48,7 +48,7 @@ export default React.memo(({...props}) => {
                 </div>
             </div>
             <div style={styles.icon}>
-                <img style={{margin:"auto", width: "100%", height:"auto"}} src={parseIconURL(item._ic)} alt={item._id}/>
+                <img style={{margin:"auto"}} src={parseIconURL(item._ic)} alt={item._id}/>
             </div>
         </div>
     );

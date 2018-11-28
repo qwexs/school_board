@@ -5,7 +5,7 @@ import GallerySideItem from "./GallerySideItem";
 import GalleryAlbum from "./GalleryAlbum";
 import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor} from "@blueprintjs/core";
-import FooterBarProvider, {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
+import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 
 const styles = {
     sideItem: {
@@ -16,7 +16,7 @@ const styles = {
         height: 80,
         margin: "auto",
         overflow: "hidden",
-        textAlign: "start",
+        textAlign: "left",
         justifyContent: "space-evelyn"
     },
     contentStyle: {
@@ -44,43 +44,45 @@ class Gallery extends PureComponent {
         };
     }
 
+    componentWillReceiveProps(nextProps, nextContext) {
+
+    }
+
     handleResizeView = (entries) => {
         if (entries) {
             this.setState({vWidth: entries[0].contentRect.width});
         }
     };
 
-    onChangeItem = (target) => {
-        this.setState({selectedItem: target.props.item});
+    onChangeItem = (item) => {
+        this.setState({selectedItem: item});
     };
 
     render() {
         const {windowStyle} = this.props;
         return (
-            <FooterBarProvider>
-                <FooterPanelConsumer>
-                    {({setOpen, isOpen, setAction, action}) => (
-                    <div style={windowStyle}>
-                        <SideMenu items={this.state.list} onChangeItem={this.onChangeItem} {...this.props}>
-                            <GallerySideItem {...styles}/>
-                        </SideMenu>
-                        <ResizeSensor onResize={this.handleResizeView}>
-                            <GalleryAlbum item={this.state.selectedItem}
-                                          setOpen={setOpen}
-                                          action={action}
-                                          {...styles}/>
-                        </ResizeSensor>
+            <FooterPanelConsumer>
+                {({setOpen, isOpen, setAction, action}) => (
+                <div style={windowStyle}>
+                    <SideMenu items={this.state.list} onChangeItem={this.onChangeItem} {...this.props}>
+                        <GallerySideItem {...styles}/>
+                    </SideMenu>
+                    <ResizeSensor onResize={this.handleResizeView}>
+                        <GalleryAlbum item={this.state.selectedItem}
+                                      setOpen={setOpen}
+                                      action={action}
+                                      {...styles}/>
+                    </ResizeSensor>
 
-                        <FooterBar width={this.state.vWidth} isOpen={isOpen}>
-                            <Button minimal icon="multi-select" onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать все</Button>
-                            <Button minimal icon="disable" onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>Снять выделение</Button>
-                            <Button minimal icon="trash" onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
-                        </FooterBar>
+                    <FooterBar width={this.state.vWidth} isOpen={isOpen}>
+                        <Button minimal icon="multi-select" onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать все</Button>
+                        <Button minimal icon="disable" onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>Снять выделение</Button>
+                        <Button minimal icon="trash" onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
+                    </FooterBar>
 
-                    </div>
-                )}
-                </FooterPanelConsumer>
-            </FooterBarProvider>
+                </div>
+            )}
+            </FooterPanelConsumer>
         );
     }
 }

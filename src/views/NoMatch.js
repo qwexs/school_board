@@ -2,9 +2,9 @@ import React from "react";
 
 export default () => (
   <div>
-    <h1>Sorry</h1>
+    <h1>Извините</h1>
     <main>
-      <p>Page Not Found</p>
+      <p>Страница не найдена</p>
     </main>
   </div>
 );

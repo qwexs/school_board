@@ -9,8 +9,12 @@ class SideMenuItem extends PureComponent {
 
     state = {selected: false};
 
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({selected: nextProps.item.selected});
+    }
+
     onClick = () => {
-        this.props.onClick(this);
+        this.props.onClick(this.props.item);
     };
 
     style = {

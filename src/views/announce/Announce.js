@@ -57,8 +57,8 @@ class Announce extends PureComponent {
         });
     }
 
-    onChangeItem = (target) => {
-        this.setState({selectedItem: target.props.item});
+    onChangeItem = (item) => {
+        this.setState({selectedItem: item});
     };
 
     onCloseDialogHandler = () => {

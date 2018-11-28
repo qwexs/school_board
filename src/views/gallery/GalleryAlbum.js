@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
-import Gallery from "react-photo-gallery";
+import GalleryComponent from "react-photo-gallery";
+import Gallery from './Gallery';
 import SelectedImage from "./SelectImage";
 
 class GalleryAlbum extends PureComponent {
@@ -10,7 +11,6 @@ class GalleryAlbum extends PureComponent {
 
     componentWillReceiveProps(nextProps, nextContext) {
         let {action, item: {photos}} = nextProps;
-
         switch (action) {
             case Gallery.ACTION_SELECT_ALL:
                 photos.map(item => item.selected = true);
@@ -47,7 +47,7 @@ class GalleryAlbum extends PureComponent {
                 height: "100%"
             }} className="disable-select">
                 <div style={contentStyle} ref={(ref) => this.listContainer = ref}>
-                    <Gallery
+                    <GalleryComponent
                         photos={this.state.photos}
                         ImageComponent={SelectedImage}
                         onClick={this.selectPhoto}/>

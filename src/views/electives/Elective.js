@@ -23,7 +23,7 @@ const styles = {
         height: 120,
         margin: "auto",
         overflow: "hidden",
-        textAlign: "start",
+        textAlign: "left",
         justifyContent: "space-between"
     },
     contentStyle: {
@@ -62,8 +62,8 @@ class Elective extends PureComponent {
         }
     };
 
-    onChangeItem = (target) => {
-        this.setState({selectedItem: target.props.item});
+    onChangeItem = (item) => {
+        this.setState({selectedItem: item});
     };
 
     render() {

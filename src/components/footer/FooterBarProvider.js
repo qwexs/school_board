@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 
 const FooterPanelContext = React.createContext({});
 export const FooterPanelProvider = FooterPanelContext.Provider;
 export const FooterPanelConsumer = FooterPanelContext.Consumer;
 
-class FooterBarProvider extends Component {
+class FooterBarProvider extends PureComponent {
 
     constructor(props) {
         super(props);

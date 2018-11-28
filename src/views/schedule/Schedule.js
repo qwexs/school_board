@@ -6,10 +6,11 @@ import {Button, ResizeSensor} from "@blueprintjs/core";
 import axios from "axios";
 import ScheduleHeaderBar from "./ScheduleHeaderBar";
 import Radium from "radium";
-import ScheduleList from "./ScheduleContent";
-import FooterBarProvider, {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
+import ScheduleContent from "./ScheduleContent";
+import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import * as ReactDOM from "react-dom";
 import scheduleJSON from './scheduleData';
+import IsNoPage from "../../components/IsNoPage";
 
 const styles = {
     sideItem: {
@@ -29,14 +30,15 @@ const styles = {
         border: "1px solid lightgrey",
         height: 50
     }
-
 };
 
 class Schedule extends PureComponent {
 
     static ACTION_ADD_ITEM = "addItem";
+    static ACTION_EDIT_ITEM = "editItem";
     static ACTION_REMOVE_ITEM = "removeItem";
     static ACTION_CHANGE_ITEM = "changeItem";
+    static ACTION_CANCEL_SAVE = "cancelSave";
 
     constructor(props) {
         super(props);
@@ -51,28 +53,7 @@ class Schedule extends PureComponent {
 
     componentDidMount() {
         this.refreshAll();
-        // const raspData = xml2json("/assets/data/rasp.xml");
-        // const currentList = raspData["school"]["klass"];
-        // console.log(currentList);
-        // console.log(JSON.stringify(currentList));
-
-        // this.setState({
-        //     list: currentList,
-        //     selectedItem: currentList[0]
-        // });
-        // this.setState({
-        //     list: [scheduleJSON],
-        //     selectedItem: scheduleJSON
-        // });
     }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        console.log(nextProps);
-    }
-
-    handleChangeItem = (target) => {
-        this.setState({selectedItem: target.props.item});
-    };
 
     handleResizeView = (entries) => {
         const element = ReactDOM.findDOMNode(this.scheduleList);
@@ -84,65 +65,90 @@ class Schedule extends PureComponent {
 
     handleAddKlass = () => {
         this.setState({
-            // list: [scheduleJSON],
             selectedItem: JSON.parse(JSON.stringify(scheduleJSON))
         });
+        this.props.setAction(Schedule.ACTION_ADD_ITEM, false);
     };
 
     handleRemoveKlass = () => {
-
+        axios.delete(`/schedule/${this.state.selectedItem._id}`).then(this.refreshAll);
     };
 
-    handleSaveData = () => {
-        axios.post('/schedule', this.scheduleList.getData()).then(this.refreshAll);
+    handleClickSave = () => {
+        const schedule = this.scheduleList.getData();
+        if (schedule._id) {
+            axios.put(`/schedule/${schedule._id}`, schedule).then(this.refreshAll);
+        }
+        else {
+            axios.post('/schedule', schedule).then(this.refreshAll);
+        }
     };
 
     refreshAll = () => {
         axios.get('/schedule').then(res => {
             const currentList = res.data;
+            const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[currentList.length-1];
+            if (currentItem)
+                currentItem.selected = true;
             this.setState({
                 list: currentList,
-                selectedItem: currentList[0]
+                selectedItem: currentItem
+            }, () => {
+            this.props.setAction(Schedule.ACTION_CHANGE_ITEM, false);
             });
-            // console.log(res.data);
         });
     };
 
     refreshItem = () => {
-        axios.get(`/schedule/${this.state.selectedItem.days._id}`).then((res) => this.setState({selectedItem: res.data}))
+        axios.get(`/schedule/${this.state.selectedItem._id}`)
+            .then((res) => {
+                this.setState({selectedItem: res.data})
+            })
+    };
+
+    handleChangeItem = (item) => {
+        this.setState({selectedItem: item});
+        this.props.setAction(Schedule.ACTION_CHANGE_ITEM, false);
+    };
+
+    handleClickUndo = () => {
+        this.props.setAction(Schedule.ACTION_CANCEL_SAVE, false);
+        this.refreshAll();
     };
 
     render() {
         const {windowStyle, sideMenuContainer} = this.props;
         return (
             <FooterPanelConsumer>
-                {({setOpen, isOpen, setAction, action}) => (
+                {({isOpen, setAction, action}) => (
                     <div style={[windowStyle]}>
                         <SideMenu {...{sideMenuContainer}}
                                   items={this.state.list}
+                                  action={action}
                                   headerBar={
                                       <ScheduleHeaderBar style={styles.headerBar}
-                                                         onAdd={()=> this.setState({
-                                                             selectedItem: JSON.parse(JSON.stringify(scheduleJSON))
-                                                         }, () => setAction(Schedule.ACTION_ADD_ITEM, false))}
-                                                         />
+                                                         onAdd={this.handleAddKlass}
+                                      />
                                   }
-                                  onChangeItem={(target) => this.setState({selectedItem: target.props.item},
-                                      () => setAction(Schedule.ACTION_CHANGE_ITEM, false))}>
+                                  onChangeItem={this.handleChangeItem}>
                             <ScheduleSideItem {...styles}/>
                         </SideMenu>
 
+                        <IsNoPage notEmpty={this.state.selectedItem}>
                             <ResizeSensor onResize={this.handleResizeView}>
-                                <ScheduleList ref={(item) => this.scheduleList = item}
-                                              listData={this.state.selectedItem}
-                                              setOpen={setOpen}
-                                              action={action}
-                                              refresh={this.refreshAll}
-                                              {...styles}/>
+                                <ScheduleContent ref={(item) => this.scheduleList = item}
+                                                 listData={this.state.selectedItem}
+                                                 setAction={setAction}
+                                                 action={action}
+                                                 onRemoveKlass={this.handleRemoveKlass}
+                                                 refresh={this.refreshAll}
+                                                 {...styles}/>
                             </ResizeSensor>
+                        </IsNoPage>
+
                         <FooterBar width={this.state.vWidth} isOpen={isOpen}>
-                            <Button minimal icon="undo" onClick={() => setOpen(false)}>Отменить</Button>
-                            <Button minimal icon="edit" onClick={this.handleSaveData}>Сохранить изменения</Button>
+                            <Button minimal icon="undo" onClick={this.handleClickUndo}>Отменить</Button>
+                            <Button minimal icon="edit" onClick={this.handleClickSave}>Сохранить изменения</Button>
                         </FooterBar>
                     </div>
                 )}
