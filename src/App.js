@@ -69,7 +69,8 @@ const styles = {
         margin: "0 auto",
         display: "flex",
         overflow: "hidden",
-        flexGrow:1
+        flexGrow:1,
+        // backgroundColor: "#F5F8FA"
     },
 
     sideMenuContainer: {

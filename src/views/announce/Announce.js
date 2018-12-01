@@ -1,22 +1,16 @@
 import React, {PureComponent} from 'react';
 import SideMenu from "../../components/sideBar/SideMenu";
 import AnnounceSideItem from "./AnnounceSideItem";
-import xml2json from "../../utils/xml2json";
 import AnnounceList from "./AnnounceList";
 import FooterBar from "../../components/footer/FooterBar";
 import {Button} from "@blueprintjs/core";
 import {ResizeSensor} from "@blueprintjs/core";
+import AnnounceHeaderBar from "./AnnounceHeaderBar";
+import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
+import axios from "axios";
+import * as ReactDOM from "react-dom";
 
 const styles = {
-    announceContainer: {
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "auto",
-        overflowX: "hidden",
-        flexGrow: 1,
-        padding: "30px 10px 30px 10px",
-        height: "100%"
-    },
     sideItem: {
         width: "12vw",
         maxWidth: 150,
@@ -27,71 +21,112 @@ const styles = {
         overflow: "hidden",
         textOverflow: "ellipsis",
         padding: "0 5px 0 5px",
+        color: "#394B59",
     },
-    announceItem: {
-        minWidth: 150,
-        maxWidth: 500,
-        margin: "0 auto",
-        background: "#F5F8FA",
-        padding: "5px"
+    headerBar: {
+        backgroundColor: "#E1E8ED",
+        flexGrow: 1,
+        justifyItems: "middle",
+        justifyContent: "center",
+        border: "1px solid lightgrey",
+        height: 50
     }
 };
 
 class Announce extends PureComponent {
+
     constructor(props) {
         super(props);
         this.state = {
             list: [],
             selectedItem: null,
-            isOpen: false,
-            vWidth: 0
+            vWidth: 0,
         };
     }
 
     componentDidMount() {
-        const data = xml2json("/assets/data/anons.xml");
+        /*const data = xml2json("/assets/data/anons.xml");
         const currentList = data["anonsFlow"]["eventDay"];
         this.setState({
             list: currentList,
             selectedItem: currentList[0],
-        });
+        });*/
+
+        this.refreshAll();
     }
 
-    onChangeItem = (item) => {
-        this.setState({selectedItem: item});
+    refreshAll = () => {
+        axios.get('/announce').then(res => {
+            const currentList = res.data;
+            const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
+            if (currentItem)
+                currentItem.selected = true;
+            this.setState({
+                list: currentList,
+                selectedItem: currentItem
+            }, () => this.props.setOpen(false));
+        });
     };
 
-    onCloseDialogHandler = () => {
-        this.setState({isOpen: false});
-    };
-
-    onAddDialogHandler = () => {
-        this.setState({isOpen: true})
+    handleChangeItem = (item) => {
+        this.props.setOpen(false);
+        this.setState({selectedItem: JSON.parse(JSON.stringify(item))});
     };
 
     handleResizeView = (entries) => {
         if (entries) {
-            this.setState({vWidth: entries[0].contentRect.width});
+            const vWidth = entries[0].contentRect.width;
+            const element = ReactDOM.findDOMNode(this.componentList);
+            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
+            this.footerBar.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
         }
+    };
+
+    handleInsertItem = (itemList, callback = null) => {
+        this.savedItem = itemList;
+        this.props.setOpen(true, callback);
+    };
+
+    handleSaveItem = () => {
+        axios.put(`/announce/${this.state.selectedItem._id}`, this.savedItem)
+            .then(() => this.refreshAll());
+    };
+
+    handleCancelSave = () => {
+        axios.get(`/announce/${this.state.selectedItem._id}`).then((value => {
+            this.setState({selectedItem: value.data},
+                () => this.props.setOpen(false));
+        }));
     };
 
     render() {
         const {windowStyle, sideMenuContainer} = this.props;
         return (
-            <div style={windowStyle}>
-                <SideMenu {...{sideMenuContainer}} items={this.state.list} onChangeItem={this.onChangeItem}>
-                    <AnnounceSideItem {...styles}/>
-                </SideMenu>
-                <ResizeSensor onResize={this.handleResizeView}>
-                    <AnnounceList list={this.state.selectedItem} isOpen={this.state.isOpen}
-                                  onCloseDialog={this.onCloseDialogHandler} {...styles}/>
-                </ResizeSensor>
-                <FooterBar width={this.state.vWidth}>
-                    <Button minimal icon="add-to-artifact" onClick={this.onAddDialogHandler}>Создать анонс</Button>
-                    <Button minimal icon="undo">Отменить</Button>
-                    <Button minimal icon="edit">Сохранить изменения</Button>
-                </FooterBar>
-            </div>
+            <FooterPanelConsumer>
+                {({setOpen, isOpen}) => (
+                    <div style={windowStyle}>
+                        <SideMenu {...{sideMenuContainer}}
+                                  items={this.state.list}
+                                  headerBar={
+                                      <AnnounceHeaderBar style={styles.headerBar}
+                                      />
+                                  }
+                                  onChangeItem={this.handleChangeItem}>
+                            <AnnounceSideItem {...styles}/>
+                        </SideMenu>
+                        <ResizeSensor onResize={this.handleResizeView}>
+                            <AnnounceList onInsert={this.handleInsertItem}
+                                          setOpen={setOpen}
+                                          ref={input => this.componentList = input}
+                                          list={this.state.selectedItem} {...styles}/>
+                        </ResizeSensor>
+                        <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
+                            <Button minimal icon="undo" onClick={this.handleCancelSave}>Отменить</Button>
+                            <Button minimal icon="edit" onClick={this.handleSaveItem}>Сохранить изменения</Button>
+                        </FooterBar>
+                    </div>
+                )}
+            </FooterPanelConsumer>
         );
     }
 }

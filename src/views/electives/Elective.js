@@ -5,6 +5,7 @@ import xml2json from "../../utils/xml2json";
 import ElectiveWeekList from "./ElectiveWeekList";
 import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor} from "@blueprintjs/core";
+import * as ReactDOM from "react-dom";
 
 const styles = {
     electiveContainerStyle: {
@@ -58,7 +59,10 @@ class Elective extends PureComponent {
 
     handleResizeView = (entries) => {
         if (entries) {
-            this.setState({vWidth: entries[0].contentRect.width});
+            const vWidth = entries[0].contentRect.width;
+            const element = ReactDOM.findDOMNode(this.componentList);
+            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
+            this.footerBar.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
         }
     };
 
@@ -74,9 +78,9 @@ class Elective extends PureComponent {
                     <ElectiveSideItem {...styles}/>
                 </SideMenu>
                 <ResizeSensor onResize={this.handleResizeView}>
-                    <ElectiveWeekList list={this.state.selectedItem} {...styles}/>
+                    <ElectiveWeekList ref={input => this.componentList = input} list={this.state.selectedItem} {...styles}/>
                 </ResizeSensor>
-                <FooterBar width={this.state.vWidth}>
+                <FooterBar ref={input => this.footerBar = input}>
                     <Button minimal icon="undo">Отменить</Button>
                     <Button minimal icon="edit">Сохранить изменения</Button>
                 </FooterBar>

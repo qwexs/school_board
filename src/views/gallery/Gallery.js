@@ -50,7 +50,8 @@ class Gallery extends PureComponent {
 
     handleResizeView = (entries) => {
         if (entries) {
-            this.setState({vWidth: entries[0].contentRect.width});
+            const vWidth = entries[0].contentRect.width;
+            this.footerBar.setState({vWidth})
         }
     };
 
@@ -74,7 +75,7 @@ class Gallery extends PureComponent {
                                       {...styles}/>
                     </ResizeSensor>
 
-                    <FooterBar width={this.state.vWidth} isOpen={isOpen}>
+                    <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
                         <Button minimal icon="multi-select" onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать все</Button>
                         <Button minimal icon="disable" onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>Снять выделение</Button>
                         <Button minimal icon="trash" onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>

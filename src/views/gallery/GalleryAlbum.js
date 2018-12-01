@@ -36,7 +36,9 @@ class GalleryAlbum extends PureComponent {
     selectPhoto = (event, obj) => {
         const {photos} = this.state;
         photos[obj.index].selected = !photos[obj.index].selected;
-        this.props.setOpen(photos.filter(item => item.selected).length > 0);
+        this.forceUpdate(
+            () => this.props.setOpen(photos.filter(item => item.selected).length > 0)
+        );
     };
 
     render() {

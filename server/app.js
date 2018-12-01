@@ -5,6 +5,7 @@ const bluebird = require('bluebird');
 const path = require('path');
 const uri = 'mongodb://localhost/iboard';
 const scheduleRouter = require('./routes/sheduleRouter');
+const announceRouter = require('./routes/announceRouter');
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -18,6 +19,7 @@ const connectDb = () => {
 
 const startServer = () => {
     app.use('/schedule', scheduleRouter);
+    app.use('/announce', announceRouter);
 };
 
 connectDb()

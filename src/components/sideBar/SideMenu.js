@@ -1,6 +1,7 @@
 import React, {PureComponent} from "react";
 import SideMenuItem from "./SideMenuItem";
 import Radium from "radium";
+import PropTypes from 'prop-types';
 
 class SideMenu extends PureComponent {
 
@@ -40,5 +41,9 @@ class SideMenu extends PureComponent {
         );
     }
 }
+
+SideMenu.propTypes = {
+    headerBar: PropTypes.element
+};
 
 export default Radium(SideMenu);

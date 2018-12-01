@@ -6,22 +6,18 @@ class AnnounceItem extends PureComponent {
         super(props);
         this.state = {
             isRoll: false,
-            content: {
-                id: "",
-                title: "",
-                description: ""
-            }
+            content: null
         };
     }
 
     componentDidMount() {
-        this.componentWillReceiveProps(this.props)
+        this.componentWillReceiveProps(this.props);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
         const {item} = nextProps;
-        this.setState({
-            content: {id: item.id, title: item._timeDay, description: item.__text}
+        this.setState(  {
+            content: {index: item.index, title: item.timeDay, description: item.text}
         });
     }
 
@@ -37,13 +33,13 @@ class AnnounceItem extends PureComponent {
 
     render() {
         const {style, onItemRemoveClick, onItemEditedClick} = this.props;
-        return (
+        return this.state.content && (
             <Card style={style} interactive={true} elevation={Elevation.ONE}
                   onMouseOver={this.onOverHandler} onMouseLeave={this.onOutHandler}>
                 <div style={{height: 20}}>
                     {
                         this.state.isRoll &&
-                        <div style={{display: "flex", justifyContent: "flex-end", top: 0, paddingRight: 0}}>
+                        <div style={{display: "flex", justifyContent: "flex-end", paddingTop: 5}}>
                             <Button minimal icon="edit" title="Редактировать"
                                     onClick={() => onItemEditedClick(this.state.content)}>
                             </Button>
@@ -58,6 +54,7 @@ class AnnounceItem extends PureComponent {
                     this.state.content.title
                         ?
                         <div style={{
+                            pointerEvents: "none",
                             borderBottom: "1px solid #d9e0e5",
                             paddingBottom: 5,
                             marginBottom: 10
@@ -70,7 +67,7 @@ class AnnounceItem extends PureComponent {
                         </div>
                 }
 
-                <div style={{paddingBottom: 20}} className="bp3-ui-text">
+                <div style={{paddingBottom: 20, pointerEvents: "none"}} className="bp3-ui-text">
                     <Text ellipsize={false}>
                         {this.state.content.description}
                     </Text>

@@ -23,9 +23,10 @@ const styles = {
         overflow: "hidden",
         textOverflow: "ellipsis",
         padding: "0 5px 0 5px",
+        color: "#394B59"
     },
     headerBar: {
-        backgroundColor: "#edf0f2",
+        backgroundColor: "#E1E8ED",
         padding: 10,
         border: "1px solid lightgrey",
         height: 50
@@ -56,10 +57,11 @@ class Schedule extends PureComponent {
     }
 
     handleResizeView = (entries) => {
-        const element = ReactDOM.findDOMNode(this.scheduleList);
-        const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
         if (entries) {
-            this.setState({vWidth: `calc(${entries[0].contentRect.width}px + ${offsetScroll ? 1 : 0}vw`});
+            const vWidth = entries[0].contentRect.width;
+            const element = ReactDOM.findDOMNode(this.scheduleList);
+            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
+            this.footerBar.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
         }
     };
 
@@ -80,14 +82,16 @@ class Schedule extends PureComponent {
             axios.put(`/schedule/${schedule._id}`, schedule).then(this.refreshAll);
         }
         else {
-            axios.post('/schedule', schedule).then(this.refreshAll);
+            axios.post('/schedule/new', schedule).then(this.refreshAll);
         }
     };
 
     refreshAll = () => {
         axios.get('/schedule').then(res => {
             const currentList = res.data;
-            const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[currentList.length-1];
+            const currentItem = (this.state.selectedItem
+                && currentList.filter(item => item._id === this.state.selectedItem._id)[0])
+                || currentList[0];
             if (currentItem)
                 currentItem.selected = true;
             this.setState({
@@ -134,7 +138,7 @@ class Schedule extends PureComponent {
                             <ScheduleSideItem {...styles}/>
                         </SideMenu>
 
-                        <IsNoPage notEmpty={this.state.selectedItem}>
+                        <IsNoPage notEmpty={this.state.selectedItem != null}>
                             <ResizeSensor onResize={this.handleResizeView}>
                                 <ScheduleContent ref={(item) => this.scheduleList = item}
                                                  listData={this.state.selectedItem}
@@ -146,7 +150,7 @@ class Schedule extends PureComponent {
                             </ResizeSensor>
                         </IsNoPage>
 
-                        <FooterBar width={this.state.vWidth} isOpen={isOpen}>
+                        <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
                             <Button minimal icon="undo" onClick={this.handleClickUndo}>Отменить</Button>
                             <Button minimal icon="edit" onClick={this.handleClickSave}>Сохранить изменения</Button>
                         </FooterBar>

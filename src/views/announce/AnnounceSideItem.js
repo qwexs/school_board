@@ -5,7 +5,7 @@ class AnnounceSideItem extends Component {
         const {item, sideItem} = this.props;
         return (
             <div className="disable-select" style={sideItem}>
-                {item._name}
+                {item.title}
             </div>
         );
     }

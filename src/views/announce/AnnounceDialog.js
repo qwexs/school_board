@@ -18,9 +18,12 @@ class AnnounceDialog extends PureComponent {
     componentWillReceiveProps(nextProps) {
         let {content} = nextProps;
         if (content == null) {
-            content = {title: "", description: ""};
+            content = {title: "", description: "", isNew: true};
         }
-        this.setState({isOpen: nextProps.isOpen, content});
+        this.setState({
+            isOpen: nextProps.isOpen,
+            content
+        });
     }
 
     render() {
@@ -28,10 +31,10 @@ class AnnounceDialog extends PureComponent {
         return (
             <div>
                 <Dialog className="bp3-ui-text"
-                    icon="add-to-artifact"
-                    onClose={this.onCancelSaveHandler}
-                    title={content.title}
-                    {...this.state}
+                        icon="add-to-artifact"
+                        onClose={this.onCancelSaveHandler}
+                        {...this.state}
+                        title={content.isNew ? "Новое событие" : "Редактирование события"}
                 >
                     <div className={Classes.DIALOG_BODY} style={{height: 300}}>
                         <FormGroup
@@ -73,7 +76,7 @@ class AnnounceDialog extends PureComponent {
     };
 
     onCancelSaveHandler = () => {
-        this.props.onCancel(this);
+        this.props.onCancel();
     };
 
     onInputChangeTitle = handleStringChange(text => {

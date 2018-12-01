@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     index: {
-       type: 'Number'
+        type: 'Number'
     },
     days: {
         type: 'Mixed'

@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import Radium from "radium";
+import PropTypes from 'prop-types';
 
 const style = {
     height: "10vh",
@@ -21,10 +22,14 @@ const style = {
 
 export default class FooterBar extends PureComponent {
 
+    state = {
+        vWidth: 0
+    };
+
     render() {
-        const {children, width, isOpen} = this.props;
+        const {children, isOpen} = this.props;
         return (
-            <div style={[style, {width: width, transform: isOpen ? "translateY(0)" : "translateY(100%)"}]}>
+            <div style={[style, {width: this.state.vWidth, transform: isOpen ? "translateY(0)" : "translateY(100%)"}]}>
                 {children.map((element, index) => {
                     return (
                         <div key={index}
@@ -40,3 +45,7 @@ export default class FooterBar extends PureComponent {
 }
 
 FooterBar = Radium(FooterBar);
+
+FooterBar.propTypes = {
+    isOpen: PropTypes.bool,
+};
