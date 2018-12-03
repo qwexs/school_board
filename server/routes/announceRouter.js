@@ -1,32 +1,39 @@
 const express = require('express');
 const router = express.Router();
-
-const Announce = require('../models/announce');
-const empty = require('../models/emptyData');
+const {Announce, AnnounceWeek, getEmptyAnnounce} = require('../models/announce');
 
 router.route('/')
     .get((req, res) => {
-        Announce.find({}).then((doc) => {
-            if (!doc.length) {
-                Announce.create(empty.getEmptyAnnounce(), (err, docs) => {
-                    res.status(200).json(docs);
+        AnnounceWeek.findOne({}).populate('items').then(week => {
+            if (week == null) {
+                Announce.create(getEmptyAnnounce(), (err, items) => {
+                    AnnounceWeek.create({date: new Date(), items: Array.from(items, (i) => i._id)},
+                        (err, week) => {
+                            res.status(200).json({_id: week._id, date: week.date, items});
+                        });
                 });
             } else {
-                res.status(200).json(doc);
+                res.status(200).json(week);
             }
+        });
+    })
+    .patch((req, res) => {
+        AnnounceWeek.updateOne({date: req.body.date}, (err, raw) => {
+            res.status(200 ).json(raw);
         });
     });
 
 router.route('/:id')
     .get((req, res) => {
-        Announce.findOne({_id: req.params.id}, (err, doc) => {
+        Announce.findById({id: req.params.id}, (err, doc) => {
             res.status(200).json(doc);
         });
     })
     .put((req, res) => {
-        const {date, education} = req.body;
-        Announce.findByIdAndUpdate(req.params.id, {$set: {date, education}}, {new: true}, function (err, doc) {
-            res.send(doc);
+        const {education} = req.body;
+        Announce.findByIdAndUpdate(req.params.id, {$set: {education}}, {new: true},
+            (err, doc) => {
+                res.send(doc);
         });
     });
 

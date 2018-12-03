@@ -1,0 +1,45 @@
+.DayPicker-Day--hoverRange {
+    background-color: rgb(191, 204, 214) !important;
+}
+
+.DayPicker-Day--today {
+    color: #394B59 !important;
+}
+
+.DayPicker-Day {
+    border-radius: 0 !important;
+}
+
+.DayPicker-Day--selectedRange {
+    background-color: #5c7080 !important;
+    border-radius: 5px !important;
+}
+
+.DayPicker-Day--selectedRange.DayPicker-Day--selected,
+.DayPicker-Day--hoverRange.DayPicker-Day--selected {
+    border-radius: 0 !important;
+    color: #F5F8FA !important;
+}
+
+.DayPicker-Day--selectedRangeStart.DayPicker-Day--selected,
+.DayPicker-Day--hoverRangeStart {
+    border-top-left-radius: 5px !important;
+    border-bottom-left-radius: 5px !important;
+}
+
+.DayPicker-Day--hoverRangeEnd,
+.DayPicker-Day--selectedRangeEnd.DayPicker-Day--selected {
+    border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+}
+
+/*.DayPicker-Day--selectedRangeStart,*/
+/*.DayPicker-Day--selectedRangeEnd {*/
+    /*background-color: lightskyblue !important;*/
+/*}*/
+
+
+
+/*.DayPicker-Day--hoverRange:hover {*/
+    /*border-radius: 5px !important;*/
+/*}*/

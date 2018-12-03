@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const connectDb = () => {
     mongoose.Promise = bluebird;
-    mongoose.connect(uri, {useNewUrlParser: true});
+    mongoose.connect(uri, {useNewUrlParser: true, useFindAndModify: false});
     return mongoose.connection;
 };
 

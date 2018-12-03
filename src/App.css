@@ -3,6 +3,7 @@
 @import "../node_modules/@blueprintjs/core/lib/css/blueprint.css";
 @import "views/styles/table.css";
 @import "views/styles/blueprint-datetime.css";
+@import "components/day-picker/modifiersDayPicker.css";
 
 .App {
     text-align: center;
@@ -27,6 +28,10 @@
     color: dimgrey;
     font-size: 14px;
     float: right;
+}
+
+*:focus {
+    outline: none;
 }
 
 .bp3-timepicker{

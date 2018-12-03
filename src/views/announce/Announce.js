@@ -41,29 +41,25 @@ class Announce extends PureComponent {
             list: [],
             selectedItem: null,
             vWidth: 0,
+            selectedDate: null
         };
     }
 
     componentDidMount() {
-        /*const data = xml2json("/assets/data/anons.xml");
-        const currentList = data["anonsFlow"]["eventDay"];
-        this.setState({
-            list: currentList,
-            selectedItem: currentList[0],
-        });*/
-
         this.refreshAll();
     }
 
     refreshAll = () => {
         axios.get('/announce').then(res => {
-            const currentList = res.data;
+            console.log(res.data.date);
+            const currentList = res.data.items;
             const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
             if (currentItem)
                 currentItem.selected = true;
             this.setState({
                 list: currentList,
-                selectedItem: currentItem
+                selectedItem: currentItem,
+                selectedDate: new Date(res.data.date)
             }, () => this.props.setOpen(false));
         });
     };
@@ -99,6 +95,12 @@ class Announce extends PureComponent {
         }));
     };
 
+    handleChangeWeek = (date) => {
+        axios.patch('/announce', {date}).then(() => {
+            this.setState(prevState => ({...prevState, selectedDate: date}));
+        });
+    };
+
     render() {
         const {windowStyle, sideMenuContainer} = this.props;
         return (
@@ -109,6 +111,8 @@ class Announce extends PureComponent {
                                   items={this.state.list}
                                   headerBar={
                                       <AnnounceHeaderBar style={styles.headerBar}
+                                                         value={this.state.selectedDate}
+                                                         onChange={this.handleChangeWeek}
                                       />
                                   }
                                   onChangeItem={this.handleChangeItem}>

@@ -6,9 +6,6 @@ import {reorder} from "../../utils/reorder";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import Radium from "radium";
 import {Button, H4} from "@blueprintjs/core";
-import {DateInput} from "@blueprintjs/datetime";
-import {DatePickerLocaleUtils} from "../../components/DatePickerUtils";
-import {Position} from "@blueprintjs/core/lib/cjs/common/position";
 import IsNoPage from "../../components/IsNoPage";
 import * as PropTypes from "prop-types";
 
@@ -181,34 +178,15 @@ class AnnounceList extends PureComponent {
         this.setState({isDialogOpen: true});
     };
 
-    handleDateChange = (selectedDate, isUserChange) => {
-        if (isUserChange) {
-            this.props.onInsert({date: selectedDate, education: this.state.collectionList},
-                () => this.setState({date: selectedDate}));
-        }
-    };
-
     render() {
         return this.state.collectionList && (
             <FooterPanelConsumer>
-                {({setOpen, isOpen, setAction, action}) => (
+                {({setOpen, isOpen}) => (
                     <div style={styles.mainContainer}>
                         <div style={styles.wrapperContainer}>
                             <div style={{width:"100%", minHeight: 0}}>
                                 <div style={styles.topContainer}>
                                     <H4 className="bp3-monospace-text" style={styles.titleLabel}>{this.state.title}</H4>
-                                    <DateInput
-                                        style={{textAlign: "center"}}
-                                        formatDate={date => (date == null ? "" : date.toLocaleDateString())}
-                                        defaultValue={new Date()}
-                                        onChange={this.handleDateChange}
-                                        parseDate={str => new Date(str)}
-                                        placeholder={"Установите дату..."}
-                                        locale={"ru"}
-                                        value={this.state.date}
-                                        popoverProps={{ position: Position.BOTTOM }}
-                                        localeUtils={DatePickerLocaleUtils}
-                                    />
                                     <Button minimal icon="add-to-artifact" onClick={this.handleAddAnnounce}/>
                                 </div>
                                 <IsNoPage notEmpty={this.state.collectionList.length > 0}

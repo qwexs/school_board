@@ -52,7 +52,7 @@ const styles = {
         flexGrow: 0,
         flexShrink: 0,
         flexBasis: "20vw",
-        minWidth: 150,
+        minWidth: "10vw",
         overflowX: "hidden",
         paddingTop: "5%",
         background: "#8A9BA8",
