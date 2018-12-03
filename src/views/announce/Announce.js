@@ -90,6 +90,7 @@ class Announce extends PureComponent {
 
     handleCancelSave = () => {
         axios.get(`/announce/${this.state.selectedItem._id}`).then((value => {
+            console.log(value);
             this.setState({selectedItem: value.data},
                 () => this.props.setOpen(false));
         }));

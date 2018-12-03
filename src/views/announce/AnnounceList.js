@@ -5,7 +5,7 @@ import AnnounceDialog from "./AnnounceDialog";
 import {reorder} from "../../utils/reorder";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import Radium from "radium";
-import {Button, H6} from "@blueprintjs/core";
+import {Button, H5} from "@blueprintjs/core";
 import IsNoPage from "../../components/IsNoPage";
 import PropTypes from "prop-types";
 
@@ -50,7 +50,7 @@ const styles = {
     },
     titleLabel: {
         margin: 0,
-        color: "#5C7080"
+        color: "#5C7080",
     },
     announceContainer: {
         display: "flex",
@@ -185,7 +185,7 @@ class AnnounceList extends PureComponent {
                         <div style={styles.wrapperContainer}>
                             <div style={{width:"100%", minHeight: 0}}>
                                 <div style={styles.topContainer}>
-                                    <H6 className="bp3-monospace-text" style={styles.titleLabel}>{`${this.state.title}, ${this.state.titleDay}`}</H6>
+                                    <H5 className="bp3-text-large" style={styles.titleLabel}>{`${this.state.title}, ${this.state.titleDay}`}</H5>
                                     <Button minimal icon="add-to-artifact" onClick={this.handleAddAnnounce}/>
                                 </div>
                                 <IsNoPage notEmpty={this.state.collectionList.length > 0}

@@ -27,7 +27,7 @@ router.route('/')
 
 router.route('/:id')
     .get((req, res) => {
-        Announce.findById({id: req.params.id}, (err, doc) => {
+        Announce.findById(req.params.id, (err, doc) => {
             res.status(200).json(doc);
         });
     })

@@ -68,6 +68,7 @@ class ScheduleContent extends PureComponent {
                         <div style={{display: "flex", width: "100%"}}>
                             <div style={{marginTop: 10, width: "100%"}}>
                                 <Popover interactionKind={PopoverInteractionKind.HOVER}
+                                         disabled={!this.props.listData.hasOwnProperty("_id")}
                                          content={
                                              <div style={{padding: 5}}>
                                                  <Button icon="trash" text={"Удалить класс"} minimal
