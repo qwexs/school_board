@@ -9,6 +9,7 @@ import AnnounceHeaderBar from "./AnnounceHeaderBar";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import axios from "axios";
 import * as ReactDOM from "react-dom";
+import moment from "moment";
 
 const styles = {
     sideItem: {
@@ -51,7 +52,6 @@ class Announce extends PureComponent {
 
     refreshAll = () => {
         axios.get('/announce').then(res => {
-            console.log(res.data.date);
             const currentList = res.data.items;
             const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
             if (currentItem)
@@ -96,13 +96,20 @@ class Announce extends PureComponent {
     };
 
     handleChangeWeek = (date) => {
-        axios.patch('/announce', {date}).then(() => {
-            this.setState(prevState => ({...prevState, selectedDate: date}));
+        axios.patch('/announce', {date}).then((value) => {
+            this.setState(prevState => ({...prevState, selectedDate: new Date(value.data)}));
         });
     };
 
     render() {
         const {windowStyle, sideMenuContainer} = this.props;
+        let indexDay = 0;
+        const dateFormatOptions = {year: 'numeric', month: 'long', day: 'numeric'};
+        this.state.list.forEach((item, index) => {
+            if (item._id === this.state.selectedItem._id) {
+                indexDay = index + 1;
+            }
+        });
         return (
             <FooterPanelConsumer>
                 {({setOpen, isOpen}) => (
@@ -122,6 +129,9 @@ class Announce extends PureComponent {
                             <AnnounceList onInsert={this.handleInsertItem}
                                           setOpen={setOpen}
                                           ref={input => this.componentList = input}
+                                          titleDay={
+                                              moment(this.state.selectedDate).day(indexDay).toDate()
+                                                  .toLocaleDateString('ru', dateFormatOptions)}
                                           list={this.state.selectedItem} {...styles}/>
                         </ResizeSensor>
                         <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>

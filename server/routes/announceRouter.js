@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
 const {Announce, AnnounceWeek, getEmptyAnnounce} = require('../models/announce');
 
 router.route('/')
@@ -7,7 +8,7 @@ router.route('/')
         AnnounceWeek.findOne({}).populate('items').then(week => {
             if (week == null) {
                 Announce.create(getEmptyAnnounce(), (err, items) => {
-                    AnnounceWeek.create({date: new Date(), items: Array.from(items, (i) => i._id)},
+                    AnnounceWeek.create({date: moment(new Date()).startOf("isoWeek").toDate(), items: Array.from(items, (i) => i._id)},
                         (err, week) => {
                             res.status(200).json({_id: week._id, date: week.date, items});
                         });
@@ -18,8 +19,9 @@ router.route('/')
         });
     })
     .patch((req, res) => {
-        AnnounceWeek.updateOne({date: req.body.date}, (err, raw) => {
-            res.status(200 ).json(raw);
+        const date = moment(req.body.date).startOf("isoWeek").toDate();
+        AnnounceWeek.updateOne({date}, (err, doc) => {
+            res.status(200 ).json(date);
         });
     });
 

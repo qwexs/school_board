@@ -5,9 +5,9 @@ import AnnounceDialog from "./AnnounceDialog";
 import {reorder} from "../../utils/reorder";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import Radium from "radium";
-import {Button, H4} from "@blueprintjs/core";
+import {Button, H6} from "@blueprintjs/core";
 import IsNoPage from "../../components/IsNoPage";
-import * as PropTypes from "prop-types";
+import PropTypes from "prop-types";
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     margin: `0 0 ${25}px 0`,
@@ -76,7 +76,7 @@ class AnnounceList extends PureComponent {
             isDialogOpen: false,
             content: null,
             title: "",
-            date: null
+            titleDay: ""
         };
     }
 
@@ -89,7 +89,7 @@ class AnnounceList extends PureComponent {
             isDialogOpen: false,
             collectionList,
             title: list.title,
-            date: list.date ? new Date(list.date) : null
+            titleDay: nextProps.titleDay
         });
     }
 
@@ -117,7 +117,7 @@ class AnnounceList extends PureComponent {
 
     onRemoveClickHandler = (itemTarget) => {
         const collectionList = this.state.collectionList.filter(item => item !== itemTarget).slice(0);
-        this.props.onInsert({date: this.state.date, education: collectionList}, () => {
+        this.props.onInsert({education: collectionList}, () => {
             this.setState( {collectionList});
         });
     };
@@ -133,7 +133,7 @@ class AnnounceList extends PureComponent {
             result.destination.index
         );
 
-        this.props.onInsert({date: this.state.date, education: collectionList}, () => {
+        this.props.onInsert({education: collectionList}, () => {
             this.setState({
                 collectionList,
             });
@@ -142,7 +142,6 @@ class AnnounceList extends PureComponent {
 
     onSaveDialogHandler = (content) => {
         const collectionList = this.state.collectionList;
-        console.log(content);
         if (content.isNew) { //is new
             collectionList.push({
                 index: collectionList.length,
@@ -157,7 +156,7 @@ class AnnounceList extends PureComponent {
                 }
             });
         }
-        this.props.onInsert({date: this.state.date, education: collectionList},
+        this.props.onInsert({education: collectionList},
             () => {
                 this.setState({
                     collectionList,
@@ -186,7 +185,7 @@ class AnnounceList extends PureComponent {
                         <div style={styles.wrapperContainer}>
                             <div style={{width:"100%", minHeight: 0}}>
                                 <div style={styles.topContainer}>
-                                    <H4 className="bp3-monospace-text" style={styles.titleLabel}>{this.state.title}</H4>
+                                    <H6 className="bp3-monospace-text" style={styles.titleLabel}>{`${this.state.title}, ${this.state.titleDay}`}</H6>
                                     <Button minimal icon="add-to-artifact" onClick={this.handleAddAnnounce}/>
                                 </div>
                                 <IsNoPage notEmpty={this.state.collectionList.length > 0}
