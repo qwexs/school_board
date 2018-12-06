@@ -22,6 +22,10 @@ const style = {
 
 export default class FooterBar extends PureComponent {
 
+    static propTypes = {
+        isOpen: PropTypes.bool
+    };
+
     state = {
         vWidth: 0
     };
@@ -45,7 +49,3 @@ export default class FooterBar extends PureComponent {
 }
 
 FooterBar = Radium(FooterBar);
-
-FooterBar.propTypes = {
-    isOpen: PropTypes.bool,
-};

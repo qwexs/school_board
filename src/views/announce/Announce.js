@@ -41,8 +41,7 @@ class Announce extends PureComponent {
         this.state = {
             list: [],
             selectedItem: null,
-            vWidth: 0,
-            selectedDate: null
+            selectedDate: null,
         };
     }
 
@@ -67,6 +66,7 @@ class Announce extends PureComponent {
     handleChangeItem = (item) => {
         this.props.setOpen(false);
         this.setState({selectedItem: JSON.parse(JSON.stringify(item))});
+        this.componentList.scrollTop = 0;
     };
 
     handleResizeView = (entries) => {
@@ -117,6 +117,7 @@ class Announce extends PureComponent {
                     <div style={windowStyle}>
                         <SideMenu {...{sideMenuContainer}}
                                   items={this.state.list}
+                                  selectedItem={this.state.selectedItem}
                                   headerBar={
                                       <AnnounceHeaderBar style={styles.headerBar}
                                                          value={this.state.selectedDate}
@@ -129,7 +130,7 @@ class Announce extends PureComponent {
                         <ResizeSensor onResize={this.handleResizeView}>
                             <AnnounceList onInsert={this.handleInsertItem}
                                           setOpen={setOpen}
-                                          ref={input => this.componentList = input}
+                                          ref={ref => this.componentList = ref}
                                           titleDay={
                                               moment(this.state.selectedDate).day(indexDay).toDate()
                                                   .toLocaleDateString('ru', dateFormatOptions)}

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment');
-const {Announce, AnnounceWeek, getEmptyAnnounce} = require('../models/announce');
+const {Announce, AnnounceWeek, getEmptyAnnounce} = require('../models/announce.model');
 
 router.route('/')
     .get((req, res) => {

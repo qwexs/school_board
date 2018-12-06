@@ -5,6 +5,7 @@ import Radium from "radium";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import PropTypes from "prop-types";
 import Schedule from "./Schedule";
+import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 
 const styles = {
     listContainer: {
@@ -49,6 +50,8 @@ class ScheduleContent extends PureComponent {
             case Schedule.ACTION_CHANGE_ITEM:
                 this.setState({text: listData && listData.name});
                 break;
+            default:
+                break;
         }
     }
 
@@ -67,22 +70,22 @@ class ScheduleContent extends PureComponent {
                     <div style={[styles.listContainer, {paddingBottom: isOpen ? 60 : 0}]}>
                         <div style={{display: "flex", width: "100%"}}>
                             <div style={{marginTop: 10, width: "100%"}}>
-                                <Popover interactionKind={PopoverInteractionKind.HOVER}
+                                <Popover interactionKind={PopoverInteractionKind.CLICK}
                                          disabled={!this.props.listData.hasOwnProperty("_id")}
                                          content={
                                              <div style={{padding: 5}}>
                                                  <Button icon="trash" text={"Удалить класс"} minimal
+                                                         className={Classes.POPOVER_DISMISS}
                                                          onClick={this.props.onRemoveKlass}/>
                                              </div>
 
                                          }
                                          target={
                                              <H4>
-                                                 <EditableText intent={Intent.NONE}
-                                                               placeholder={"Название класса..."}
+                                                 <EditableText placeholder={"Название класса..."}
                                                                value={this.state.text}
-                                                               maxLength={15}
-                                                               minWidth={180}
+                                                               maxLength={20}
+                                                               minWidth={"20vw"}
                                                                onConfirm={this.handleConfirmData}
                                                                onChange={this.handleChangeTitle}/>
                                              </H4>

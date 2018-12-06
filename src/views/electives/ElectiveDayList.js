@@ -56,11 +56,9 @@ class ElectiveDayList extends PureComponent {
     componentWillReceiveProps(nextProps, nextContext) {
         let {list: {less}} = nextProps;
         let collectionList = [];
-        if (less !== undefined) {
-            if (!Array.isArray(less))
-                less = [less];
+        if (less.length) {
             less.map(item => {
-                const timeRange = item.__text;
+                const timeRange = item['time'];
                 const start = new Date();
                 const end = new Date();
                 const startStr = timeRange.substr(0, timeRange.indexOf(" "));
@@ -70,8 +68,8 @@ class ElectiveDayList extends PureComponent {
                 times = endStr.split('.');
                 end.setHours(Number(times[0]), Number(times[1]), 0);
                 collectionList.push({
-                    id: ID(),
-                    name: item._klass,
+                    id: item._id,
+                    name: item['klass'],
                     start, end
                 });
                 return item;
@@ -126,7 +124,7 @@ class ElectiveDayList extends PureComponent {
                                 <div style={styles.titleContainer}>
                                     <label style={styles.titleLabel}
                                            className="bp3-label bp3-monospace-text">
-                                        {this.props.list._id}
+                                        {this.props.list.title}
                                     </label>
                                     <Button minimal title="Добавить" icon="add-to-artifact" onClick={this.handleClickItemAdd}/>
                                 </div>

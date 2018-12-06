@@ -54,7 +54,6 @@ class ElectiveDayItem extends PureComponent {
 
     state = {
         isRoll: false,
-        content: null,
         edited: false,
         data: {
             id: "",
@@ -160,74 +159,74 @@ class ElectiveDayItem extends PureComponent {
                 {
                     this.state.data.id
                         ?
-                    <div style={{width:"100%", height:"100%"}}>
-                        <div style={styles.topPanelContainer}>
-                            {
-                                this.state.isRoll && (
-                                    this.state.edited
-                                        ?
-                                        <div style={styles.editPanelContainer}>
-                                            <Button minimal icon={"floppy-disk"} title={"Сохранить"}
-                                                    onClick={this.onItemSaveClick}>
-                                            </Button>
-                                            <Button minimal icon={"disable"} title={"Отмена"}
-                                                    onClick={this.onItemCancelClick}>
-                                            </Button>
+                        <div style={{width:"100%", height:"100%"}}>
+                            <div style={styles.topPanelContainer}>
+                                {
+                                    this.state.isRoll && (
+                                        this.state.edited
+                                            ?
+                                            <div style={styles.editPanelContainer}>
+                                                <Button minimal icon={"floppy-disk"} title={"Сохранить"}
+                                                        onClick={this.onItemSaveClick}>
+                                                </Button>
+                                                <Button minimal icon={"disable"} title={"Отмена"}
+                                                        onClick={this.onItemCancelClick}>
+                                                </Button>
 
+                                            </div>
+                                            :
+                                            <div style={styles.editPanelContainer}>
+                                                <Button minimal icon={"edit"} title={"Редактировать"}
+                                                        onClick={this.onItemEditedClick}>
+                                                </Button>
+                                                <Button minimal icon={"cross"} title={"Удалить"}
+                                                        onClick={this.onItemRemoveClick}>
+                                                </Button>
+
+                                            </div>
+                                    )}
+                            </div>
+                            <div style={styles.viewContainer} className="bp3-ui-text">
+                                <div style={[styles.labelBlockContainer, {width:"30%"}]}>
+                                    {this.state.edited
+                                        ?
+                                        <input className={Classes.INPUT} style={[styles.labelItem, {width:"60%"}]}
+                                               value={this.state.data.name}
+                                               onChange={this.onInputNameChange}/>
+                                        :
+                                        <label style={styles.labelItem}
+                                               className="bp3-label disable-select">
+                                            {this.state.data.name}
+                                        </label>
+                                    }
+
+                                    <label style={styles.labelDescription} className="bp3-monospace-text disable-select">
+                                        {!this.state.edited && <div style={styles.lineElement}/>}
+                                        класс
+                                    </label>
+                                </div>
+                                <div style={styles.labelBlockContainer}>
+                                    {this.state.edited
+                                        ?
+                                        <div style={{display: "flex", flexDirection: "row"}}>
+                                            {!isNaN(this.state.data.start) &&
+                                            <TimePicker defaultValue={this.state.data.start} showArrowButtons={true} onChange={this.handleStartValueChange}/>}
+                                            {!isNaN(this.state.data.end) &&
+                                            <TimePicker defaultValue={this.state.data.end} showArrowButtons={true} onChange={this.handleEndValueChange}/>}
                                         </div>
                                         :
-                                        <div style={styles.editPanelContainer}>
-                                            <Button minimal icon={"edit"} title={"Редактировать"}
-                                                    onClick={this.onItemEditedClick}>
-                                            </Button>
-                                            <Button minimal icon={"cross"} title={"Удалить"}
-                                                    onClick={this.onItemRemoveClick}>
-                                            </Button>
-
-                                        </div>
-                                )}
-                        </div>
-                        <div style={styles.viewContainer} className="bp3-ui-text">
-                            <div style={[styles.labelBlockContainer, {width:"30%"}]}>
-                                {this.state.edited
-                                    ?
-                                    <input className={Classes.INPUT} style={[styles.labelItem, {width:"60%"}]}
-                                           value={this.state.data.name}
-                                           onChange={this.onInputNameChange}/>
-                                    :
-                                    <label style={styles.labelItem}
-                                           className="bp3-label disable-select">
-                                        {this.state.data.name}
+                                        <label style={styles.labelItem}
+                                               className="bp3-label disable-select">
+                                            {this.getTimeText()}
+                                        </label>
+                                    }
+                                    <label style={styles.labelDescription} className="bp3-monospace-text disable-select">
+                                        {!this.state.edited && <div style={styles.lineElement}/>}
+                                        время
                                     </label>
-                                }
-
-                                <label style={styles.labelDescription} className="bp3-monospace-text disable-select">
-                                    {!this.state.edited && <div style={styles.lineElement}/>}
-                                    класс
-                                </label>
-                            </div>
-                            <div style={styles.labelBlockContainer}>
-                                {this.state.edited
-                                    ?
-                                    <div style={{display: "flex", flexDirection: "row"}}>
-                                        {!isNaN(this.state.data.start) &&
-                                        <TimePicker defaultValue={this.state.data.start} showArrowButtons={true} onChange={this.handleStartValueChange}/>}
-                                        {!isNaN(this.state.data.end) &&
-                                        <TimePicker defaultValue={this.state.data.end} showArrowButtons={true} onChange={this.handleEndValueChange}/>}
-                                    </div>
-                                    :
-                                    <label style={styles.labelItem}
-                                           className="bp3-label disable-select">
-                                        {this.getTimeText()}
-                                    </label>
-                                }
-                                <label style={styles.labelDescription} className="bp3-monospace-text disable-select">
-                                    {!this.state.edited && <div style={styles.lineElement}/>}
-                                    время
-                                </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
                         :
                         <div>
                             <label style={{marginTop: 10}} className="bp3-label bp3-disabled disable-select">

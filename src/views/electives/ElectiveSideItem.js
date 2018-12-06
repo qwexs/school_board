@@ -30,25 +30,29 @@ const styles = {
     }
 };
 
-function parseIconURL(pathName) {
-    return `/assets/${String(pathName).substr(0, pathName.indexOf("."))}.png`;
-}
+const arrayBufferToBase64 = (buffer) => {
+    let binary = '';
+    const bytes = [].slice.call(new Uint8Array(buffer));
+    bytes.forEach((b) => binary += String.fromCharCode(b));
+    return window.btoa(binary);
+};
 
 export default React.memo(({...props}) => {
     const {item, sideItem} = props;
+    const imgSrc ="data:image/png;base64," + arrayBufferToBase64(item.icon.data.data);
     return (
         <div style={sideItem}>
             <div style={{width:"100%"}} className="disable-select">
-                <div style={styles.title} className="bp3-ui-text">{item._id}</div>
+                <div style={styles.title} className="bp3-ui-text">{item.name}</div>
                 <div style={styles.info} className="bp3-text-small">
                     <dl>
-                        <dd>{item._teacher}</dd>
-                        <dd>{item._place}</dd>
+                        <dd>{item.teacher}</dd>
+                        <dd>{item.place}</dd>
                     </dl>
                 </div>
             </div>
             <div style={styles.icon}>
-                <img style={{margin:"auto"}} src={parseIconURL(item._ic)} alt={item._id}/>
+                <img width="auto" height="auto" style={{margin:"auto"}} src={imgSrc} alt={item.name}/>
             </div>
         </div>
     );

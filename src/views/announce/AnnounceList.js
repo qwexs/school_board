@@ -149,7 +149,7 @@ class AnnounceList extends PureComponent {
                 text: content.description
             });
         } else {
-            collectionList.map(item => {
+            collectionList.forEach(item => {
                 if (item.index === content.index) {
                     item.text = content.description;
                     item.timeDay = content.title;
@@ -181,7 +181,7 @@ class AnnounceList extends PureComponent {
         return this.state.collectionList && (
             <FooterPanelConsumer>
                 {({setOpen, isOpen}) => (
-                    <div style={styles.mainContainer}>
+                    <div style={styles.mainContainer} ref={(ref) => this.listContainer = ref}>
                         <div style={styles.wrapperContainer}>
                             <div style={{width:"100%", minHeight: 0}}>
                                 <div style={styles.topContainer}>

@@ -79,21 +79,23 @@ class Schedule extends PureComponent {
     handleClickSave = () => {
         const schedule = this.scheduleList.getData();
         if (schedule._id) {
-            axios.put(`/schedule/${schedule._id}`, schedule).then(this.refreshAll);
+            axios.put(`/schedule/${schedule._id}`, schedule).then(value => {
+                this.refreshAll(value.data);
+            });
         }
         else {
-            axios.post('/schedule/new', schedule).then(this.refreshAll);
+            axios.post('/schedule/new', schedule).then(value => {
+                this.refreshAll(value.data);
+            });
         }
     };
 
-    refreshAll = () => {
+    refreshAll = (selectedItem = null) => {
         axios.get('/schedule').then(res => {
             const currentList = res.data;
-            const currentItem = (this.state.selectedItem
-                && currentList.filter(item => item._id === this.state.selectedItem._id)[0])
+            const currentItem = (selectedItem
+                && currentList.filter(item => item._id === selectedItem._id)[0])
                 || currentList[0];
-            if (currentItem)
-                currentItem.selected = true;
             this.setState({
                 list: currentList,
                 selectedItem: currentItem
@@ -125,9 +127,10 @@ class Schedule extends PureComponent {
         return (
             <FooterPanelConsumer>
                 {({isOpen, setAction, action}) => (
-                    <div style={[windowStyle]}>
+                    <div style={windowStyle}>
                         <SideMenu {...{sideMenuContainer}}
                                   items={this.state.list}
+                                  selectedItem={this.state.selectedItem}
                                   action={action}
                                   headerBar={
                                       <ScheduleHeaderBar style={styles.headerBar}

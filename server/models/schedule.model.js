@@ -13,6 +13,6 @@ const schema = new Schema({
     }
 });
 
-const Schedule = mongoose.model('Schedule', schema);
+const ScheduleModel = mongoose.model('Schedule', schema);
 
-module.exports = Schedule;
+module.exports = ScheduleModel;

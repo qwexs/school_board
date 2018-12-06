@@ -1,11 +1,13 @@
 import React, {PureComponent} from 'react';
 import SideMenu from "../../components/sideBar/SideMenu";
 import ElectiveSideItem from "./ElectiveSideItem";
-import xml2json from "../../utils/xml2json";
 import ElectiveWeekList from "./ElectiveWeekList";
 import FooterBar from "../../components/footer/FooterBar";
-import {Button, ResizeSensor} from "@blueprintjs/core";
+import {Button, ResizeSensor, Spinner} from "@blueprintjs/core";
 import * as ReactDOM from "react-dom";
+import axios from "axios";
+import ElectiveHeaderBar from "./ElectiveHeaderBar";
+import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 
 const styles = {
     electiveContainerStyle: {
@@ -30,61 +32,117 @@ const styles = {
     contentStyle: {
         display: "flex",
         flexDirection: "column",
-        // flexGrow: 1,
+        flexGrow: 1,
         height: "100%",
         overflowY: "auto",
-
     },
+    headerBar: {
+        backgroundColor: "#E1E8ED",
+        flexGrow: 1,
+        justifyItems: "middle",
+        justifyContent: "center",
+        border: "1px solid lightgrey",
+        height: 50,
+        padding: 10
+    }
 
 };
 
 class Elective extends PureComponent {
 
+    static ACTION_EDIT_ITEM = "editItem";
+
     state = {
         list: [],
         selectedItem: null,
-        isOpen: false,
-        vWidth: 0
+        isLoadItem: true,
+        isLoadList: true
     };
 
-
     componentDidMount() {
-        const data = xml2json("/assets/data/events.xml");
-        const currentList = data["eventsDay"]["school"]["elective"];
-        this.setState({
-            list: currentList,
-            selectedItem: currentList[0],
-        });
+        this.refreshAll();
     }
+
+    refreshAll = (selectedItem = null) => {
+        axios.get('/elective').then(res => {
+            const currentList = res.data;
+            const currentItem = selectedItem ? selectedItem : currentList[0];
+            this.setState({
+                list: currentList,
+                selectedItem: currentItem,
+                isLoadList: false
+            }, () => {
+                this.sideMenuRef.scrollToSelect();
+                this.props.setOpen(false)
+            });
+            this.refreshItem(currentItem._id);
+        });
+    };
+
+    refreshItem = (id) => {
+        axios.get(`/elective/${id}`).then(value => {
+            this.setState({selectedItem: {...this.state.selectedItem, items: value.data}, isLoadItem: false});
+        });
+    };
 
     handleResizeView = (entries) => {
         if (entries) {
             const vWidth = entries[0].contentRect.width;
-            const element = ReactDOM.findDOMNode(this.componentList);
+            const element = ReactDOM.findDOMNode(this.weekList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
-            this.footerBar.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
+            this.footerBarRef.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
+            console.log(vWidth);
         }
     };
 
-    onChangeItem = (item) => {
-        this.setState({selectedItem: item});
+    handleChangeItem = (item) => {
+        this.setState({selectedItem: item, isLoadItem: true});
+        this.refreshItem(item._id);
+    };
+
+    handleElectiveAdd = (dataHeader) => {
+        const {name, teacher, place, icon} = dataHeader;
+        this.setState({isLoadItem: true});
+        axios.post('/elective', {name, teacher, place, icon}).then(value => {
+            this.refreshAll(value.data);
+        });
+    };
+
+    handleConfirmData = (item) => {
+        console.log(item);
+        this.props.setAction(Elective.ACTION_EDIT_ITEM);
     };
 
     render() {
         const {windowStyle} = this.props;
         return (
-            <div style={windowStyle}>
-                <SideMenu items={this.state.list} onChangeItem={this.onChangeItem} {...this.props}>
-                    <ElectiveSideItem {...styles}/>
-                </SideMenu>
-                <ResizeSensor onResize={this.handleResizeView}>
-                    <ElectiveWeekList ref={input => this.componentList = input} list={this.state.selectedItem} {...styles}/>
-                </ResizeSensor>
-                <FooterBar ref={input => this.footerBar = input}>
-                    <Button minimal icon="undo">Отменить</Button>
-                    <Button minimal icon="edit">Сохранить изменения</Button>
-                </FooterBar>
-            </div>
+            <FooterPanelConsumer>
+                {({setAction, action, isOpen}) => (
+                    <div style={windowStyle}>
+                        {!this.state.isLoadList &&
+                            <SideMenu selectedItem={this.state.selectedItem}
+                                      items={this.state.list}
+                                      onChangeItem={this.handleChangeItem}
+                                      ref={ref => this.sideMenuRef = ref}
+                                      {...this.props}
+                                      headerBar={
+                                          <ElectiveHeaderBar style={styles.headerBar} onAdd={this.handleElectiveAdd}/>
+                                      }>
+                                <ElectiveSideItem {...styles}/>
+                            </SideMenu>
+                        }
+                        <ResizeSensor onResize={this.handleResizeView}>
+                            <ElectiveWeekList ref={input => this.weekList = input} isLoadItem={this.state.isLoadItem}
+                                              setAction={setAction} onConfirm={this.handleConfirmData}
+                                              item={this.state.selectedItem && this.state.selectedItem} {...styles}/>
+                        </ResizeSensor>
+                        <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
+                            <Button minimal icon="undo">Отменить</Button>
+                            <Button minimal icon="edit">Сохранить изменения</Button>
+                        </FooterBar>
+                    </div>
+                )}
+            </FooterPanelConsumer>
         );
     }
 }

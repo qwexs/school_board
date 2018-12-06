@@ -1,17 +1,20 @@
 import React, {PureComponent} from 'react';
 import "../../App.css";
 import Radium from 'radium';
+import PropTypes from 'prop-types';
 
 const defaultColor = "#E1E8ED",
     overColor = "#EBF1F5";
 
 class SideMenuItem extends PureComponent {
 
-    state = {selected: false};
+    static propTypes = {
+        selected: PropTypes.bool
+    };
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({selected: nextProps.item.selected});
-    }
+    static defaultProps = {
+        selected: false
+    };
 
     onClick = () => {
         this.props.onClick(this.props.item);
@@ -39,7 +42,7 @@ class SideMenuItem extends PureComponent {
 
     render() {
         return (
-            <div className="bp3-text-large"  style={[this.style, this.state.selected && this.style.selected]}
+            <div className="bp3-text-large"  style={[this.style, this.props.selected && this.style.selected]}
                  onClick={this.onClick}
                 >
                 {this.props.children}

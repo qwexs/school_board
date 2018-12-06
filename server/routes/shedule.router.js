@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Schedule = require('../models/schedule');
+const Schedule = require('../models/schedule.model');
 
 router.route('/')
     .get((req, res) => {

@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Column, ColumnHeaderCell, EditableCell, EditableName, Table, TableLoadingOption} from "@blueprintjs/table";
+import {Column, ColumnHeaderCell, EditableCell, EditableName, Table} from "@blueprintjs/table";
 import {SelectionModes} from "@blueprintjs/table/lib/cjs/regions";
 
 class TableDay extends PureComponent {
