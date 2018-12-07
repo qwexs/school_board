@@ -8,13 +8,15 @@ const isNoPage = (({...props}) => {
     const styles = {
         container: {
             display: "flex",
-            flexGrow: 1,
+            width: "100%",
+            height: "100%",
             alignItems: "center",
             justifyContent: "center"
         },
         title: {
             color: "#5C7080",
-            opacity: .5
+            opacity: .5,
+            margin: "0 auto"
         }
     };
 

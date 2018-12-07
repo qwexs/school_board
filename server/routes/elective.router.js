@@ -13,12 +13,17 @@ router.route('/')
         });
     })
     .post((req, res) => {
-        const {name, place, teacher, icon} = req.body;
-        const binaryData = bufferFrom(icon.replace(/^data:image\/png;base64,/,""), 'base64');
         ElectiveDay.create(getEmptyElective(), (err, items) => {
-            Elective.create({name, place, teacher,
-                    icon: {data: binaryData, contentType: 'image/png'},
-                    items: Array.from(items, (i) => i._id)},
+            const {name, place, teacher, icon} = req.body;
+            let data = {
+                name, place, teacher,
+                items: Array.from(items, (i) => i._id)
+            };
+            if (icon) {
+                const binaryData = bufferFrom(icon.replace(/^data:image\/png;base64,/, ""), 'base64');
+                data = {...data, icon: {data: binaryData, contentType: 'image/png'}}
+            }
+            Elective.create(data,
                 (err, doc) => {
                     res.status(200).json(doc);
             });

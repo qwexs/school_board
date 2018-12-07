@@ -26,6 +26,10 @@ export default class ElectiveHeaderBar extends PureComponent {
         reader.readAsDataURL(inputFile);
     };
 
+    handleClosingPopover = () => {
+        this.setState({name: "", teacher: "", place: "", icon: null});
+    };
+
     render() {
         return (
             <div style={this.props.style}>
@@ -39,7 +43,7 @@ export default class ElectiveHeaderBar extends PureComponent {
                         className="disable-select">Элективные курсы</H5>
 
                     <Popover interactionKind={PopoverInteractionKind.CLICK} captureDismiss={true}
-                             onOpening={() => this.setState({icon: ""})}
+                             onClosed={this.handleClosingPopover}
                              content={
                                  <div style={{
                                      padding: 20, paddingBottom: 20,

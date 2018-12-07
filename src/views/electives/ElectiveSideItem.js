@@ -39,7 +39,7 @@ const arrayBufferToBase64 = (buffer) => {
 
 export default React.memo(({...props}) => {
     const {item, sideItem} = props;
-    const imgSrc ="data:image/png;base64," + arrayBufferToBase64(item.icon.data.data);
+    const imgSrc = item.icon ? "data:image/png;base64," + arrayBufferToBase64(item.icon.data.data) : "";
     return (
         <div style={sideItem}>
             <div style={{width:"100%"}} className="disable-select">

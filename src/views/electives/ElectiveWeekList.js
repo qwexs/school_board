@@ -5,6 +5,7 @@ import {Spinner} from "@blueprintjs/core";
 import * as PropTypes from "prop-types";
 import ElectiveTitleGroup from "./ElectiveTitleGroup";
 import Elective from "./Elective";
+import IsNoPage from "../../components/IsNoPage";
 
 class ElectiveWeekList extends PureComponent {
 
@@ -55,32 +56,34 @@ class ElectiveWeekList extends PureComponent {
                         width: "100%",
                         height: "100%"
                     }}>
-                        {isLoadItem
-                            ?
-                            <div style={{
-                                position: "relative",
-                                top: "50%"
-                            }}>
-                                <Spinner/>
-                            </div>
-                            :
-                            <div style={contentStyle} ref={(ref) => this.listContainerRef = ref}>
-                                <ElectiveTitleGroup ref={ref => this.titleGroupRef = ref}
-                                                    item={this.state.item} setOpen={setOpen}
-                                                    onRemoveElective={this.props.onRemoveElective}/>
+                        <IsNoPage notEmpty={this.state.item && this.state.item.items && this.state.item.items.length}>
+                            {isLoadItem
+                                ?
                                 <div style={{
-                                    width: "90%", margin: "auto",
-                                    borderBottom: "2px solid silver"
-                                }}/>
-                                {
-                                    this.state.item.items.map((itemList, index) =>
-                                        <ElectiveDayList key={index} list={itemList}
-                                                         setOpen={setOpen} onSave={this.handleSaveList}
-                                                         setAction={setAction} action={action}
-                                                         {...contentStyle}/>)
-                                }
-                            </div>
-                        }
+                                    position: "relative",
+                                    top: "50%"
+                                }}>
+                                    <Spinner/>
+                                </div>
+                                :
+                                <div style={contentStyle} ref={(ref) => this.listContainerRef = ref}>
+                                    <ElectiveTitleGroup ref={ref => this.titleGroupRef = ref}
+                                                        item={this.state.item} setOpen={setOpen}
+                                                        onRemoveElective={this.props.onRemoveElective}/>
+                                    <div style={{
+                                        width: "90%", margin: "auto",
+                                        borderBottom: "2px solid silver"
+                                    }}/>
+                                    {
+                                        this.state.item && this.state.item.items.map((itemList, index) =>
+                                            <ElectiveDayList key={index} list={itemList}
+                                                             setOpen={setOpen} onSave={this.handleSaveList}
+                                                             setAction={setAction} action={action}
+                                                             {...contentStyle}/>)
+                                    }
+                                </div>
+                            }
+                        </IsNoPage>
                     </div>
                 )}
             </FooterPanelConsumer>

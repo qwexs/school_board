@@ -56,7 +56,7 @@ class ElectiveDayList extends PureComponent {
 
     componentWillReceiveProps(nextProps, nextContext) {
         let {list: {less}} = nextProps;
-        this.setState({less});
+        this.setState({less: less || []});
 
         if (nextProps.action === Elective.ACTION_SAVE_ITEM) {
             this.props.onSave({id:nextProps.list._id, less: this.state.less});
