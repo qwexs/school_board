@@ -1282,10 +1282,10 @@
     "@types/bson" "*"
     "@types/node" "*"
 
-"@types/mongoose@^5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.3.1.tgz#97112342e9d5930b75fe60121f820a310f98b6b7"
-  integrity sha512-4ASViFpeE9LLE+VLs/NgPy1gSS6nlUA5Iz9UBm1X5VMLqgGURvGfqML3liRrzna6WUt5kNTcLf245GQHxCxuBQ==
+"@types/mongoose@^5.3.4":
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.3.4.tgz#3dd3e6f5d5ed4ce5edf0bb96a5cc23418a7ed6d4"
+  integrity sha512-VHP6aUswXIaFlLfF+noeMYf4NdkgylGlrAujr5g6aFcX1fYt3PpBsI+LGFnuK11HL7XPYQR3IigiqDq1rnBjeg==
   dependencies:
     "@types/mongodb" "*"
     "@types/node" "*"
@@ -1305,10 +1305,10 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.2.tgz#fa8e1ad1d474688a757140c91de6dace6f4abc8d"
   integrity sha512-HtKGu+qG1NPvYe1z7ezLsyIaXYyi8SoAVqWDZgDQ8dLrsZvSzUNCwZyfX33uhWxL/SU0ZDQZ3nwZ0nimt507Kw==
 
-"@types/react@^16.7.3":
-  version "16.7.3"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.7.3.tgz#dd96b19b21c450fab7d136f71d48f4b8fc72777e"
-  integrity sha512-ve/2lnXuLNaTDR1SPvsEX25m+NoNW3PMJxL2jd372UR8oJPwR5+jgtcheUoN27O+qKLFmQy0y0YKRwZcwtny3w==
+"@types/react@^16.7.13":
+  version "16.7.13"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.7.13.tgz#d2369ae78377356d42fb54275d30218e84f2247a"
+  integrity sha512-WhqrQLAE9z65hfcvWqZfR6qUtIazFRyb8LXqHo8440R53dAQqNkt2OlVJ3FXwqOwAXXg4nfYxt0qgBvE18o5XA==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -1863,7 +1863,7 @@ async-limiter@~1.0.0:
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
   integrity sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==
 
-async@2.6.1, async@^2.0.1, async@^2.1.4, async@^2.5.0:
+async@2.6.1, async@^2.0.1, async@^2.1.4, async@^2.5.0, async@latest:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.1.tgz#b245a23ca71930044ec53fa46aa00a3e87c6a610"
   integrity sha512-fNEiL2+AZt6AlAw/29Cr0UDe4sRAHCpEHh54WMz+Bb7QfNcFw4h3loofyJpLeQs4Yx7yuqu/2dLgM5hKOs6HlQ==
@@ -2272,7 +2272,7 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.4.0:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
   integrity sha512-ItfYfPLkWHUjckQCk8xC+LwxgK8NYcXywGigJgSwOP8Y2iyWT4f2vsZnoOXTTbo+o5yXmIUJ4gn5538SO5S3gA==
 
-body-parser@1.18.3, body-parser@latest:
+body-parser@1.18.3:
   version "1.18.3"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.18.3.tgz#5b292198ffdd553b3a0f20ded0592b956955c8b4"
   integrity sha1-WykhmP/dVTs6DyDe0FkrlWlVyLQ=
@@ -2481,7 +2481,7 @@ buffer-equal@0.0.1:
   resolved "https://registry.yarnpkg.com/buffer-equal/-/buffer-equal-0.0.1.tgz#91bc74b11ea405bc916bc6aa908faafa5b4aac4b"
   integrity sha1-kbx0sR6kBbyRa8aqkI+q+ltKrEs=
 
-buffer-from@^1.0.0:
+buffer-from@^1.0.0, buffer-from@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
   integrity sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
@@ -9526,10 +9526,10 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-photo-gallery@^6.2.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/react-photo-gallery/-/react-photo-gallery-6.2.1.tgz#4b35b0d764af8128c72cf64f0e74c02a381053e9"
-  integrity sha512-KzYftZU6f9sRTcSSmrohkqJfGZ4W/J6Bp0Iea33jVj/NyPcUSr9ahULnefnOk9mFzxOAymvMu8MreVYlpyGnaQ==
+react-photo-gallery@^6.2.2:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/react-photo-gallery/-/react-photo-gallery-6.2.2.tgz#a9aa7d651fb25f95be4485b255f4fc2013ff3d66"
+  integrity sha512-Jo1D+MXKgC5mTrXS07A3dOqK/NbLiaPJ2mpf5pjAqfT438hbsW9BZ3Ne57i6x8XVSf56Cf4zi2K1l9epnE+NHQ==
   dependencies:
     prop-types "~15.6.1"
     resize-observer-polyfill "^1.5.0"

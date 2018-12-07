@@ -91,7 +91,7 @@ class Elective extends PureComponent {
     };
 
     handleResizeView = (entries) => {
-        if (entries) {
+        if (entries && this.weekList) {
             const vWidth = entries[0].contentRect.width;
             const element = ReactDOM.findDOMNode(this.weekList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
