@@ -2,8 +2,8 @@ import React, {PureComponent} from 'react';
 import {Button, Card, Elevation} from "@blueprintjs/core";
 import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 import Radium from "radium";
-import {TimePicker} from '@blueprintjs/datetime';
 import * as PropTypes from "prop-types";
+import TimePickerFixed from "../../components/TimePickerFixed";
 
 const styles = {
     viewContainer: {
@@ -74,24 +74,29 @@ class ElectiveDayItem extends PureComponent {
     timePickerStartValue;
     timePickerEndValue;
 
-    componentWillMount() {
-        this.componentWillReceiveProps(this.props)
+    componentDidMount() {
+        this.componentWillReceiveProps(this.props);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        if (this.state.edited)
+            return;
+
         const {item} = nextProps;
-        this.timePickerStartValue = new Date(new Date().setHours(15, 0));
-        this.timePickerEndValue = new Date(new Date().setHours(16,0));
         const isNew = item && item.isNew;
         let data;
         if (isNew) {
+            this.timePickerStartValue = new Date(new Date().setHours(15, 0));
+            this.timePickerEndValue = new Date(new Date().setHours(16,0));
             data = {id: item.id, name: "", start: this.timePickerStartValue, end: this.timePickerEndValue};
         } else if (item) {
-            data = {...item, start: new Date(item.start), end: new Date(item.end)};
+            this.timePickerStartValue = new Date(item.start);
+            this.timePickerEndValue = new Date(item.end);
+            data = {...item, start: this.timePickerStartValue, end: this.timePickerEndValue};
         }
         this.setState({
             data, isNew,
-            edited: isNew || this.state.edited
+            edited: isNew
         });
     }
 
@@ -165,6 +170,16 @@ class ElectiveDayItem extends PureComponent {
                                 ${this.getTimeFormat(this.state.data.end)}`;
     }
 
+    handleEnterStartInput = (value) => {
+        this.timePickerStartValue = value;
+        this.onItemSaveClick();
+    };
+
+    handleEnterEndInput = (value) => {
+        this.timePickerEndValue = value;
+        this.onItemSaveClick();
+    };
+
     render() {
         const itemStyle = {
             height: this.state.data ? 150 : 50,
@@ -177,7 +192,7 @@ class ElectiveDayItem extends PureComponent {
                 {
                     this.state.data
                         ?
-                        <div style={{width:"100%", height:"100%"}}>
+                        <div style={{width: "100%", height: "100%"}}>
                             <div style={styles.topPanelContainer}>
                                 {
                                     this.state.isRoll && (
@@ -205,10 +220,11 @@ class ElectiveDayItem extends PureComponent {
                                     )}
                             </div>
                             <div style={styles.viewContainer} className="bp3-ui-text">
-                                <div style={[styles.labelBlockContainer, {width:"30%"}]}>
+                                <div style={[styles.labelBlockContainer, {width: "30%"}]}>
                                     {this.state.edited
                                         ?
-                                        <input autoFocus className={Classes.INPUT} style={[styles.labelItem, {width:"60%"}]}
+                                        <input autoFocus className={Classes.INPUT}
+                                               style={[styles.labelItem, {width: "60%"}]}
                                                value={this.state.data.name} maxLength={12}
                                                onChange={this.onInputNameChange}/>
                                         :
@@ -218,7 +234,8 @@ class ElectiveDayItem extends PureComponent {
                                         </label>
                                     }
 
-                                    <label style={styles.labelDescription} className="bp3-monospace-text disable-select">
+                                    <label style={styles.labelDescription}
+                                           className="bp3-monospace-text disable-select">
                                         {!this.state.edited && <div style={styles.lineElement}/>}
                                         класс
                                     </label>
@@ -228,9 +245,15 @@ class ElectiveDayItem extends PureComponent {
                                         ?
                                         <div style={{display: "flex", flexDirection: "row"}}>
                                             {!isNaN(this.state.data.start) &&
-                                            <TimePicker defaultValue={this.state.data.start} showArrowButtons={true} onChange={this.handleStartValueChange}/>}
+                                            <TimePickerFixed selectAllOnFocus onEnter={this.handleEnterStartInput}
+                                                        defaultValue={this.state.data.start}
+                                                        showArrowButtons={true}
+                                                        onChange={this.handleStartValueChange}/>}
                                             {!isNaN(this.state.data.end) &&
-                                            <TimePicker defaultValue={this.state.data.end} showArrowButtons={true} onChange={this.handleEndValueChange}/>}
+                                            <TimePickerFixed selectAllOnFocus onEnter={this.handleEnterEndInput}
+                                                        defaultValue={this.state.data.end}
+                                                        showArrowButtons={true}
+                                                        onChange={this.handleEndValueChange}/>}
                                         </div>
                                         :
                                         <label style={styles.labelItem}
@@ -238,7 +261,8 @@ class ElectiveDayItem extends PureComponent {
                                             {this.getTimeText()}
                                         </label>
                                     }
-                                    <label style={styles.labelDescription} className="bp3-monospace-text disable-select">
+                                    <label style={styles.labelDescription}
+                                           className="bp3-monospace-text disable-select">
                                         {!this.state.edited && <div style={styles.lineElement}/>}
                                         время
                                     </label>

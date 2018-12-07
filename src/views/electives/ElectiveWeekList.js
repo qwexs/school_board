@@ -5,7 +5,6 @@ import {Spinner} from "@blueprintjs/core";
 import * as PropTypes from "prop-types";
 import ElectiveTitleGroup from "./ElectiveTitleGroup";
 import Elective from "./Elective";
-import IsNoPage from "../../components/IsNoPage";
 import Radium from "radium";
 
 class ElectiveWeekList extends PureComponent {

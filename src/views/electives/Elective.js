@@ -75,7 +75,7 @@ class Elective extends PureComponent {
                 selectedItem: currentItem,
                 isLoadList: false
             }, () => {
-                this.sideMenuRef.scrollToSelect();
+                this.sideMenuRef && this.sideMenuRef.scrollToSelect();
                 this.props.setOpen(false)
             });
             if (currentItem)
@@ -125,7 +125,8 @@ class Elective extends PureComponent {
     };
 
     handleClickCancelChanges = () => {
-        this.props.setOpen(false);
+        if (this.state.selectedItem)
+            this.refreshItem(this.state.selectedItem._id);
     };
 
     handleSaveElective = (item) => {
@@ -140,9 +141,9 @@ class Elective extends PureComponent {
     render() {
 
         const {windowStyle} = this.props;
-        const isNotEmpty = this.state.selectedItem
-            && this.state.selectedItem.items
-            && this.state.selectedItem.items.length || this.state.isLoadList;
+        const {selectedItem} = this.state;
+        const isNotEmpty = (selectedItem && selectedItem.items && selectedItem.items.length)
+            || this.state.isLoadList;
         return (
             <FooterPanelConsumer>
                 {({setAction, action, setOpen, isOpen}) => (
@@ -159,21 +160,21 @@ class Elective extends PureComponent {
                                 <ElectiveSideItem {...styles}/>
                             </SideMenu>
                         }
-                        <IsNoPage notEmpty={isNotEmpty}>
                             <ResizeSensor onResize={this.handleResizeView}>
-                                <ElectiveWeekList ref={input => this.weekList = input}
-                                                  isLoadItem={this.state.isLoadItem}
-                                                  setAction={setAction} action={action}
-                                                  setOpen={setOpen}
-                                                  onSaveElective={this.handleSaveElective}
-                                                  onRemoveElective={this.handleElectiveRemove}
-                                                  item={this.state.selectedItem} {...styles}/>
+                                <IsNoPage notEmpty={isNotEmpty}>
+                                    <ElectiveWeekList ref={input => this.weekList = input}
+                                                      isLoadItem={this.state.isLoadItem}
+                                                      setAction={setAction} action={action}
+                                                      setOpen={setOpen}
+                                                      onSaveElective={this.handleSaveElective}
+                                                      onRemoveElective={this.handleElectiveRemove}
+                                                      item={this.state.selectedItem} {...styles}/>
+                                </IsNoPage>
                             </ResizeSensor>
                             <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
                                 <Button minimal icon="undo" onClick={this.handleClickCancelChanges}>Отменить</Button>
                                 <Button minimal icon="edit" onClick={this.handleClickSaveChanges}>Сохранить изменения</Button>
                             </FooterBar>
-                        </IsNoPage>
                     </div>
                 )}
             </FooterPanelConsumer>

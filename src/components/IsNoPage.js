@@ -1,6 +1,5 @@
 import React from 'react';
 import {H5} from "@blueprintjs/core";
-import PropTypes from 'prop-types';
 import Radium from "radium";
 
 const isNoPage = (({...props}) => {
@@ -33,8 +32,3 @@ const isNoPage = (({...props}) => {
 });
 
 export default Radium(isNoPage);
-
-isNoPage.propTypes = {
-    notEmpty: PropTypes.bool,
-    style: PropTypes.object
-};

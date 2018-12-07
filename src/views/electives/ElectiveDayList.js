@@ -96,7 +96,7 @@ class ElectiveDayList extends PureComponent {
     handleClickItemAdd = () => {
         this.setState(prevState => prevState.less.filter(item => item.isNew).length === 0 &&
         {
-            less: [{id: ID(), isNew: true}, ...prevState.less],
+            less: [...prevState.less, {id: ID(), isNew: true}],
             isDragDisabled: true
         });
     };
