@@ -13,7 +13,7 @@ export default React.memo(({...props}) => {
             }}>
                 <h5 style={{color: "#5C7080", paddingTop: 10, paddingRight: 7}}
                     className="bp3-heading disable-select">Неделя</h5>
-                <Popover interactionKind={PopoverInteractionKind.HOVER}
+                <Popover interactionKind={PopoverInteractionKind.CLICK}
                          content={
                              <DateWeekPicker
                                  {...props}

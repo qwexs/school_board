@@ -31,7 +31,9 @@
     "react-router-dom": "4.3.1",
     "react-scripts": "2.1.1",
     "react-swf": "^1.0.7",
-    "x2js": "^3.2.1"
+    "x2js": "^3.2.1",
+    "buffer-from": "^1.1.1",
+    "async": "latest"
   },
   "scripts": {
     "client": "react-app-rewired start",

@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import TableList from "./TableList";
-import {Button, EditableText, H4, Intent, Popover, PopoverInteractionKind} from "@blueprintjs/core";
+import {Button, EditableText, H4, Popover, PopoverInteractionKind} from "@blueprintjs/core";
 import Radium from "radium";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import PropTypes from "prop-types";

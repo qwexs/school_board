@@ -4,6 +4,7 @@ const fs = require('fs');
 const {Elective, ElectiveDay, getEmptyElective} = require('../models/elective.model');
 const path = require('path');
 const bufferFrom = require('buffer-from');
+const async = require('async');
 
 router.route('/')
     .get((req, res) => {
@@ -28,6 +29,23 @@ router.route('/:id')
     .get((req, res) => {
         Elective.findById(req.params.id).populate('items').then(result => {
             res.status(200).json(result.items);
+        });
+    })
+    .put((req, res) => {
+        const {name, teacher, place, items} = req.body;
+        async.eachSeries(items, function updateObject (obj, done) {
+            ElectiveDay.updateOne({ _id: obj._id }, { $set : { less: obj.less }}, done);
+        }, function allDone (err) {
+            Elective.findByIdAndUpdate(req.params.id, {$set: {name, teacher, place}}, {new: true})
+                .populate('items')
+                .then((value) => {
+                    res.status(200).json(value);
+                });
+        });
+    })
+    .delete((req, res) => {
+        Elective.findByIdAndDelete(req.params.id).then(result => {
+            res.send({status: "ok"});
         });
     });
 

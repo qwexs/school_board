@@ -11,7 +11,7 @@ class FooterBarProvider extends PureComponent {
 
         this.state = {
             isOpen: false,
-            action: ""
+            action: "",
         };
     }
 
@@ -20,9 +20,9 @@ class FooterBarProvider extends PureComponent {
         return (
             <FooterPanelProvider value={{
                 setOpen: (isOpen, callback = null) => this.setState({isOpen, action: ""}, callback),
-                setAction: (action, isOpen = true) => this.setState({action, isOpen}),
+                setAction: (action, isOpen = true, callback = null) => this.setState({action, isOpen}, callback),
                 isOpen: this.state.isOpen,
-                action: this.state.action
+                action: this.state.action,
             }}>
                 {children}
             </FooterPanelProvider>

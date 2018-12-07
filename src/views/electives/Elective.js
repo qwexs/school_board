@@ -3,7 +3,7 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import ElectiveSideItem from "./ElectiveSideItem";
 import ElectiveWeekList from "./ElectiveWeekList";
 import FooterBar from "../../components/footer/FooterBar";
-import {Button, ResizeSensor, Spinner} from "@blueprintjs/core";
+import {Button, ResizeSensor} from "@blueprintjs/core";
 import * as ReactDOM from "react-dom";
 import axios from "axios";
 import ElectiveHeaderBar from "./ElectiveHeaderBar";
@@ -51,6 +51,8 @@ const styles = {
 class Elective extends PureComponent {
 
     static ACTION_EDIT_ITEM = "editItem";
+    static ACTION_CHANGE_ITEM = "changeItem";
+    static ACTION_SAVE_ITEM = "saveItem";
 
     state = {
         list: [],
@@ -75,11 +77,13 @@ class Elective extends PureComponent {
                 this.sideMenuRef.scrollToSelect();
                 this.props.setOpen(false)
             });
-            this.refreshItem(currentItem._id);
+            if (currentItem)
+                this.refreshItem(currentItem._id);
         });
     };
 
     refreshItem = (id) => {
+        this.props.setOpen(false);
         axios.get(`/elective/${id}`).then(value => {
             this.setState({selectedItem: {...this.state.selectedItem, items: value.data}, isLoadItem: false});
         });
@@ -91,13 +95,13 @@ class Elective extends PureComponent {
             const element = ReactDOM.findDOMNode(this.weekList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
             this.footerBarRef.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
-            console.log(vWidth);
         }
     };
 
     handleChangeItem = (item) => {
         this.setState({selectedItem: item, isLoadItem: true});
         this.refreshItem(item._id);
+        this.weekList.scrollToTop();
     };
 
     handleElectiveAdd = (dataHeader) => {
@@ -108,16 +112,32 @@ class Elective extends PureComponent {
         });
     };
 
-    handleConfirmData = (item) => {
-        console.log(item);
-        this.props.setAction(Elective.ACTION_EDIT_ITEM);
+    handleElectiveRemove = () => {
+        axios.delete(`/elective/${this.state.selectedItem._id}`).then(value => {
+            this.refreshAll();
+        });
+    };
+
+    handleClickSaveChanges = () => {
+        this.props.setAction(Elective.ACTION_SAVE_ITEM, () => this.props.setAction(""));
+    };
+
+    handleClickCancelChanges = () => {
+        this.props.setOpen(false);
+    };
+
+    handleSaveElective = (item) => {
+        this.setState({isLoadItem: true});
+        axios.put(`/elective/${item._id}`, item).then(value => {
+            this.refreshAll(value.data);
+        });
     };
 
     render() {
         const {windowStyle} = this.props;
         return (
             <FooterPanelConsumer>
-                {({setAction, action, isOpen}) => (
+                {({setAction, action, setOpen, isOpen}) => (
                     <div style={windowStyle}>
                         {!this.state.isLoadList &&
                             <SideMenu selectedItem={this.state.selectedItem}
@@ -132,13 +152,17 @@ class Elective extends PureComponent {
                             </SideMenu>
                         }
                         <ResizeSensor onResize={this.handleResizeView}>
-                            <ElectiveWeekList ref={input => this.weekList = input} isLoadItem={this.state.isLoadItem}
-                                              setAction={setAction} onConfirm={this.handleConfirmData}
-                                              item={this.state.selectedItem && this.state.selectedItem} {...styles}/>
+                            <ElectiveWeekList ref={input => this.weekList = input}
+                                              isLoadItem={this.state.isLoadItem}
+                                              setAction={setAction} action={action}
+                                              setOpen={setOpen}
+                                              onSaveElective={this.handleSaveElective}
+                                              onRemoveElective={this.handleElectiveRemove}
+                                              item={this.state.selectedItem} {...styles}/>
                         </ResizeSensor>
                         <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
-                            <Button minimal icon="undo">Отменить</Button>
-                            <Button minimal icon="edit">Сохранить изменения</Button>
+                            <Button minimal icon="undo" onClick={this.handleClickCancelChanges}>Отменить</Button>
+                            <Button minimal icon="edit" onClick={this.handleClickSaveChanges}>Сохранить изменения</Button>
                         </FooterBar>
                     </div>
                 )}

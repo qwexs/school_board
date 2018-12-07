@@ -52,6 +52,13 @@ const styles = {
 
 class ElectiveDayItem extends PureComponent {
 
+    static propTypes = {
+        handleDraggableStart: PropTypes.func,
+        handleDraggableStop: PropTypes.func,
+        handleClickItemSave: PropTypes.func,
+        handleClickItemRemove: PropTypes.func,
+    };
+
     state = {
         isRoll: false,
         edited: false,
@@ -60,11 +67,33 @@ class ElectiveDayItem extends PureComponent {
             name: "",
             start: new Date(),
             end: new Date()
-        }
+        },
+        isNew: false
     };
 
     timePickerStartValue;
     timePickerEndValue;
+
+    componentDidMount() {
+        this.componentWillReceiveProps(this.props)
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        const {item} = nextProps;
+        this.timePickerStartValue = new Date(new Date().setHours(15, 0));
+        this.timePickerEndValue = new Date(new Date().setHours(16,0));
+        const isNew = item && item.isNew;
+        let data;
+        if (isNew) {
+            data = {id: item.id, name: "", start: this.timePickerStartValue, end: this.timePickerEndValue};
+        } else if (item) {
+            data = {...item, start: new Date(item.start), end: new Date(item.end)};
+        }
+        this.setState({
+            data, isNew,
+            edited: isNew || this.state.edited
+        });
+    }
 
     onOverHandler = (event) => {
         event.stopPropagation();
@@ -77,40 +106,28 @@ class ElectiveDayItem extends PureComponent {
     };
 
     onItemEditedClick = () => {
-        this.props.handleDraggableStop();
-        this.setState({edited: true});
+        this.props.handleDraggableStop(() => this.setState({edited: true}));
     };
 
     onItemSaveClick = () => {
         const {data} = this.state;
         data.start = this.timePickerStartValue;
         data.end = this.timePickerEndValue;
-        this.props.handleClickItemSave(data);
-        this.setState({edited: false});
-        this.props.handleDraggableStart();
+        this.setState({edited: false}, () => {
+            this.props.handleClickItemSave(data);
+        });
     };
 
     onItemCancelClick = () => {
-        this.setState({edited: false});
-        this.props.handleDraggableStart();
+        if (this.state.isNew)
+            this.onItemRemoveClick();
+        else
+            this.props.handleDraggableStart(() => this.setState({edited: false}));
     };
 
     onItemRemoveClick = () => {
         this.props.handleClickItemRemove(this.state.data);
     };
-
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props)
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        const {item} = nextProps;
-        this.timePickerStartValue = this.state.data.start;
-        this.timePickerEndValue = this.state.data.end;
-        this.setState({
-            data: item
-        });
-    }
 
     handleStartValueChange = (value) => {
         this.timePickerStartValue = value;
@@ -135,6 +152,7 @@ class ElectiveDayItem extends PureComponent {
     };
 
     getTimeText() {
+        if (!this.state.data) return null;
         if (isNaN(this.state.data.start.getTime()))
         {
             return this.getTimeFormat(this.state.data.end);
@@ -149,15 +167,15 @@ class ElectiveDayItem extends PureComponent {
 
     render() {
         const itemStyle = {
-            height: this.state.data.id ? 150 : 50,
+            height: this.state.data ? 150 : 50,
                 background: "#F5F8FA",
                 padding: "5px"
         };
         return (
-            <Card style={itemStyle} interactive={!this.state.edited && this.state.data.id} elevation={Elevation.ONE}
+            <Card style={itemStyle} interactive={!this.state.edited && this.state.data} elevation={Elevation.ONE}
                   onMouseOver={this.onOverHandler} onMouseLeave={this.onOutHandler}>
                 {
-                    this.state.data.id
+                    this.state.data
                         ?
                         <div style={{width:"100%", height:"100%"}}>
                             <div style={styles.topPanelContainer}>
@@ -190,8 +208,8 @@ class ElectiveDayItem extends PureComponent {
                                 <div style={[styles.labelBlockContainer, {width:"30%"}]}>
                                     {this.state.edited
                                         ?
-                                        <input className={Classes.INPUT} style={[styles.labelItem, {width:"60%"}]}
-                                               value={this.state.data.name}
+                                        <input autoFocus className={Classes.INPUT} style={[styles.labelItem, {width:"60%"}]}
+                                               value={this.state.data.name} maxLength={12}
                                                onChange={this.onInputNameChange}/>
                                         :
                                         <label style={styles.labelItem}
@@ -234,19 +252,9 @@ class ElectiveDayItem extends PureComponent {
                             </label>
                         </div>
                 }
-
             </Card>
         );
     }
 }
-
-
-
-ElectiveDayItem.propTypes = {
-    handleDraggableStart: PropTypes.func,
-    handleDraggableStop: PropTypes.func,
-    handleClickItemSave: PropTypes.func,
-    handleClickItemRemove: PropTypes.func
-};
 
 export default Radium(ElectiveDayItem)

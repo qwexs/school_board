@@ -1,14 +1,16 @@
 import React, {PureComponent} from 'react';
 import ElectiveDayList from "./ElectiveDayList";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
-import {Button, EditableText, H4, H6, Popover, PopoverInteractionKind, Spinner} from "@blueprintjs/core";
-import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
+import {Spinner} from "@blueprintjs/core";
 import * as PropTypes from "prop-types";
+import ElectiveTitleGroup from "./ElectiveTitleGroup";
+import Elective from "./Elective";
 
 class ElectiveWeekList extends PureComponent {
 
     static propTypes = {
-        onConfirm: PropTypes.func
+        onRemoveElective: PropTypes.func,
+        onSaveElective: PropTypes.func
     };
 
     state = {
@@ -16,44 +18,39 @@ class ElectiveWeekList extends PureComponent {
     };
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const {item} = nextProps;
+        const {item, action, isLoadItem} = nextProps;
 
-        this.setState({
-            item
-        });
+        this.setState({item});
 
-        if (this.listContainer) {
-            this.listContainer.scrollTop = 0;
+        if (!isLoadItem && action === Elective.ACTION_SAVE_ITEM) {
+            const {name, teacher, place} = this.titleGroupRef.state.item;
+            this.setState({item:{...this.state.item, name, teacher, place}}, () => {
+                nextProps.onSaveElective(this.state.item);
+            });
         }
     }
 
-    handleChangeTitle = (text) => {
-        this.setState(prevState => {
-            return {item: {...prevState.item, name: text}}
-        });
-    };
+    scrollToTop() {
+        if (this.listContainerRef) {
+            this.listContainerRef.scrollTop = 0;
+        }
+    }
 
-    handleChangeTeacher = (text) => {
-        this.setState(prevState => {
-            return {item: {...prevState.item, teacher: text}}
+    handleSaveList = (dayList) => {
+        const {id, less} = dayList;
+        const newItem = this.state.item;
+        newItem.items.forEach(itemDay => {
+            if (itemDay._id === id) {
+                itemDay.less = less;
+            }
         });
-    };
-
-    handleChangePlace = (text) => {
-        this.setState(prevState => {
-            return {item: {...prevState.item, place: text}}
-        });
-    };
-
-    handleConfirmData = () => {
-        this.props.onConfirm(this.state.item);
     };
 
     render() {
-        const {contentStyle, isLoadItem, item} = this.props;
+        const {contentStyle, isLoadItem} = this.props;
         return (
             <FooterPanelConsumer>
-                {({setAction, action}) => (
+                {({setOpen, setAction, action}) => (
                     <div style={{
                         width: "100%",
                         height: "100%"
@@ -67,55 +64,20 @@ class ElectiveWeekList extends PureComponent {
                                 <Spinner/>
                             </div>
                             :
-                            <div style={contentStyle} ref={(ref) => this.listContainer = ref}>
-                                <div style={{margin: 10}}>
-                                    <Popover interactionKind={PopoverInteractionKind.CLICK}
-                                         content={
-                                             <div style={{padding: 5}}>
-                                                 <Button icon="trash" text={"Удалить электив"} minimal
-                                                         className={Classes.POPOVER_DISMISS}
-                                                         onClick={this.props.onRemoveKlass}/>
-                                             </div>
-
-                                         }
-                                         target={
-                                             <H4 style={{color:"#394B59"}}>
-                                                 <EditableText placeholder={"Название электива..."}
-                                                               value={this.state.item.name}
-                                                               maxLength={45}
-                                                               minWidth={"15vw"}
-                                                               onConfirm={this.handleConfirmData}
-                                                               onChange={this.handleChangeTitle}
-                                                 />
-                                             </H4>
-                                         }/>
-
-                                    <H6 style={{color:"#394B59"}}>
-                                        <EditableText placeholder={"Имя руководителя..."}
-                                                      value={this.state.item.teacher}
-                                                      maxLength={70}
-                                                      minWidth={"15vw"}
-                                                      onConfirm={this.handleConfirmData}
-                                                      onChange={this.handleChangeTeacher}
-                                        />
-                                    </H6>
-                                    <H6 style={{color:"#394B59"}}>
-                                        <EditableText placeholder={"Место проведения..."}
-                                                      value={this.state.item.place}
-                                                      maxLength={30}
-                                                      minWidth={"15vw"}
-                                                      onConfirm={this.handleConfirmData}
-                                                      onChange={this.handleChangePlace}
-                                        />
-                                    </H6>
-                                </div>
+                            <div style={contentStyle} ref={(ref) => this.listContainerRef = ref}>
+                                <ElectiveTitleGroup ref={ref => this.titleGroupRef = ref}
+                                                    item={this.state.item} setOpen={setOpen}
+                                                    onRemoveElective={this.props.onRemoveElective}/>
                                 <div style={{
                                     width: "90%", margin: "auto",
                                     borderBottom: "2px solid silver"
                                 }}/>
                                 {
                                     this.state.item.items.map((itemList, index) =>
-                                        <ElectiveDayList key={index} list={itemList} {...contentStyle}/>)
+                                        <ElectiveDayList key={index} list={itemList}
+                                                         setOpen={setOpen} onSave={this.handleSaveList}
+                                                         setAction={setAction} action={action}
+                                                         {...contentStyle}/>)
                                 }
                             </div>
                         }
