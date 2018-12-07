@@ -17,7 +17,7 @@ class DateWeekPicker extends PureComponent {
         selectedRange: null
     };
 
-    componentDidMount() {
+    componentWillMount() {
         this.setState({selectedRange: this.weekFromDay(this.props.value)})
     }
 
@@ -68,14 +68,15 @@ class DateWeekPicker extends PureComponent {
 
         return (
             <DayPicker className="bp3-ui-text"
-                showOutsideDays
-                selectedDays={selectedRange}
-                onDayClick={this.handelDayChange}
-                onDayMouseEnter={this.handleDayEnter}
-                onDayMouseLeave={this.handleDayLeave}
-                modifiers={modifiers}
-                locale={"ru"}
-                localeUtils={DatePickerLocaleUtils}
+                       showOutsideDays
+                       month={this.state.selectedRange && this.state.selectedRange.from}
+                       selectedDays={selectedRange}
+                       onDayClick={this.handelDayChange}
+                       onDayMouseEnter={this.handleDayEnter}
+                       onDayMouseLeave={this.handleDayLeave}
+                       modifiers={modifiers}
+                       locale={"ru"}
+                       localeUtils={DatePickerLocaleUtils}
             />
         );
     }

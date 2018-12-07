@@ -52,7 +52,7 @@ class Schedule extends PureComponent {
         this.scheduleList = React.createRef();
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.refreshAll();
     }
 

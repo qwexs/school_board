@@ -6,6 +6,7 @@ import * as PropTypes from "prop-types";
 import ElectiveTitleGroup from "./ElectiveTitleGroup";
 import Elective from "./Elective";
 import IsNoPage from "../../components/IsNoPage";
+import Radium from "radium";
 
 class ElectiveWeekList extends PureComponent {
 
@@ -51,39 +52,37 @@ class ElectiveWeekList extends PureComponent {
         const {contentStyle, isLoadItem} = this.props;
         return (
             <FooterPanelConsumer>
-                {({setOpen, setAction, action}) => (
+                {({setOpen, isOpen, setAction, action}) => (
                     <div style={{
                         width: "100%",
                         height: "100%"
                     }}>
-                        <IsNoPage notEmpty={this.state.item && this.state.item.items && this.state.item.items.length}>
-                            {isLoadItem
-                                ?
+                        {isLoadItem
+                            ?
+                            <div style={{
+                                position: "relative",
+                                top: "50%"
+                            }}>
+                                <Spinner/>
+                            </div>
+                            :
+                            <div style={[contentStyle, {paddingBottom: isOpen ? 60 : 0}]} ref={(ref) => this.listContainerRef = ref}>
+                                <ElectiveTitleGroup ref={ref => this.titleGroupRef = ref}
+                                                    item={this.state.item} setOpen={setOpen}
+                                                    onRemoveElective={this.props.onRemoveElective}/>
                                 <div style={{
-                                    position: "relative",
-                                    top: "50%"
-                                }}>
-                                    <Spinner/>
-                                </div>
-                                :
-                                <div style={contentStyle} ref={(ref) => this.listContainerRef = ref}>
-                                    <ElectiveTitleGroup ref={ref => this.titleGroupRef = ref}
-                                                        item={this.state.item} setOpen={setOpen}
-                                                        onRemoveElective={this.props.onRemoveElective}/>
-                                    <div style={{
-                                        width: "90%", margin: "auto",
-                                        borderBottom: "2px solid silver"
-                                    }}/>
-                                    {
-                                        this.state.item && this.state.item.items.map((itemList, index) =>
-                                            <ElectiveDayList key={index} list={itemList}
-                                                             setOpen={setOpen} onSave={this.handleSaveList}
-                                                             setAction={setAction} action={action}
-                                                             {...contentStyle}/>)
-                                    }
-                                </div>
-                            }
-                        </IsNoPage>
+                                    width: "90%", margin: "auto",
+                                    borderBottom: "2px solid silver"
+                                }}/>
+                                {
+                                    this.state.item && this.state.item.items.map((itemList, index) =>
+                                        <ElectiveDayList key={index} list={itemList}
+                                                         setOpen={setOpen} onSave={this.handleSaveList}
+                                                         setAction={setAction} action={action}
+                                                         {...contentStyle}/>)
+                                }
+                            </div>
+                        }
                     </div>
                 )}
             </FooterPanelConsumer>
@@ -91,4 +90,4 @@ class ElectiveWeekList extends PureComponent {
     }
 }
 
-export default ElectiveWeekList;
+export default Radium(ElectiveWeekList);

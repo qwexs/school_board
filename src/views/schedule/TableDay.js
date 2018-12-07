@@ -13,7 +13,7 @@ class TableDay extends PureComponent {
         sparseCellData: {}
     };
 
-    componentDidMount() {
+    componentWillMount() {
         const {day} = this.props;
         this.setState(day);
     }

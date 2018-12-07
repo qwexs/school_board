@@ -45,7 +45,7 @@ class Announce extends PureComponent {
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.refreshAll();
     }
 

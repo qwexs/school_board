@@ -15,7 +15,7 @@ class ElectiveTitleGroup extends PureComponent {
         item: {}
     };
 
-    componentDidMount() {
+    componentWillMount() {
         this.componentWillReceiveProps(this.props);
     }
 

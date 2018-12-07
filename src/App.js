@@ -14,7 +14,7 @@ import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/Footer
 
 class App extends Component {
 
-    componentDidMount() {
+    componentWillMount() {
         axios.create({
             headers: {
                 'Content-Type': 'application/json'

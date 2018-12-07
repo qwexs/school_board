@@ -74,7 +74,7 @@ class ElectiveDayItem extends PureComponent {
     timePickerStartValue;
     timePickerEndValue;
 
-    componentDidMount() {
+    componentWillMount() {
         this.componentWillReceiveProps(this.props)
     }
 

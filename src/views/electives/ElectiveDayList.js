@@ -50,7 +50,7 @@ class ElectiveDayList extends PureComponent {
         isDragDisabled: false,
     };
 
-    componentDidMount() {
+    componentWillMount() {
         this.componentWillReceiveProps(this.props);
     }
 
