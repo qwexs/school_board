@@ -11,14 +11,6 @@ import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import IsNoPage from "../../components/IsNoPage";
 
 const styles = {
-    electiveContainerStyle: {
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "auto",
-        overflowX: "hidden",
-        flexGrow: 1,
-        padding: "30px 10px 10px 10px",
-    },
     sideItem: {
         display: "flex",
         flexDirection: "row",
@@ -91,7 +83,7 @@ class Elective extends PureComponent {
     };
 
     handleResizeView = (entries) => {
-        if (entries && this.weekList) {
+        if (entries && this.weekList && this.footerBarRef) {
             const vWidth = entries[0].contentRect.width;
             const element = ReactDOM.findDOMNode(this.weekList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;

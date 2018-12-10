@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import Menu from "./components/sideBar/Menu";
-import {Switch, Route, BrowserRouter} from 'react-router-dom';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import "./App.css";
 import routes from "./routes";
 import NoMatch from "./views/NoMatch";
@@ -9,17 +9,16 @@ import PropsRoute from "./components/routes/PropsRoute";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import {setAuth} from "./components/authentication/setAuth";
 import Radium from 'radium';
-import axios from "axios";
 import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/FooterBarProvider";
 
 class App extends Component {
 
     componentWillMount() {
-        axios.create({
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        // axios.create({
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // });
     }
 
   render() {

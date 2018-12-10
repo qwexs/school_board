@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
 const {Elective, ElectiveDay, getEmptyElective} = require('../models/elective.model');
-const path = require('path');
 const bufferFrom = require('buffer-from');
 const async = require('async');
 
@@ -38,7 +36,7 @@ router.route('/:id')
     })
     .put((req, res) => {
         const {name, teacher, place, items} = req.body;
-        async.eachSeries(items, function updateObject (obj, done) {
+        async.eachSeries(items, (obj, done) => {
             ElectiveDay.updateOne({ _id: obj._id }, { $set : { less: obj.less }}, done);
         }, function allDone (err) {
             Elective.findByIdAndUpdate(req.params.id, {$set: {name, teacher, place}}, {new: true})
@@ -54,17 +52,6 @@ router.route('/:id')
         });
     });
 
-// const elective = new Elective({name: "test"});
-//
-// elective.icon.data = fs.readFileSync(path.join(__dirname, '../../public/iconElective.png'));
-// elective.icon.contentType = 'image/png';
-// elective.save(function (err, raw) {
-//     if (err) throw err;
-//
-//     console.log(raw);
-// });
-
-// console.log(path.join(__dirname, '../../static'));
 module.exports = router;
 
 

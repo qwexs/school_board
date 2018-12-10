@@ -1,4 +1,5 @@
 import React from 'react';
+import {arrayBufferToBase64} from "../../utils/arrayBufferToBase64";
 
 const styles = {
     title: {
@@ -9,7 +10,8 @@ const styles = {
         float: "left",
         textAlign: "left",
         paddingTop: "5%",
-        paddingLeft: "10%"
+        paddingLeft: "10%",
+        textOverflow: "ellipsis",
     },
     info: {
         display: "inline-block",
@@ -28,13 +30,6 @@ const styles = {
         paddingRight: "5%",
         paddingLeft: "3%",
     }
-};
-
-const arrayBufferToBase64 = (buffer) => {
-    let binary = '';
-    const bytes = [].slice.call(new Uint8Array(buffer));
-    bytes.forEach((b) => binary += String.fromCharCode(b));
-    return window.btoa(binary);
 };
 
 export default React.memo(({...props}) => {

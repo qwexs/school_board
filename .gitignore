@@ -26,3 +26,4 @@ iboo_admin_panel.iml
 package-lock.json
 /src/App.test.js
 /server/data/
+/public/gallery-files/

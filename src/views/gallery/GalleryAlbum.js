@@ -2,15 +2,24 @@ import React, {PureComponent} from 'react';
 import GalleryComponent from "react-photo-gallery";
 import Gallery from './Gallery';
 import SelectedImage from "./SelectImage";
+import Dropzone from 'react-dropzone';
 
 class GalleryAlbum extends PureComponent {
 
     state = {
         photos: [],
+        files: [],
+        dropzoneActive: false
     };
 
+    componentDidMount() {
+        this.componentWillReceiveProps(this.props);
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
-        let {action, item: {photos}} = nextProps;
+        const {action, item} = nextProps;
+        if (!item || !item.photos) return;
+        let {photos} = item;
         switch (action) {
             case Gallery.ACTION_SELECT_ALL:
                 photos.map(item => item.selected = true);
@@ -26,11 +35,9 @@ class GalleryAlbum extends PureComponent {
         this.setState({photos});
     }
 
-    componentWillUpdate(nextProps, nextState, nextContext) {
-        if (nextProps.item.name !== this.props.item.name) {
-            this.listContainer.scrollTop = 0;
-            nextState.photos.map(item => item.selected = false);
-        }
+    scrollToTop() {
+        if (this.listContainer) this.listContainer.scrollTop = 0;
+        this.state.photos.map(item => item.selected = false);
     }
 
     selectPhoto = (event, obj) => {
@@ -41,18 +48,48 @@ class GalleryAlbum extends PureComponent {
         );
     };
 
+    onDragEnter = () => {
+        this.setState({
+            dropzoneActive: true
+        });
+    };
+
+    onDragLeave = () => {
+        this.setState({
+            dropzoneActive: false
+        });
+    };
+
+    onDrop = (files) => {
+        this.setState({
+            files,
+            dropzoneActive: false
+        });
+    };
+
     render() {
         const {contentStyle} = this.props;
+        const {dropzoneActive} = this.state;
         return (
             <div style={{
                 width: "100%",
                 height: "100%"
             }} className="disable-select">
                 <div style={contentStyle} ref={(ref) => this.listContainer = ref}>
-                    <GalleryComponent
-                        photos={this.state.photos}
-                        ImageComponent={SelectedImage}
-                        onClick={this.selectPhoto}/>
+                    <Dropzone
+                        accept="image/jpeg, image/jpg, image/png"
+                        disableClick
+                        style={{position: "relative", opacity: dropzoneActive ? .5 : 1}}
+                        onDrop={this.onDrop}
+                        onDragEnter={this.onDragEnter}
+                        onDragLeave={this.onDragLeave}
+                    >
+                        <GalleryComponent
+                            photos={this.state.photos}
+                            ImageComponent={SelectedImage}
+                            onClick={this.selectPhoto}/>
+                    </Dropzone>
+
                 </div>
             </div>
         );
