@@ -147,6 +147,12 @@ class Gallery extends PureComponent {
         });
     };
 
+    handleDeleteItems = (items) => {
+        axios.put(`/gallery/${this.state.selectedItem._id}`, {items}).then(value => {
+            this.refreshAll(value.data);
+        });
+    };
+
     render() {
         const {windowStyle} = this.props;
         return (
@@ -170,6 +176,7 @@ class Gallery extends PureComponent {
                             <IsNoPage notEmpty={this.state.selectedItem}>
                                 <GalleryAlbum ref={input => this.albumList = input}
                                               item={this.state.selectedItem}
+                                              onDeleteItems={this.handleDeleteItems}
                                               setOpen={setOpen}
                                               action={action}
                                               {...styles}/>

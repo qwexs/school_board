@@ -14,11 +14,12 @@ const UPLOAD_DIR = "./public/gallery-files/";
 const upload = multer({ storage: multer.diskStorage({
         destination: (req, file, callback) => {
             let {id} = req.body;
-            let path = UPLOAD_DIR + "album" + id;
-            fs.mkdir(path, () => {
-                fs.mkdirsSync(path+"/thumbs");
-                callback(null, path);
-            });
+            const albumName = "album" + id;
+            let path = UPLOAD_DIR + albumName;
+            fs.mkdirsSync(path);
+            fs.mkdirsSync(path + "/full");
+            fs.mkdirsSync(path + "/thumbs");
+            callback(null, path + "/full");
         },
         filename: (req, file, cb) => {
             let extension = file.originalname;
@@ -54,14 +55,13 @@ router.route('/')
                     const [width, height] = features.split('x');
                     const gcd = gcdMath(width, height);
                     photos.push({
-                        src: '/gallery-files/' + dirName + '/' + file.filename,
+                        src: '/gallery-files/' + dirName + '/full/' + file.filename,
                         width: width / gcd,
                         height: height / gcd
                     });
-
                     im.resize({
                         srcPath: filePath,
-                        dstPath: file.destination + "/" + "thumbs/" + file.filename,
+                        dstPath: './public/gallery-files/' + dirName + "/thumbs/" + file.filename,
                         width: "144^", height: "144^"
                     }, (err) => {
                         if (err) throw err;
@@ -72,7 +72,7 @@ router.route('/')
 
             });
         }, function allDone(err) {
-            Gallery.create({name, quantity: files.length, dirName, photos, date: Date.now()}).then((value) => {
+            Gallery.create({name, quantity: files.length, dirName:dirName+"/full", photos, date: Date.now()}).then((value) => {
                 res.status(201).json(value);
             });
         });
@@ -83,19 +83,39 @@ router.route("/:id")
     .delete((req, res) => {
         Gallery.findByIdAndRemove(req.params.id, (err, value) => {
             const {dirName} = value;
-            const dirPath = UPLOAD_DIR + dirName;
+            const dirPath = UPLOAD_DIR + dirName.replace("full", "");
             fs.remove(dirPath, (err) => {
                 if (err) throw err;
 
                 res.status(200).send({value});
             });
-
         });
     })
-    .patch((req, res) => {
-
+    .put((req, res) => {
+        const {items} = req.body;
+        Gallery.findById(req.params.id, (err, value) => {
+            const currentAlbum = value;
+            const {photos} = currentAlbum;
+            const useful = photos.filter(photo => items.some(item => item.src === photo.src));
+            const useless = Array.from(photos.filter(photo => !useful.some(item => item.src === photo.src)), el => el.src);
+            currentAlbum.photos = useful;
+            currentAlbum.quantity = useful.length;
+            async.eachSeries(useless, (filePath, done) => {
+                const absolutePath = "./public" + filePath;
+                fs.remove(absolutePath, err => {
+                    if (err) throw err;
+                    fs.remove(absolutePath.replace("full", "thumbs"), err => {
+                        if (err) throw err;
+                        done();
+                    });
+                });
+            }, function allDone(err) {
+                currentAlbum.save(() => {
+                    res.status(200).send(currentAlbum);
+                });
+            });
+        });
     });
-
 
 module.exports = router;
 

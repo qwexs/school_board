@@ -55,7 +55,7 @@ export default class GallerySideItem extends React.PureComponent {
                                  modifiers={{
                                      arrow: {enabled: false},
                                      flip: {enabled: false},
-                                     keepTogether: {enabled: true},
+                                     keepTogether: {enabled: false},
                                      hide: {enabled: false},
                                      preventOverflow: {enabled: false},
                                  }}
@@ -92,5 +92,4 @@ export default class GallerySideItem extends React.PureComponent {
             </div>
         );
     }
-
 }

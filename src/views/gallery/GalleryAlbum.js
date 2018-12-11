@@ -3,8 +3,13 @@ import GalleryComponent from "react-photo-gallery";
 import Gallery from './Gallery';
 import SelectedImage from "./SelectImage";
 import Dropzone from 'react-dropzone';
+import * as PropTypes from "prop-types";
 
 class GalleryAlbum extends PureComponent {
+
+    static propTypes = {
+        onDeleteItems: PropTypes.func
+    };
 
     state = {
         photos: [],
@@ -29,6 +34,7 @@ class GalleryAlbum extends PureComponent {
                 break;
             case Gallery.ACTION_DELETE:
                 photos = photos.filter(item => !item.selected);
+                this.props.onDeleteItems(photos);
                 break;
             default:
         }
