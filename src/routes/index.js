@@ -4,6 +4,7 @@ import Announce from "../views/announce/Announce";
 import Schedule from "../views/schedule/Schedule";
 import Elective from "../views/electives/Elective";
 import Gallery from "../views/gallery/Gallery";
+import News from "../views/news/News";
 
 const routes = [
     {
@@ -14,7 +15,7 @@ const routes = [
     {
         title: "Новости",
         path: "/app/news",
-        component: ()=><div/>,
+        component: News,
     },
     {
         title: "Расписание уроков",

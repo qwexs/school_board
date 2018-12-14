@@ -3,14 +3,15 @@ global.rootPath = require('app-root-path').path;
 global.Promise = require('bluebird');
 const express = require('express');
 const app = express();
+const cors = require("cors");
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const uri = 'mongodb://localhost/iboard';
+const newsRouter = require('./routes/news.router');
 const scheduleRouter = require('./routes/shedule.router');
 const announceRouter = require('./routes/announce.router');
 const electiveRouter = require('./routes/elective.router');
 const galleryRouter = require('./routes/gallery.router');
-const cors = require("cors");
 
 app.use(cors());
 app.use(express.json({limit: '50mb'}));
@@ -25,6 +26,7 @@ const connectDb = () => {
 };
 
 const startServer = () => {
+    app.use('/news', newsRouter);
     app.use('/schedule', scheduleRouter);
     app.use('/announce', announceRouter);
     app.use('/elective', electiveRouter);

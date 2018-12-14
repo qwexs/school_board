@@ -77,6 +77,10 @@ export default class ElectiveHeaderBar extends PureComponent {
                                          <label className="bp3-label"
                                                 style={{display: "flex", flexDirection: "column"}}>
                                              <FileInput fill
+                                                        inputProps={{
+                                                            multiple: false,
+                                                            accept: "image/jpeg,image/jpg,image/png"
+                                                        }}
                                                         title={"Обзор"}
                                                         text={"Выберите иконку..."}
                                                         onInputChange={this.handleInputIcon}/>

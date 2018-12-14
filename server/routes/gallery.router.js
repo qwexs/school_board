@@ -1,11 +1,9 @@
 const Gallery = require('../models/gallery.model');
-
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const fs = require('fs-extra');
 const async = require('async');
-const path = require('path');
 const im = require('imagemagick');
 const uniqid = require('uniqid');
 const gcdMath = require('../utils/gcdMath');
