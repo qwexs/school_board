@@ -1,5 +1,6 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom'
+import {Button, H5} from "@blueprintjs/core";
 
 class AuthLogin extends React.Component {
     constructor(props) {
@@ -29,9 +30,9 @@ class AuthLogin extends React.Component {
         }
 
         return (
-            <div>
-                <p>Для входа в систему Вам необходимо авторизоваться</p>
-                <button onClick={this.onLogin}>Вход</button>
+            <div style={{position:"relative", marginTop:"25%"}}>
+                <H5>Для входа в систему Вам необходимо авторизоваться</H5>
+                <Button icon="key" onClick={this.onLogin}>Вход</Button>
             </div>
         )
     }

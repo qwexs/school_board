@@ -82,6 +82,7 @@ const styles = {
         background: "#E1E8ED",
         border: "1px solid lightgrey",
         height: "100%",
+        scrollBehavior: "smooth"
     }
 };
 

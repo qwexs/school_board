@@ -26,10 +26,9 @@ class SideMenu extends PureComponent {
 
     scrollToSelect() {
         if (this.selectedRef && this.selectedRef.current && this.containerRef) {
-            this.containerRef.scrollTo({
-                top: this.selectedRef.current.offsetTop - this.props.headerBar.props.style.height,
-                behavior: "smooth"
-            });
+            this.containerRef.scrollTop =
+                this.selectedRef.current.offsetTop -
+                this.props.headerBar.props.style.height;
         }
     }
 
@@ -41,7 +40,7 @@ class SideMenu extends PureComponent {
                 <div style={[
                     sideMenuContainer,
                     {height: `calc(100% - ${headerBar ? headerBar.props.style.height : 0}px)`}
-                ]} ref={ref => this.containerRef = ref}>
+                ]} ref={(ref) => (this.containerRef = ref)}>
                     {items.map((item, index) => {
                         const selected = selectedItem && item._id === selectedItem._id;
                         const ref = React.createRef();
