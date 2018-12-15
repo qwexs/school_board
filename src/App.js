@@ -53,7 +53,7 @@ const styles = {
         flexBasis: "20vw",
         minWidth: "10vw",
         overflowX: "hidden",
-        paddingTop: "5%",
+        paddingTop: "2%",
         background: "#8A9BA8",
         boxShadow: "inset -15px 0 1em -18px #1f1f1f",
     },

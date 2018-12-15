@@ -51,7 +51,7 @@ export default class ElectiveHeaderBar extends PureComponent {
                                      backgroundColor: "#F5F8FA", width: 300
                                  }}>
                                      <label className="bp3-label">
-                                         Нименование
+                                         Наименование
                                          <input className="bp3-input" type="text" placeholder="Элективный курс"
                                                 dir="auto" style={{width: "100%"}}
                                                 onChange={(event) => this.setState({name: event.target.value})}/>

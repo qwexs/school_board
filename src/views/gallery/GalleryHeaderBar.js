@@ -71,7 +71,7 @@ export default class GalleryHeaderBar extends PureComponent {
                                      backgroundColor: "#F5F8FA", width: 300
                                  }}>
                                      <label className="bp3-label">
-                                         Нименование
+                                         Наименование
                                          <input className={`bp3-input ${!this.state.isValid && "bp3-intent-danger"}`} type="text" placeholder="Имя альбома"
                                                 dir="auto" style={{width: "100%"}} value={this.state.name}
                                                 onChange={this.handleChangeName}/>
