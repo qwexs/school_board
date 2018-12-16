@@ -19,7 +19,7 @@ class SideMenu extends PureComponent {
 
     onClickHandler = (item) => {
         const {onChangeItem} = this.props;
-        if (this.props.selectedItem._id !== item._id) {
+        if (!this.props.selectedItem || this.props.selectedItem._id !== item._id) {
             onChangeItem(item);
         }
     };

@@ -40,19 +40,9 @@ class ScheduleContent extends PureComponent {
         return {name: this.state.text, days: this.props.listData.days, _id: this.props.listData['_id']};
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        const {action, listData} = nextProps;
-        switch (action) {
-            case Schedule.ACTION_ADD_ITEM:
-                this.setState({text: ""});
-                break;
-            case Schedule.ACTION_CANCEL_SAVE:
-            case Schedule.ACTION_CHANGE_ITEM:
-                this.setState({text: listData && listData.name});
-                break;
-            default:
-                break;
-        }
+    componentDidMount() {
+        const {listData} = this.props;
+        this.setState({text: listData.name});
     }
 
     handleChangeTitle = (text) => {
@@ -71,7 +61,6 @@ class ScheduleContent extends PureComponent {
                         <div style={{display: "flex", width: "100%"}}>
                             <div style={{marginTop: 10, width: "100%"}}>
                                 <Popover interactionKind={PopoverInteractionKind.CLICK}
-                                         disabled={!this.props.listData.hasOwnProperty("_id")}
                                          content={
                                              <div style={{padding: 5}}>
                                                  <Button icon="trash" text={"Удалить класс"} minimal
@@ -97,7 +86,7 @@ class ScheduleContent extends PureComponent {
                             </div>
                         </div>
 
-                        <TableList days={this.props.listData} onConfirm={this.handleConfirmData} {...styles}/>
+                        <TableList days={this.props.listData.days} onConfirm={this.handleConfirmData} {...styles}/>
                     </div>
                 )}
             </FooterPanelConsumer>

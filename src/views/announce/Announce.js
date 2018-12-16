@@ -3,7 +3,7 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import AnnounceSideItem from "./AnnounceSideItem";
 import AnnounceList from "./AnnounceList";
 import FooterBar from "../../components/footer/FooterBar";
-import {Button} from "@blueprintjs/core";
+import {Button, Spinner} from "@blueprintjs/core";
 import {ResizeSensor} from "@blueprintjs/core";
 import AnnounceHeaderBar from "./AnnounceHeaderBar";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
@@ -42,6 +42,7 @@ class Announce extends PureComponent {
             list: [],
             selectedItem: null,
             selectedDate: null,
+            isLoad:false
         };
     }
 
@@ -50,15 +51,15 @@ class Announce extends PureComponent {
     }
 
     refreshAll = () => {
+        this.setState({isLoad: false});
         axios.get('/announce').then(res => {
             const currentList = res.data.items;
             const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
-            if (currentItem)
-                currentItem.selected = true;
             this.setState({
                 list: currentList,
                 selectedItem: currentItem,
-                selectedDate: new Date(res.data.date)
+                selectedDate: new Date(res.data.date),
+                isLoad: true
             }, () => this.props.setOpen(false));
         });
     };
@@ -85,7 +86,7 @@ class Announce extends PureComponent {
 
     handleSaveItem = () => {
         axios.put(`/announce/${this.state.selectedItem._id}`, this.savedItem)
-            .then(() => this.refreshAll());
+            .then(this.refreshAll);
     };
 
     handleCancelSave = () => {
@@ -114,6 +115,15 @@ class Announce extends PureComponent {
         return (
             <FooterPanelConsumer>
                 {({setOpen, isOpen}) => (
+                    !this.state.isLoad
+                    ?
+                    <div style={{
+                        position: "relative",
+                        margin: "auto"
+                    }}>
+                        <Spinner/>
+                    </div>
+                    :
                     <div style={windowStyle}>
                         <SideMenu {...{sideMenuContainer}}
                                   items={this.state.list}

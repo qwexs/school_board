@@ -1,41 +1,54 @@
 const express = require('express');
 const router = express.Router();
+const async = require('async');
 
-const Schedule = require('../models/schedule.model');
+const {Schedule, ScheduleDays, getEmptySchedule} = require('../models/schedule.model');
 
 router.route('/')
     .get((req, res) => {
         Schedule.find({}).then((doc) => {
             res.status(200).json(doc);
         });
+    })
+    .post((req, res) => {
+        const {name} = req.body;
+        ScheduleDays.create(getEmptySchedule(), (err, days) => {
+            if (err) throw err;
+
+            Schedule.create({name, days: Array.from(days, (i) => i._id), date: Date.now()})
+                .then(doc => {
+                    res.status(201).json(doc)
+                })
+                .catch(err => {
+                    res.status(500).json(err);
+                });
+        });
     });
 
 router.route('/:id')
     .get((req, res) => {
-        Schedule.findOne({_id: req.params.id}, (err, doc) => {
-            res.status(200).json(doc);
+        Schedule.findById(req.params.id).populate('days').then(value => {
+            res.status(200).json(value);
         });
     })
-    .post((req, res) => {
-        const {days, name} = req.body;
-        const newSchedule = new Schedule({name, days});
-        newSchedule.save()
-            .then(doc => {
-                res.status(201).json(doc)
-            })
-            .catch(err => {
-                res.status(500).json({ message: err.message })
-            })
-    })
     .put((req, res) => {
-        Schedule.findByIdAndUpdate(req.params.id, { $set: { name:req.body.name, days: req.body.days }}, { new: true }, function (err, doc) {
-            res.send(doc);
+        const {name, days} = req.body;
+        Schedule.findByIdAndUpdate(req.params.id, {$set: {name}}, {new: true}, function (err, schedule) {
+            async.eachSeries(days, (day, done) => {
+                const {title, less} = day;
+                ScheduleDays.updateOne({_id: day._id}, {$set: {title, less}}).then(done);
+            }, function allDone(err) {
+                if (err) throw err;
+
+                res.status(200).json(schedule);
+            });
         });
     })
     .delete((req, res) => {
-        Schedule.find({_id: req.params.id}).remove().exec((err, docs) => {
-            res.send({status: "ok"});
+        Schedule.findByIdAndDelete(req.params.id).then(() => {
+            res.status(200).json({status: "ok"});
         });
     });
+
 
 module.exports = router;

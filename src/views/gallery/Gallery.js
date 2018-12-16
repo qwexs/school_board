@@ -13,6 +13,7 @@ import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 import {Intent} from "@blueprintjs/core/lib/cjs/common/intent";
 import classNames from 'classnames';
 import IsNoPage from "../../components/IsNoPage";
+import * as ReactDOM from "react-dom";
 
 const styles = {
     sideItem: {
@@ -56,7 +57,6 @@ class Gallery extends PureComponent {
         this.state = {
             list: [],
             selectedItem: null,
-            vWidth: 0,
             isLoadItem: true,
         };
     }
@@ -105,16 +105,18 @@ class Gallery extends PureComponent {
     };
 
     handleResizeView = (entries) => {
-        if (entries) {
+        if (entries && this.albumListRef && this.footerBarRef) {
             const vWidth = entries[0].contentRect.width;
-            this.footerBar.setState({vWidth})
+            const element = ReactDOM.findDOMNode(this.albumListRef);
+            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
+            this.footerBarRef.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
         }
     };
 
     onChangeItem = (item) => {
         this.props.setOpen(false);
         this.setState({selectedItem: item});
-        this.albumList.scrollToTop();
+        this.albumListRef.scrollToTop();
     };
 
     handleAddAlbum = (data) => {
@@ -174,7 +176,7 @@ class Gallery extends PureComponent {
                         </Modal>
                         <ResizeSensor onResize={this.handleResizeView}>
                             <IsNoPage notEmpty={this.state.selectedItem}>
-                                <GalleryAlbum ref={input => this.albumList = input}
+                                <GalleryAlbum ref={input => this.albumListRef = input}
                                               item={this.state.selectedItem}
                                               onDeleteItems={this.handleDeleteItems}
                                               setOpen={setOpen}
@@ -183,7 +185,7 @@ class Gallery extends PureComponent {
                             </IsNoPage>
                         </ResizeSensor>
 
-                        <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
+                        <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
                             <Button minimal icon="multi-select" onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать
                                 все</Button>
                             <Button minimal icon="disable"

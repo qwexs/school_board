@@ -80,11 +80,14 @@ class AnnounceList extends PureComponent {
         };
     }
 
+    componentDidMount() {
+        this.componentWillReceiveProps(this.props);
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
         const {list} = nextProps;
-        if (!list)
-            return;
-        const collectionList = list.education;
+        const collectionList = list ? list.education : null;
+        console.log(collectionList);
         this.setState({
             isDialogOpen: false,
             collectionList,
@@ -95,7 +98,8 @@ class AnnounceList extends PureComponent {
 
     getItems = () => {
         const result = [];
-        this.state.collectionList
+        const {collectionList} = this.state;
+        collectionList && collectionList
             .map((item, index) => {
                 item.index = index;
                 return result.push({
@@ -118,7 +122,7 @@ class AnnounceList extends PureComponent {
     onRemoveClickHandler = (itemTarget) => {
         const collectionList = this.state.collectionList.filter(item => item !== itemTarget).slice(0);
         this.props.onInsert({education: collectionList}, () => {
-            this.setState( {collectionList});
+            this.setState({collectionList});
         });
     };
 
@@ -183,13 +187,14 @@ class AnnounceList extends PureComponent {
                 {({setOpen, isOpen}) => (
                     <div style={styles.mainContainer}>
                         <div style={styles.wrapperContainer}>
-                            <div style={{width:"100%", minHeight: 0}}>
+                            <div style={{width: "100%", minHeight: 0}}>
                                 <div style={styles.topContainer}>
-                                    <H5 className="bp3-text-large" style={styles.titleLabel}>{`${this.state.title}, ${this.state.titleDay}`}</H5>
+                                    <H5 className="bp3-text-large"
+                                        style={styles.titleLabel}>{`${this.state.title}, ${this.state.titleDay}`}</H5>
                                     <Button minimal icon="add-to-artifact" onClick={this.handleAddAnnounce}/>
                                 </div>
-                                <IsNoPage notEmpty={this.state.collectionList.length > 0}
-                                          style={{width:"100%", height:`calc(100% - ${styles.topContainer.height})`}}>
+                                <IsNoPage notEmpty={this.state.collectionList && this.state.collectionList.length > 0}
+                                          style={{width: "100%", height: `calc(100% - ${styles.topContainer.height})`}}>
                                     <div style={[styles.listContainer, {paddingBottom: isOpen ? 60 : 0}]}>
                                         <DragDropContext
                                             onDragEnd={this.onDragEnd}>
@@ -219,7 +224,8 @@ class AnnounceList extends PureComponent {
                                     </div>
                                 </IsNoPage>
                                 <AnnounceDialog isOpen={this.state.isDialogOpen} content={this.state.content}
-                                                onSave={this.onSaveDialogHandler} onCancel={this.onCancelDialogHandler}/>
+                                                onSave={this.onSaveDialogHandler}
+                                                onCancel={this.onCancelDialogHandler}/>
                             </div>
 
                         </div>

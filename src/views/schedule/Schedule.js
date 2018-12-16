@@ -2,14 +2,13 @@ import React, {PureComponent} from 'react';
 import ScheduleSideItem from "./ScheduleSideItem";
 import SideMenu from "../../components/sideBar/SideMenu";
 import FooterBar from "../../components/footer/FooterBar";
-import {Button, ResizeSensor} from "@blueprintjs/core";
+import {Button, ResizeSensor, Spinner} from "@blueprintjs/core";
 import axios from "axios";
 import ScheduleHeaderBar from "./ScheduleHeaderBar";
 import Radium from "radium";
 import ScheduleContent from "./ScheduleContent";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import * as ReactDOM from "react-dom";
-import scheduleJSON from './scheduleData';
 import IsNoPage from "../../components/IsNoPage";
 
 const styles = {
@@ -46,7 +45,8 @@ class Schedule extends PureComponent {
         this.state = {
             list: [],
             selectedItem: null,
-            vWidth: ""
+            isLoad: false,
+            isLoadItem: true
         };
 
         this.scheduleList = React.createRef();
@@ -57,7 +57,7 @@ class Schedule extends PureComponent {
     }
 
     handleResizeView = (entries) => {
-        if (entries) {
+        if (entries && this.scheduleList && this.footerBar) {
             const vWidth = entries[0].contentRect.width;
             const element = ReactDOM.findDOMNode(this.scheduleList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
@@ -65,32 +65,28 @@ class Schedule extends PureComponent {
         }
     };
 
-    handleAddKlass = () => {
-        this.setState({
-            selectedItem: JSON.parse(JSON.stringify(scheduleJSON))
+    handleAddKlass = (name) => {
+        this.setState({selectedItem: null, isLoadItem: false});
+        axios.post("/schedule", {name}).then(resolve => {
+            this.refreshAll(resolve.data);
         });
-        this.props.setAction(Schedule.ACTION_ADD_ITEM, false);
     };
 
     handleRemoveKlass = () => {
+        this.setState({isLoadItem: false});
         axios.delete(`/schedule/${this.state.selectedItem._id}`).then(this.refreshAll);
     };
 
     handleClickSave = () => {
         const schedule = this.scheduleList.getData();
-        if (schedule._id) {
-            axios.put(`/schedule/${schedule._id}`, schedule).then(value => {
-                this.refreshAll(value.data);
-            });
-        }
-        else {
-            axios.post('/schedule/new', schedule).then(value => {
-                this.refreshAll(value.data);
-            });
-        }
+        axios.put(`/schedule/${schedule._id}`, schedule).then(value => {
+            this.refreshAll(value.data);
+        });
     };
 
     refreshAll = (selectedItem = null) => {
+        console.log(selectedItem);
+        this.props.setOpen(false);
         axios.get('/schedule').then(res => {
             const currentList = res.data;
             const currentItem = (selectedItem
@@ -98,23 +94,25 @@ class Schedule extends PureComponent {
                 || currentList[0];
             this.setState({
                 list: currentList,
-                selectedItem: currentItem
-            }, () => {
-            this.props.setAction(Schedule.ACTION_CHANGE_ITEM, false);
+                selectedItem: currentItem || null,
+                isLoad: true,
+                isLoadItem: true,
             });
+            if (currentItem)
+                this.refreshItem(currentItem);
         });
     };
 
-    refreshItem = () => {
-        axios.get(`/schedule/${this.state.selectedItem._id}`)
+    refreshItem = (currentItem) => {
+        this.setState({selectedItem: currentItem, isLoadItem: false});
+        axios.get(`/schedule/${currentItem._id}`)
             .then((res) => {
-                this.setState({selectedItem: res.data})
-            })
+                this.setState({selectedItem: res.data, isLoadItem: true})
+            });
     };
 
     handleChangeItem = (item) => {
-        this.setState({selectedItem: item});
-        this.props.setAction(Schedule.ACTION_CHANGE_ITEM, false);
+        this.refreshItem(item);
     };
 
     handleClickUndo = () => {
@@ -127,37 +125,57 @@ class Schedule extends PureComponent {
         return (
             <FooterPanelConsumer>
                 {({isOpen, setAction, action}) => (
-                    <div style={windowStyle}>
-                        <SideMenu {...{sideMenuContainer}}
-                                  items={this.state.list}
-                                  selectedItem={this.state.selectedItem}
-                                  action={action}
-                                  headerBar={
-                                      <ScheduleHeaderBar style={styles.headerBar}
-                                                         onAdd={this.handleAddKlass}
-                                      />
-                                  }
-                                  onChangeItem={this.handleChangeItem}>
-                            <ScheduleSideItem {...styles}/>
-                        </SideMenu>
+                    !this.state.isLoad
+                        ?
+                        <div style={{
+                            position: "relative",
+                            margin: "auto"
+                        }}>
+                            <Spinner/>
+                        </div>
+                        :
+                        <div style={windowStyle}>
+                            <SideMenu {...{sideMenuContainer}}
+                                      items={this.state.list}
+                                      selectedItem={this.state.selectedItem}
+                                      action={action}
+                                      headerBar={
+                                          <ScheduleHeaderBar style={styles.headerBar}
+                                                             onAdd={this.handleAddKlass}
+                                          />
+                                      }
+                                      onChangeItem={this.handleChangeItem}>
+                                <ScheduleSideItem {...styles}/>
+                            </SideMenu>
+                            {
+                                !this.state.isLoadItem
+                                    ?
+                                    <div style={{
+                                        position: "relative",
+                                        margin: "auto"
+                                    }}>
+                                        <Spinner/>
+                                    </div>
+                                    :
+                                    <IsNoPage
+                                        notEmpty={this.state.selectedItem !== null && typeof this.state.selectedItem.days[0] !== 'string'}>
+                                        <ResizeSensor onResize={this.handleResizeView}>
+                                            <ScheduleContent ref={(item) => this.scheduleList = item}
+                                                             listData={this.state.selectedItem}
+                                                             setAction={setAction}
+                                                             action={action}
+                                                             onRemoveKlass={this.handleRemoveKlass}
+                                                             refresh={this.refreshAll}
+                                                             {...styles}/>
+                                        </ResizeSensor>
+                                    </IsNoPage>
+                            }
 
-                        <IsNoPage notEmpty={this.state.selectedItem != null}>
-                            <ResizeSensor onResize={this.handleResizeView}>
-                                <ScheduleContent ref={(item) => this.scheduleList = item}
-                                                 listData={this.state.selectedItem}
-                                                 setAction={setAction}
-                                                 action={action}
-                                                 onRemoveKlass={this.handleRemoveKlass}
-                                                 refresh={this.refreshAll}
-                                                 {...styles}/>
-                            </ResizeSensor>
-                        </IsNoPage>
-
-                        <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
-                            <Button minimal icon="undo" onClick={this.handleClickUndo}>Отменить</Button>
-                            <Button minimal icon="edit" onClick={this.handleClickSave}>Сохранить изменения</Button>
-                        </FooterBar>
-                    </div>
+                            <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
+                                <Button minimal icon="undo" onClick={this.handleClickUndo}>Отменить</Button>
+                                <Button minimal icon="edit" onClick={this.handleClickSave}>Сохранить изменения</Button>
+                            </FooterBar>
+                        </div>
                 )}
             </FooterPanelConsumer>
         );
