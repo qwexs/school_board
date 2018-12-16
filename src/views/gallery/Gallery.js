@@ -3,7 +3,7 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import GallerySideItem from "./GallerySideItem";
 import GalleryAlbum from "./GalleryAlbum";
 import FooterBar from "../../components/footer/FooterBar";
-import {Button, ProgressBar, ResizeSensor, Toaster} from "@blueprintjs/core";
+import {Button, ProgressBar, ResizeSensor, Spinner, Toaster} from "@blueprintjs/core";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import {ID} from "../../utils/ID";
 import GalleryHeaderBar from "./GalleryHeaderBar";
@@ -58,6 +58,7 @@ class Gallery extends PureComponent {
             list: [],
             selectedItem: null,
             isLoadItem: true,
+            isLoad: false
         };
     }
 
@@ -72,6 +73,7 @@ class Gallery extends PureComponent {
                 this.setState({
                     list: currentList,
                     selectedItem: selectedItem || currentList[0],
+                    isLoad: true
                 }, () => {
                     this.sideMenuRef && this.sideMenuRef.scrollToSelect();
                 });
@@ -160,6 +162,15 @@ class Gallery extends PureComponent {
         return (
             <FooterPanelConsumer>
                 {({setOpen, isOpen, setAction, action}) => (
+                    !this.state.isLoad
+                        ?
+                        <div style={{
+                            position: "relative",
+                            margin: "auto"
+                        }}>
+                            <Spinner/>
+                        </div>
+                        :
                     <div style={windowStyle}>
                         <SideMenu selectedItem={this.state.selectedItem}
                                   items={this.state.list}

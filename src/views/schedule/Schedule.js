@@ -85,7 +85,6 @@ class Schedule extends PureComponent {
     };
 
     refreshAll = (selectedItem = null) => {
-        console.log(selectedItem);
         this.props.setOpen(false);
         axios.get('/schedule').then(res => {
             const currentList = res.data;

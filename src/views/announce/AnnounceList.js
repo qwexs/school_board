@@ -87,7 +87,6 @@ class AnnounceList extends PureComponent {
     componentWillReceiveProps(nextProps, nextContext) {
         const {list} = nextProps;
         const collectionList = list ? list.education : null;
-        console.log(collectionList);
         this.setState({
             isDialogOpen: false,
             collectionList,
