@@ -1,5 +1,4 @@
 import React from 'react';
-import {StatusPage} from "../views/index";
 import Announce from "../views/announce/Announce";
 import Schedule from "../views/schedule/Schedule";
 import Elective from "../views/electives/Elective";
@@ -7,11 +6,6 @@ import Gallery from "../views/gallery/Gallery";
 import News from "../views/news/News";
 
 const routes = [
-    {
-        title: "Подключния",
-        path: "/app/status",
-        component: StatusPage,
-    },
     {
         title: "Новости",
         path: "/app/news",
