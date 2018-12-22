@@ -16,14 +16,9 @@ export default class ElectiveHeaderBar extends PureComponent {
     };
 
     handleInputIcon = (event) => {
-        event.persist();
         const files = event.target.files || event.dataTransfer.files;
         const inputFile = files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            this.setState({iconName: inputFile.name, icon: event.target.result});
-        };
-        reader.readAsDataURL(inputFile);
+        this.setState(prevState => ({...prevState, icon: inputFile}));
     };
 
     handleClosingPopover = () => {
@@ -31,6 +26,7 @@ export default class ElectiveHeaderBar extends PureComponent {
     };
 
     render() {
+        const imgSrc = this.state.icon && URL.createObjectURL(this.state.icon);
         return (
             <div style={this.props.style}>
                 <div style={{
@@ -71,7 +67,7 @@ export default class ElectiveHeaderBar extends PureComponent {
                                      {this.state.icon
                                          ?
                                          <div style={{position: "relative", margin: "auto"}}>
-                                             <img src={this.state.icon} width={"auto"} height={'auto'} alt={"icon"}/>
+                                             <img src={imgSrc} width={"auto"} height={'auto'} alt={"icon"}/>
                                          </div>
                                          :
                                          <label className="bp3-label"

@@ -1,5 +1,4 @@
 import React from 'react';
-import {arrayBufferToBase64} from "../../utils/arrayBufferToBase64";
 
 const styles = {
     title: {
@@ -34,7 +33,6 @@ const styles = {
 
 export default React.memo(({...props}) => {
     const {item, sideItem} = props;
-    const imgSrc = item.icon ? "data:image/png;base64," + arrayBufferToBase64(item.icon.data.data) : "";
     return (
         <div style={sideItem}>
             <div style={{width:"100%"}} className="disable-select">
@@ -47,7 +45,7 @@ export default React.memo(({...props}) => {
                 </div>
             </div>
             <div style={styles.icon}>
-                <img width="auto" height="auto" style={{margin:"auto"}} src={imgSrc} alt={item.name}/>
+                <img width="auto" height="auto" style={{margin:"auto"}} src={`/${item.icon}`} alt={item.name}/>
             </div>
         </div>
     );

@@ -16,11 +16,13 @@ export default React.memo(({...props}) => {
         <div style={tableContainer}>
             {days && days.map((itemDay, index) => {
                 sparseCellData = {};
-                itemDay.less.map((item, index) =>
-                    Object.assign(sparseCellData, {[index + "-0"]: item["text"] || "", [index + "-1"]: item["cab"]}));
+                itemDay.less.map((item, index) => {
+                    console.log(item);
+                    Object.assign(sparseCellData, {[index + "-0"]: item["text"] || ""})
+                });
 
                 const dayData = {
-                    columnNames: [itemDay.title, "каб."],
+                    columnNames: [itemDay.title],
                     sparseCellData: sparseCellData
                 };
 

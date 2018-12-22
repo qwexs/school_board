@@ -12,7 +12,7 @@ const electiveSchema = new Schema({
         type: Schema.Types.String
     },
     icon: {
-        data: Schema.Types.Buffer, contentType: Schema.Types.String
+        type: Schema.Types.String
     },
     items: [{type: Schema.Types.ObjectId, ref: 'ElectiveDay'}]
 });

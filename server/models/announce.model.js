@@ -11,7 +11,7 @@ const daySchema = new Schema({
 });
 
 const weekSchema = new Schema({
-    date: {type: Schema.Types.Date},
+    date: {type: Schema.Types.Number},
     items: [{type: Schema.Types.ObjectId, ref: 'Announce'}]
 });
 

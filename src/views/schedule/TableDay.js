@@ -18,7 +18,7 @@ class TableDay extends PureComponent {
         this.setState(day);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps, nextContext) {
         const {day} = nextProps;
         this.setState(day);
     }
@@ -37,7 +37,7 @@ class TableDay extends PureComponent {
             <Table enableColumnResizing={false} enableRowResizing={false}
                    selectionModes={SelectionModes.ROWS_AND_CELLS}
                    enableMultipleSelection={false}
-                   columnWidths={[150,50]} numRows={7} >{columns}</Table>
+                   columnWidths={[170]} numRows={9} >{columns}</Table>
         );
     }
 

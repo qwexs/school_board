@@ -8,7 +8,7 @@ router.route('/')
         AnnounceWeek.findOne({}).populate('items').then(week => {
             if (week == null) {
                 Announce.create(getEmptyAnnounce(), (err, items) => {
-                    AnnounceWeek.create({date: moment(new Date()).startOf("isoWeek").toDate(), items: Array.from(items, (i) => i._id)},
+                    AnnounceWeek.create({date: moment(new Date()).startOf("isoWeek").toDate().getTime(), items: Array.from(items, (i) => i._id)},
                         (err, week) => {
                             res.status(200).json({_id: week._id, date: week.date, items});
                         });
@@ -19,7 +19,7 @@ router.route('/')
         });
     })
     .patch((req, res) => {
-        const date = moment(req.body.date).startOf("isoWeek").toDate();
+        const date = moment(req.body.date).startOf("isoWeek").toDate().getTime();
         AnnounceWeek.updateOne({date}, (err, doc) => {
             res.status(200 ).json(date);
         });

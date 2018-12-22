@@ -25,6 +25,13 @@ router.route('/')
         });
     });
 
+router.route('/all')
+    .get((req, res) => {
+        Schedule.find({}).populate('days').then((doc) => {
+            res.status(200).json(doc);
+        });
+    });
+
 router.route('/:id')
     .get((req, res) => {
         Schedule.findById(req.params.id).populate('days').then(value => {
@@ -33,6 +40,7 @@ router.route('/:id')
     })
     .put((req, res) => {
         const {name, days} = req.body;
+        console.log(days);
         Schedule.findByIdAndUpdate(req.params.id, {$set: {name}}, {new: true}, function (err, schedule) {
             async.eachSeries(days, (day, done) => {
                 const {title, less} = day;

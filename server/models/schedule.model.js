@@ -23,9 +23,8 @@ const daysSchema = new Schema({
 });
 
 const getEmptySchedule = () => {
-    const less = Array(8)
+    const less = Array(9)
         .fill({
-            "cab": "",
             "text": ""
         });
 

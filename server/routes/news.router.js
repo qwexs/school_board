@@ -10,7 +10,9 @@ const uniqid = require('uniqid');
 const PATH_DIR = "news-files/";
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, `./public/${PATH_DIR}`)
+        const path = `./public/${PATH_DIR}`;
+        fs.mkdirsSync(path);
+        cb(null, path);
     },
     filename: (req, file, cb) => {
         let extension = file.originalname;
