@@ -157,6 +157,13 @@ class Gallery extends PureComponent {
         });
     };
 
+    handleChangeItems = (value) => {
+        const {slideShow} = value;
+        axios.patch(`/gallery/${this.state.selectedItem._id}`, {slideShow}).then(value => {
+            this.refreshAll(value.data);
+        });
+    };
+
     render() {
         const {windowStyle} = this.props;
         return (
@@ -190,6 +197,7 @@ class Gallery extends PureComponent {
                                 <GalleryAlbum ref={input => this.albumListRef = input}
                                               item={this.state.selectedItem}
                                               onDeleteItems={this.handleDeleteItems}
+                                              onChange={this.handleChangeItems}
                                               setOpen={setOpen}
                                               action={action}
                                               {...styles}/>

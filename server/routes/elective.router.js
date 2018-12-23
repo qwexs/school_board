@@ -23,6 +23,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage});
 
+router.route('/all')
+    .get((req, res) => {
+        Elective.find({}).populate('items').then(docs => {
+            res.status(200).json(docs);
+        });
+    });
+
 router.route('/')
     .get((req, res) => {
         Elective.find({}).then(docs => {

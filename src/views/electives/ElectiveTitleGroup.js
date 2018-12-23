@@ -68,11 +68,12 @@ class ElectiveTitleGroup extends PureComponent {
 
                              }
                              target={
-                                 <H5 style={{color:"#394B59"}}>
+                                 <H5 style={{ width:"100%", color:"#394B59"}}>
                                      <EditableText placeholder={"Название электива..."}
                                                    value={this.state.item.name}
-                                                   maxLength={45}
-                                                   minWidth={"15vw"}
+                                                   maxLength={60}
+                                                   maxLines={2}
+                                                   multiline={true}
                                                    onConfirm={this.handleConfirmTitle}
                                                    onChange={this.handleChangeTitle}
                                      />
@@ -82,8 +83,9 @@ class ElectiveTitleGroup extends PureComponent {
                     <Label style={{color:"#394B59"}}>
                         <EditableText placeholder={"Имя руководителя..."}
                                       value={this.state.item.teacher}
-                                      maxLength={60}
-                                      minWidth={"15vw"}
+                                      maxLength={100}
+                                      maxLines={3}
+                                      multiline={true}
                                       onConfirm={this.handleConfirmTeacher}
                                       onChange={this.handleChangeTeacher}
                         />
@@ -92,7 +94,8 @@ class ElectiveTitleGroup extends PureComponent {
                         <EditableText placeholder={"Место проведения..."}
                                       value={this.state.item.place}
                                       maxLength={30}
-                                      minWidth={"15vw"}
+                                      maxLines={1}
+                                      multiline={true}
                                       onConfirm={this.handleConfirmPlace}
                                       onChange={this.handleChangePlace}
                         />

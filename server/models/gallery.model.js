@@ -14,10 +14,12 @@ const gallerySchema = new Schema({
     photos: {
         type: Schema.Types.Mixed
     },
+    slideShow: {
+        type: Schema.Types.Boolean, default: false
+    },
     date: {
         type: Schema.Types.Number
     }
-
 });
 
 const Gallery = mongoose.model('Gallery', gallerySchema);

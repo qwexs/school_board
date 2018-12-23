@@ -113,6 +113,12 @@ router.route("/:id")
                 });
             });
         });
+    })
+    .patch((req, res) => {
+        const {slideShow} = req.body;
+        Gallery.findByIdAndUpdate(req.params.id, {$set: {slideShow}}, {new: true}).then((value) => {
+            res.status(200).send(value);
+        });
     });
 
 module.exports = router;

@@ -4,17 +4,29 @@ import Gallery from './Gallery';
 import SelectedImage from "./SelectImage";
 import Dropzone from 'react-dropzone';
 import * as PropTypes from "prop-types";
+import {Checkbox} from "@blueprintjs/core";
 
 class GalleryAlbum extends PureComponent {
 
     static propTypes = {
-        onDeleteItems: PropTypes.func
+        onDeleteItems: PropTypes.func,
+        onChange: PropTypes.func,
+        setOpen: PropTypes.func
     };
 
     state = {
         photos: [],
         files: [],
-        dropzoneActive: false
+        dropzoneActive: false,
+        slideShow: false
+    };
+
+    handleSlideShowChange = (event) => {
+        const {checked} = event.target;
+        this.setState({slideShow: checked}, () => {
+            console.log(this.state.slideShow);
+            this.props.onChange(this.state);
+        });
     };
 
     componentDidMount() {
@@ -24,7 +36,7 @@ class GalleryAlbum extends PureComponent {
     componentWillReceiveProps(nextProps, nextContext) {
         const {action, item} = nextProps;
         if (!item || !item.photos) return;
-        let {photos} = item;
+        let {photos, slideShow} = item;
         switch (action) {
             case Gallery.ACTION_SELECT_ALL:
                 photos.map(item => item.selected = true);
@@ -38,7 +50,7 @@ class GalleryAlbum extends PureComponent {
                 break;
             default:
         }
-        this.setState({photos});
+        this.setState({photos, slideShow});
     }
 
     scrollToTop() {
@@ -81,6 +93,23 @@ class GalleryAlbum extends PureComponent {
                 width: "100%",
                 height: "100%"
             }} className="disable-select">
+                <div style={{
+                    position: "relative",
+                    marginBottom: -50,
+                    zIndex: 1,
+                    paddingTop: 10,
+                    height: 40,
+                    maxWidth: 150,
+                    float:"right",
+                    right: 25
+                }}>
+                    <div style={{background: "#BFCCD6",
+                        borderRadius: 3, height:"100%"}}>
+                        <div style={{padding:5}}>
+                            <Checkbox checked={this.state.slideShow} label="Слайд-шоу" onChange={this.handleSlideShowChange} />
+                        </div>
+                    </div>
+                </div>
                 <div style={contentStyle} ref={(ref) => this.listContainer = ref}>
                     <Dropzone
                         accept="image/jpeg, image/jpg, image/png"
