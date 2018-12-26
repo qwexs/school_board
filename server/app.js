@@ -12,6 +12,7 @@ const scheduleRouter = require('./routes/shedule.router');
 const announceRouter = require('./routes/announce.router');
 const electiveRouter = require('./routes/elective.router');
 const galleryRouter = require('./routes/gallery.router');
+const holidaysRouter = require('./routes/holidays.router');
 
 app.use(cors());
 app.use(express.json({limit: '50mb'}));
@@ -31,6 +32,7 @@ const startServer = () => {
     app.use('/announce', announceRouter);
     app.use('/elective', electiveRouter);
     app.use('/gallery', galleryRouter);
+    app.use('/holidays', holidaysRouter);
 };
 
 connectDb()

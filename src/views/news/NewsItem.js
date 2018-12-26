@@ -47,7 +47,7 @@ class NewsItem extends PureComponent {
             <Card style={style} interactive
                   onMouseOver={this.handleMouseOver}
                   onMouseLeave={this.handleMouseLeave}>
-                <div style={{display: "flex", flexDirection: "column", height: "100%", margin: 0}}>
+                <div style={{display: "flex", flexDirection: "column", height: "100%", width:"100%", margin: 0}}>
                     <div style={{
                         height: 200,
                         overflow: "hidden",
@@ -85,7 +85,11 @@ class NewsItem extends PureComponent {
                                   icon={"manually-entered-data"}/>
                         </div>
                         }
-                        <img src={`/${item.image}`} width={"100%"} alt="Картинка"
+                        <img style={{
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            margin: "auto"
+                        }} src={`/${item.image}`} alt="Картинка"
                              className="newsImage"/>
                     </div>
                     <div style={{overflow: "hidden", maxHeight: "40px", marginTop: 30}}>

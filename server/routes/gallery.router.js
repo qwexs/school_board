@@ -44,7 +44,7 @@ router.route('/')
             im.resize({
                 srcPath: filePath,
                 dstPath: filePath,
-                width: "1404", height: "1404"}, (err) => {
+                width: "2560", height: "1440"}, (err) => {
                 if (err) throw err;
 
                 im.identify(['-format', '%wx%h', filePath], (err, features) => {

@@ -12,7 +12,6 @@ const styles = {
         justifyContent: "center",
         padding: "3% 0 0 3%",
     },
-    imageLayout: {},
     cardLayout: {
         width: 270,
         height: 350,
@@ -125,7 +124,9 @@ class News extends React.PureComponent {
                 }
 
                 <NewsDialog isOpen={this.state.isDialogOpen} isNew={this.state.isNew} content={this.state.content}
-                            onSave={this.handleSaveDialog} onCancel={this.handleCancelDialog}/>
+                            onSave={this.handleSaveDialog} onCancel={this.handleCancelDialog}>
+                    новость
+                </NewsDialog>
                 <Alert
                     cancelButtonText="Отмена"
                     confirmButtonText="Удалить"

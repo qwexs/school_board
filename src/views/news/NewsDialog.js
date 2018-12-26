@@ -62,7 +62,7 @@ class NewsDialog extends PureComponent {
                         icon={this.state.isNew ? "add" : "manually-entered-data"}
                         onClose={this.handleClickCloseDialog}
                         isOpen={this.state.isOpen}
-                        title={this.state.isNew ? "Добавить новость" : "Редактировать новость"}
+                        title={this.state.isNew ? `Добавить ${this.props.children}` : `Редактировать ${this.props.children}`}
                 >
                     <div className={Classes.DIALOG_BODY} style={{
                         display: "flex",

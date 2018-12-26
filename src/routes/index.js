@@ -1,15 +1,15 @@
-import React from 'react';
 import Announce from "../views/announce/Announce";
 import Schedule from "../views/schedule/Schedule";
 import Elective from "../views/electives/Elective";
 import Gallery from "../views/gallery/Gallery";
 import News from "../views/news/News";
+import Holidays from "../views/holidays/Holidays";
 
 const routes = [
     {
         title: "Новости",
         path: "/app/news",
-        component: News,
+        component: News
     },
     {
         title: "Расписание уроков",
@@ -34,7 +34,7 @@ const routes = [
     {
         title: "Праздники",
         path: "/app/holidays",
-        component: () => <div/>
+        component: Holidays
     }
 ];
 

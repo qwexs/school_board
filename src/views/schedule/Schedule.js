@@ -115,8 +115,9 @@ class Schedule extends PureComponent {
     };
 
     handleClickUndo = () => {
-        this.props.setAction(Schedule.ACTION_CANCEL_SAVE, false);
-        this.refreshAll();
+        this.props.setAction(Schedule.ACTION_CANCEL_SAVE, false, () => {
+            this.refreshItem(this.state.selectedItem);
+        });
     };
 
     render() {

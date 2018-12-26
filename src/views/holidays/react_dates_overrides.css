@@ -1,0 +1,62 @@
+
+   .CalendarDay__selected_span {
+       background: #82e0aa;
+       color: white;
+       border: 1px solid;
+   }
+
+   .CalendarDay__selected {
+       background: #5C7080;
+       color: white;
+   }
+
+   .CalendarDay__selected:hover {
+       background: #8A9BA8;
+       color: white;
+   }
+
+   .CalendarDay__hovered_span:hover,
+   .CalendarDay__hovered_span {
+       background: brown;
+   }
+
+   .SingleDatePicker_picker {
+       z-index: 1;
+       background: #ff9a53 !important;
+       position: relative;
+   }
+
+   .DayPicker_transitionContainer{
+       min-height: 315px;
+       background: #E1E8ED;
+   }
+
+   .CalendarMonth {
+       background: #E1E8ED;
+       text-align: center;
+       vertical-align: top;
+       -webkit-user-select: none;
+       -moz-user-select: none;
+       -ms-user-select: none;
+       user-select: none
+   }
+
+   .CalendarMonthGrid {
+       background: #E1E8ED;
+       text-align: left;
+       z-index: 0
+   }
+
+   .CalendarDay__outside {
+       border: 0;
+       background: #E1E8ED;
+       color: #484848
+   }
+
+   .CalendarMonthGrid--horizontal {
+       position: inherit;
+       left: 0 !important;
+       width: auto !important;
+   }
+
+

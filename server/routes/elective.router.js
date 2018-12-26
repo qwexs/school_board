@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {Elective, ElectiveDay, getEmptyElective} = require('../models/elective.model');
-const bufferFrom = require('buffer-from');
 const async = require('async');
 const multer = require('multer');
 const uniqid = require('uniqid');
