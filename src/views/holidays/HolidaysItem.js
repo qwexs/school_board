@@ -48,7 +48,8 @@ class HolidaysItem extends PureComponent {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({loaded: false});
+        if (nextProps.content.image !== this.props.content.image)
+            this.setState({loaded: false});
     }
 
     handleClickEditItem = () => {
@@ -100,7 +101,7 @@ class HolidaysItem extends PureComponent {
                 </div>
                 <p/>
                 <div style={{
-                    padding: "10px 30px 20px 30px",
+                    padding: "3% 5% 4% 5%",
                     textAlign: "justify"
                 }} className="bp3-ui-text">{text}</div>
             </div>

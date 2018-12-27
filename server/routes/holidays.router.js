@@ -24,7 +24,7 @@ const upload = multer({storage});
 
 router.route('/')
     .get((req, res) => {
-        Holidays.find({}).then(resolve => {
+        Holidays.find({}).sort({date: "ascending"}).then(resolve => {
             res.status(200).send(resolve);
         });
     })
