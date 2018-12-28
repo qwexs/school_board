@@ -22,6 +22,18 @@ const daysSchema = new Schema({
     }
 });
 
+const lessonsSchema = new Schema({
+    name: {
+        type: Schema.Types.String
+    },
+    beginTime: {
+        type: Schema.Types.Date
+    },
+    endTime: {
+        type: Schema.Types.Date
+    }
+});
+
 const getEmptySchedule = () => {
     const less = Array(9)
         .fill({
@@ -37,7 +49,18 @@ const getEmptySchedule = () => {
     ];
 };
 
+const getEmptyLessons = () => {
+    return Array.from(Array(9), (d, i) => {
+        return {
+            name: (i+1) + " урок",
+            beginTime: new Date(0,0,0,0,0,0),
+            endTime: new Date(0,0,0,0,0,0)
+        };
+    });
+};
+
 const Schedule = mongoose.model('Schedule', klassSchema);
 const ScheduleDays = mongoose.model('ScheduleDays', daysSchema);
+const Lessons = mongoose.model('Lessons', lessonsSchema);
 
-module.exports = {Schedule, ScheduleDays, getEmptySchedule};
+module.exports = {Schedule, ScheduleDays, Lessons, getEmptySchedule, getEmptyLessons};

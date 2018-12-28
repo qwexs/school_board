@@ -38,7 +38,7 @@ router.route('/')
             im.resize({
                 srcPath: filePath,
                 dstPath: filePath,
-                width: "1440", height: "1440"
+                width: "1000", height: "1000"
             }, (err) => {
                 if (err) throw err;
                 createHolidays(res, {title, text, image, date});

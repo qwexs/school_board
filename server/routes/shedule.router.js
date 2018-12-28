@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const async = require('async');
 
-const {Schedule, ScheduleDays, getEmptySchedule} = require('../models/schedule.model');
+const {Schedule, ScheduleDays, Lessons, getEmptySchedule, getEmptyLessons} = require('../models/schedule.model');
 
 router.route('/')
     .get((req, res) => {
@@ -32,6 +32,28 @@ router.route('/all')
         });
     });
 
+router.route('/lessons')
+    .get((req, res) => {
+        Lessons.find({}).then((doc) => {
+            if (doc.length)
+                res.status(200).json(doc);
+            else {
+                res.status(200).json(getEmptyLessons());
+            }
+        });
+    })
+    .post((req, res) => {
+        const lessons = req.body;
+        async.eachSeries(lessons, (lesson, done) => {
+            const {name, beginTime, endTime} = lesson;
+            Lessons.updateOne({name: name}, {$set: {name, beginTime, endTime}},{upsert: true}).then(() => done());
+        }, function allDone(err) {
+            if (err) throw err;
+
+            res.status(200).json({status: "ok"});
+        });
+    });
+
 router.route('/:id')
     .get((req, res) => {
         Schedule.findById(req.params.id).populate('days').then(value => {
@@ -40,7 +62,6 @@ router.route('/:id')
     })
     .put((req, res) => {
         const {name, days} = req.body;
-        console.log(days);
         Schedule.findByIdAndUpdate(req.params.id, {$set: {name}}, {new: true}, function (err, schedule) {
             async.eachSeries(days, (day, done) => {
                 const {title, less} = day;

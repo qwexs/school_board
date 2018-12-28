@@ -142,6 +142,7 @@ class Holidays extends PureComponent {
                 currentIndex = index;
                 return true;
             }
+            return false;
         });
 
         return currentIndex;

@@ -1,11 +1,10 @@
 import React, {PureComponent} from 'react';
 import TableList from "./TableList";
-import {Button, EditableText, H4, Popover, PopoverInteractionKind} from "@blueprintjs/core";
+import {Button, Classes, EditableText, H4, Popover, PopoverInteractionKind} from "@blueprintjs/core";
 import Radium from "radium";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
-import PropTypes from "prop-types";
+import * as PropTypes from "prop-types";
 import Schedule from "./Schedule";
-import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 
 const styles = {
     listContainer: {
@@ -21,7 +20,7 @@ const styles = {
         flexShrink: 0,
         alignItems: "top",
         justifyContent: "space-evenly",
-        padding: "10px 5% 10px 5%",
+        padding: "10px 5% 50px 5%",
     },
     tableCell: {
         boxSizing: "border-box",

@@ -7,7 +7,7 @@
 
 .App {
     text-align: center;
-    overflow-x: hidden;
+    overflow: hidden;
     color: #10161A;
 }
 
@@ -19,10 +19,58 @@
     user-select: none;
 }
 
+/*.ReactModal__Body--open {*/
+    /*overflow-y: hidden;*/
+/*}*/
+
+.overlay {
+    width: 300px;
+    height: 500px;
+    max-height: 100vh;
+    position: fixed;
+    background: #738694;
+    border-radius: 5px;
+    overflow: hidden;
+    padding: 10px;
+    bottom: 0;
+    margin-bottom: -65px;
+    box-shadow: 0 0 7px 0 #10161A;
+    animation: slide-up .8s cubic-bezier(.7, -.41, .19, 1.25);
+}
+
+.slide-up-animation {
+    bottom: 0;
+    margin-bottom: -65px;
+    animation: slide-up .8s cubic-bezier(.7, -.41, .19, 1.25);
+}
+
+.slide-down-animation {
+    bottom: 0;
+    margin-bottom: -65px;
+    animation: slide-down .8s cubic-bezier(.7,-.41,.19,1.25);
+}
+
+
+@keyframes slide-up {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(100%);
+    }
+}
+
 .button-menu Button {
     height: 40px;
-    /*overflow: hidden;*/
-    /*text-decoration: none;*/
     text-transform: uppercase;
     letter-spacing: 1px;
     color: dimgrey;

@@ -10,6 +10,7 @@ import ScheduleContent from "./ScheduleContent";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import * as ReactDOM from "react-dom";
 import IsNoPage from "../../components/IsNoPage";
+import LessonsPanel from "./LessonsPanel";
 
 const styles = {
     sideItem: {
@@ -57,11 +58,12 @@ class Schedule extends PureComponent {
     }
 
     handleResizeView = (entries) => {
-        if (entries && this.scheduleList && this.footerBar) {
+        if (entries && this.scheduleList && this.footerBarRef) {
             const vWidth = entries[0].contentRect.width;
             const element = ReactDOM.findDOMNode(this.scheduleList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
-            this.footerBar.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
+            this.footerBarRef.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
+            this.lessonsPanelRef.setState({vWidth: `calc(${vWidth / 2}px + ${offsetScroll ? 1 : 0}vw - 150px`});
         }
     };
 
@@ -171,10 +173,11 @@ class Schedule extends PureComponent {
                                     </IsNoPage>
                             }
 
-                            <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
+                            <FooterBar ref={input => this.footerBarRef = input} isOpen={isOpen}>
                                 <Button minimal icon="undo" onClick={this.handleClickUndo}>Отменить</Button>
                                 <Button minimal icon="edit" onClick={this.handleClickSave}>Сохранить изменения</Button>
                             </FooterBar>
+                            <LessonsPanel ref={input => this.lessonsPanelRef = input}/>
                         </div>
                 )}
             </FooterPanelConsumer>

@@ -16,7 +16,7 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#E1E8ED",
-        backgroundSize: "100% auto",
+        backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center"
     }
