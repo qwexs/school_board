@@ -22,6 +22,7 @@ router.route('/')
         const date = moment(req.body.date).startOf("isoWeek").toDate().getTime();
         AnnounceWeek.updateOne({date}, (err, doc) => {
             res.status(200 ).json(date);
+            return req.app.emit('announce', req, res);
         });
     });
 
@@ -35,7 +36,8 @@ router.route('/:id')
         const {education} = req.body;
         Announce.findByIdAndUpdate(req.params.id, {$set: {education}}, {new: true},
             (err, doc) => {
-                res.send(doc);
+                res.status(200).json(doc);
+                return req.app.emit('announce', req, res);
         });
     });
 

@@ -42,10 +42,12 @@ router.route('/')
             }, (err) => {
                 if (err) throw err;
                 createHolidays(res, {title, text, image, date});
+                return req.app.emit('holidays', req, res);
             });
-        }
-        else
+        } else {
             createHolidays(res, {title, text, image, date});
+            return req.app.emit('holidays', req, res);
+        }
     });
 
 createHolidays = (res, params) => {
@@ -86,10 +88,13 @@ router.route('/:id')
             }, (err) => {
                 if (err) throw err;
                 editHolidays(req, res, set);
+                return req.app.emit('holidays', req, res);
             });
         }
-        else
+        else {
             editHolidays(req, res, set);
+            return req.app.emit('holidays', req, res);
+        }
 
     })
     .delete((req, res) => {
@@ -100,10 +105,12 @@ router.route('/:id')
                     if (err) throw err;
 
                     res.status(200).json({status: "ok"});
+                    return req.app.emit('holidays', req, res);
                 });
             }
             else {
                 res.status(200).json({status: "ok"});
+                return req.app.emit('holidays', req, res);
             }
 
         })

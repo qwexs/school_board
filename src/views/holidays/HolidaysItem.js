@@ -1,7 +1,9 @@
 import React, {PureComponent} from 'react';
 import Radium from "radium";
-import {Button, H5, Spinner} from "@blueprintjs/core";
+import {Button, H5, Popover, PopoverInteractionKind, Spinner, Text} from "@blueprintjs/core";
 import * as PropTypes from 'prop-types';
+import {Intent, PopoverPosition} from "@blueprintjs/core/lib/cjs";
+import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 
 const styles = {
     mainStyle: {
@@ -88,8 +90,33 @@ class HolidaysItem extends PureComponent {
                             border: "solid 1.3px #A7B6C2", background: "rgba(255, 255, 255, 0.8)",
                             borderRadius: 3,
                         }}>
-                            <Button minimal icon="cross" title="Удалить"
-                                    onClick={this.handleClickRemoveItem}/>
+                            <Popover interactionKind={PopoverInteractionKind.CLICK} captureDismiss={true}
+                                     enforceFocus={false} position={PopoverPosition.LEFT_TOP}
+                                     content={
+                                         <div style={{padding: 15, width: "30vw"}}>
+                                             <H5 style={{
+                                                 textOverflow: "ellipsis",
+                                                 overflow: "hidden",
+                                                 whiteSpace: "nowrap",
+                                                 width: "100%"
+                                             }}>{title}</H5>
+                                             <Text>Вы действительно хотите удалить выбранный праздник?</Text>
+                                             <div style={{display: "flex", justifyContent: "flex-end", marginTop: 15}}>
+                                                 <Button className={Classes.POPOVER_DISMISS} style={{marginRight: 10}}>
+                                                     Отмена
+                                                 </Button>
+                                                 <Button intent={Intent.DANGER} className={Classes.POPOVER_DISMISS}
+                                                         onClick={this.handleClickRemoveItem}>
+                                                     Удалить
+                                                 </Button>
+                                             </div>
+                                         </div>
+                                     }
+                                     target={
+                                         <Button minimal icon="cross" title="Удалить"/>
+                                     }
+                            />
+
                         </div>
                     </div>
                     }

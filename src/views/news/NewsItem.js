@@ -73,7 +73,10 @@ class NewsItem extends PureComponent {
                             height: "80px",
                             background: "#F5F8FA",
                             borderRadius: "1em",
-                            opacity: this.state.isOverEdit ? 1 : .8,
+                            opacity: this.state.isOverEdit ? 1 : .9,
+                            WebkitBoxShadow: "0 5px 9px -5px #202B33",
+                            MozBoxShadow: "0 5px 9px -5px #202B33",
+                            boxShadow: "0 5px 9px -5px #202B33",
                             marginTop: -80,
                             top: "calc(50% + 40px)",
                             left: "calc(50% - 40px)"

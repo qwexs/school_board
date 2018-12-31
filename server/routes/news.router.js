@@ -36,7 +36,9 @@ router.route('/')
             image = PATH_DIR + req.file.filename;
         News.create({title, text, image, date: Date.now()}).then(() => {
             res.status(201).json({status: "ok"});
+            return req.app.emit('news', req, res);
         });
+
     });
 
 router.route('/:id')
@@ -55,24 +57,28 @@ router.route('/:id')
                 fs.remove(`./public/${image}`, (err) => {
                     if (err) throw err;
                     res.status(200).json({status: "ok"});
+                    return req.app.emit('news', req, res);
                 });
             } else {
                 res.status(200).json({status: "ok"});
+                return req.app.emit('news', req, res);
             }
         });
     })
     .delete((req, res) => {
-        News.findByIdAndDelete(req.params.id).then(resolve => {
+        News.findByIdAndRemove(req.params.id).then(resolve => {
             const {image} = resolve;
             if (image) {
                 fs.remove(`./public/${image}`, (err) => {
                     if (err) throw err;
 
                     res.status(200).json({status: "ok"});
+                    return req.app.emit('news', req, res);
                 });
             }
             else {
                 res.status(200).json({status: "ok"});
+                return req.app.emit('news', req, res);
             }
 
         })

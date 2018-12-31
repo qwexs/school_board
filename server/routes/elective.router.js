@@ -50,6 +50,7 @@ router.route('/')
             Elective.create(data,
                 (err, doc) => {
                     res.status(200).json(doc);
+                    return req.app.emit('elective', req, res);
             });
         });
     });
@@ -69,12 +70,14 @@ router.route('/:id')
                 .populate('items')
                 .then((value) => {
                     res.status(200).json(value);
+                    return req.app.emit('elective', req, res);
                 });
         });
     })
     .delete((req, res) => {
         Elective.findByIdAndDelete(req.params.id).then(result => {
             res.send({status: "ok"});
+            return req.app.emit('elective', req, res);
         });
     });
 

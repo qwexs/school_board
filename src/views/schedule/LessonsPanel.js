@@ -4,6 +4,7 @@ import {Button, Classes, H5, Icon, Intent, Label, Overlay, Spinner} from "@bluep
 import {TimePicker} from "@blueprintjs/datetime";
 import classNames from "classnames";
 import Modal from "../../components/Modal";
+import moment from "moment";
 
 class LessonsPanel extends PureComponent {
 
@@ -113,54 +114,58 @@ class LessonsPanel extends PureComponent {
                                 justifyContent: "space-around"
                             }}>
                                 {
-                                    !this.state.loaded
-                                        ?
-                                        <div style={{position: "relative", margin: "auto"}}>
-                                            <Spinner/>
-                                        </div>
-                                        :
-                                        this.state.list.map((item, index) => {
-                                            return (
-                                                <Label key={index}
-                                                       title={item.name}>
-                                                    {item.name}
-                                                    <div>
-                                                        <div style={{paddingBottom: 5}}>
-                                                            <TimePicker value={new Date(item.beginTime)}
-                                                                        showArrowButtons={false}
-                                                                        selectAllOnFocus={true}
-                                                                        onChange={time => {
-                                                                            this.setState({
-                                                                                list: Array.from(this.state.list, (d, i) => {
-                                                                                    if (i === index) {
-                                                                                        d.beginTime = time;
-                                                                                    }
-                                                                                    return d;
-                                                                                })
-                                                                            });
-                                                                        }}
-                                                                        />
-                                                        </div>
-                                                        <div>
-                                                            <TimePicker value={new Date(item.endTime)}
-                                                                        showArrowButtons={false}
-                                                                        selectAllOnFocus={true}
-                                                                        onChange={time => {
-                                                                            this.setState({
-                                                                                list: Array.from(this.state.list, (d, i) => {
-                                                                                    if (i === index) {
-                                                                                        d.endTime = time;
-                                                                                    }
-                                                                                    return d;
-                                                                                })
-                                                                            });
-                                                                        }}
-                                                                        />
-                                                        </div>
+                                !this.state.loaded
+                                    ?
+                                    <div style={{position: "relative", margin: "auto"}}>
+                                        <Spinner/>
+                                    </div>
+                                    :
+                                    this.state.list.map((item, index) => {
+                                        console.log(moment(item.beginTime).format());
+                                        return (
+                                            <Label key={index}
+                                                   title={item.name}>
+                                                {item.name}
+                                                <div>
+                                                    <div style={{paddingBottom: 5}}>
+                                                        <TimePicker value={moment(item.beginTime).toDate()}
+                                                                    showArrowButtons={false}
+                                                                    selectAllOnFocus={true}
+                                                                    onChange={time => {
+                                                                        this.setState({
+                                                                            list: Array.from(this.state.list, (d, i) => {
+                                                                                if (i === index) {
+                                                                                    d.beginTime = moment(time).toDate();
+                                                                                    console.log(d.beginTime);
+                                                                                }
+                                                                                return d;
+
+                                                                            })
+                                                                        });
+                                                                    }}
+                                                                    />
                                                     </div>
-                                                </Label>
-                                            );
-                                        })
+                                                    <div>
+                                                        <TimePicker value={moment(item.endTime).toDate()}
+                                                                    showArrowButtons={false}
+                                                                    selectAllOnFocus={true}
+                                                                    onChange={time => {
+                                                                        this.setState({
+                                                                            list: Array.from(this.state.list, (d, i) => {
+                                                                                if (i === index) {
+                                                                                    d.endTime = moment(time).toDate();
+                                                                                    console.log( d.endTime);
+                                                                                }
+                                                                                return d;
+                                                                            })
+                                                                        });
+                                                                    }}
+                                                                    />
+                                                    </div>
+                                                </div>
+                                            </Label>
+                                        );
+                                    })
                                 }
                                 {
                                     this.state.loaded &&

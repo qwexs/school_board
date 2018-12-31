@@ -72,6 +72,7 @@ router.route('/')
         }, function allDone(err) {
             Gallery.create({name, quantity: files.length, dirName:dirName+"/full", photos, date: Date.now()}).then((value) => {
                 res.status(201).json(value);
+                return res.app.emit('gallery', req, res);
             });
         });
 
@@ -86,6 +87,7 @@ router.route("/:id")
                 if (err) throw err;
 
                 res.status(200).send({value});
+                return req.app.emit('gallery', req, res);
             });
         });
     })
@@ -110,6 +112,7 @@ router.route("/:id")
             }, function allDone(err) {
                 currentAlbum.save(() => {
                     res.status(200).send(currentAlbum);
+                    return res.app.emit('gallery', req, res);
                 });
             });
         });
@@ -118,6 +121,7 @@ router.route("/:id")
         const {slideShow} = req.body;
         Gallery.findByIdAndUpdate(req.params.id, {$set: {slideShow}}, {new: true}).then((value) => {
             res.status(200).send(value);
+            return res.app.emit('gallery', req, res);
         });
     });
 

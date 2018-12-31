@@ -12,6 +12,7 @@ server.listen(PORT);
 server.on('error', onError);
 server.on('listening', onListening);
 
+
 // error handler
 app.use(function(err, req, res, next) {
     res.locals.message = err.message;

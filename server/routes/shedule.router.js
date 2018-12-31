@@ -17,7 +17,8 @@ router.route('/')
 
             Schedule.create({name, days: Array.from(days, (i) => i._id), date: Date.now()})
                 .then(doc => {
-                    res.status(201).json(doc)
+                    res.status(201).json(doc);
+                    return req.app.emit('schedule', req, res);
                 })
                 .catch(err => {
                     res.status(500).json(err);
@@ -51,6 +52,7 @@ router.route('/lessons')
             if (err) throw err;
 
             res.status(200).json({status: "ok"});
+            return req.app.emit('lessons', req, res);
         });
     });
 
@@ -70,12 +72,14 @@ router.route('/:id')
                 if (err) throw err;
 
                 res.status(200).json(schedule);
+                return req.app.emit('schedule', req, res);
             });
         });
     })
     .delete((req, res) => {
         Schedule.findByIdAndDelete(req.params.id).then(() => {
             res.status(200).json({status: "ok"});
+            return req.app.emit('schedule', req, res);
         });
     });
 

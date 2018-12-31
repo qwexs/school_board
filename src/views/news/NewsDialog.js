@@ -103,13 +103,13 @@ class NewsDialog extends PureComponent {
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.handleClickCloseDialog}>Отмена</Button>
                             <AnchorButton
                                 intent={Intent.PRIMARY}
                                 onClick={this.handleClickSaveDialog}
                             >
                                 Сохранить
                             </AnchorButton>
-                            <Button onClick={this.handleClickCloseDialog}>Отмена</Button>
                         </div>
                     </div>
                 </Dialog>

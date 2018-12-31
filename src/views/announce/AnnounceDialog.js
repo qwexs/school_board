@@ -57,13 +57,13 @@ class AnnounceDialog extends PureComponent {
                     </div>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.onCancelSaveHandler}>Отмена</Button>
                             <AnchorButton
                                 intent={Intent.PRIMARY}
                                 onClick={this.onClickSaveHandler}
                             >
                                 Сохранить
                             </AnchorButton>
-                            <Button onClick={this.onCancelSaveHandler}>Отмена</Button>
                         </div>
                     </div>
                 </Dialog>

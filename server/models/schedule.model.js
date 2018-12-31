@@ -51,10 +51,12 @@ const getEmptySchedule = () => {
 
 const getEmptyLessons = () => {
     return Array.from(Array(9), (d, i) => {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0);
         return {
             name: (i+1) + " урок",
-            beginTime: new Date(0,0,0,0,0,0),
-            endTime: new Date(0,0,0,0,0,0)
+            beginTime: currentDate,
+            endTime: currentDate
         };
     });
 };
