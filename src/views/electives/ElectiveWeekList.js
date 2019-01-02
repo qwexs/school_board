@@ -10,7 +10,6 @@ import Radium from "radium";
 class ElectiveWeekList extends PureComponent {
 
     static propTypes = {
-        onRemoveElective: PropTypes.func,
         onSaveElective: PropTypes.func
     };
 
@@ -67,8 +66,7 @@ class ElectiveWeekList extends PureComponent {
                             :
                             <div style={[contentStyle, {paddingBottom: isOpen ? 60 : 0}]} ref={(ref) => this.listContainerRef = ref}>
                                 <ElectiveTitleGroup ref={ref => this.titleGroupRef = ref}
-                                                    item={this.state.item} setOpen={setOpen}
-                                                    onRemoveElective={this.props.onRemoveElective}/>
+                                                    item={this.state.item} setOpen={setOpen}/>
                                 <div style={{
                                     width: "90%", margin: "auto",
                                     borderBottom: "2px solid silver"

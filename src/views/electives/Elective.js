@@ -94,7 +94,9 @@ class Elective extends PureComponent {
     handleChangeItem = (item) => {
         this.setState({selectedItem: item, isLoadItem: true});
         this.refreshItem(item._id);
-        this.weekList.scrollToTop();
+        if (this.weekList) {
+            this.weekList.scrollToTop();
+        }
     };
 
     handleElectiveAdd = (dataHeader) => {
@@ -110,9 +112,9 @@ class Elective extends PureComponent {
         });
     };
 
-    handleElectiveRemove = () => {
+    handleElectiveRemove = (item) => {
         this.setState({isLoadItem: true});
-        axios.delete(`/elective/${this.state.selectedItem._id}`).then(value => {
+        axios.delete(`/elective/${item._id}`).then(value => {
             this.refreshAll();
         });
     };
@@ -152,9 +154,11 @@ class Elective extends PureComponent {
                                       ref={ref => this.sideMenuRef = ref}
                                       {...this.props}
                                       headerBar={
-                                          <ElectiveHeaderBar style={styles.headerBar} onAdd={this.handleElectiveAdd}/>
+                                          <ElectiveHeaderBar style={styles.headerBar}
+                                                             onAdd={this.handleElectiveAdd}/>
                                       }>
-                                <ElectiveSideItem {...styles}/>
+                                <ElectiveSideItem {...styles}
+                                                  onRemoveItem={this.handleElectiveRemove}/>
                             </SideMenu>
                         }
                             <ResizeSensor onResize={this.handleResizeView}>
@@ -164,7 +168,6 @@ class Elective extends PureComponent {
                                                       setAction={setAction} action={action}
                                                       setOpen={setOpen}
                                                       onSaveElective={this.handleSaveElective}
-                                                      onRemoveElective={this.handleElectiveRemove}
                                                       item={this.state.selectedItem} {...styles}/>
                                 </IsNoPage>
                             </ResizeSensor>

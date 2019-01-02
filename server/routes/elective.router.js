@@ -4,6 +4,7 @@ const {Elective, ElectiveDay, getEmptyElective} = require('../models/elective.mo
 const async = require('async');
 const multer = require('multer');
 const uniqid = require('uniqid');
+const im = require('imagemagick');
 const fs = require('fs-extra');
 
 const PATH_DIR = "elective-files/";
@@ -38,20 +39,31 @@ router.route('/')
     .post(upload.single("icon"), (req, res) => {
         ElectiveDay.create(getEmptyElective(), (err, items) => {
             const {name, place, teacher, icon} = req.body;
+            const {file} = req;
             let data = {
                 name, place, teacher,
                 items: Array.from(items, (i) => i._id)
             };
-            if (req.file) {
-                const icon =  PATH_DIR + req.file.filename;
-                console.log(icon);
-                data = {...data, icon}
+            if (file) {
+                const icon =  PATH_DIR + file.filename;
+                const filePath = file.destination + "/" + file.filename;
+                im.resize({
+                    srcPath: filePath,
+                    dstPath: filePath,
+                    width: "512", height: "512"}, (err) => {
+                    if (err) throw err;
+
+                    data = {...data, icon};
+                    Elective.create(data,
+                        (err, doc) => {
+                            res.status(200).json(doc);
+                            return req.app.emit('elective', req, res);
+                        });
+                });
+            } else {
+                res.status(200).json({error: "Необходимо загрузить файл иконки"});
             }
-            Elective.create(data,
-                (err, doc) => {
-                    res.status(200).json(doc);
-                    return req.app.emit('elective', req, res);
-            });
+
         });
     });
 
@@ -76,8 +88,19 @@ router.route('/:id')
     })
     .delete((req, res) => {
         Elective.findByIdAndDelete(req.params.id).then(result => {
-            res.send({status: "ok"});
-            return req.app.emit('elective', req, res);
+            const {icon} = result;
+            if (icon) {
+                fs.remove(`./public/${icon}`, (err) => {
+                    if (err) throw err;
+
+                    res.status(200).json({status: "ok"});
+                    return req.app.emit('news', req, res);
+                });
+            }
+            else {
+                res.send({status: "ok"});
+                return req.app.emit('elective', req, res);
+            }
         });
     });
 

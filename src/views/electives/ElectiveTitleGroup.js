@@ -7,7 +7,6 @@ class ElectiveTitleGroup extends PureComponent {
 
     static propTypes = {
         item: PropTypes.object,
-        onRemoveElective: PropTypes.func,
         setOpen: PropTypes.func
     };
 
@@ -56,51 +55,38 @@ class ElectiveTitleGroup extends PureComponent {
 
     render() {
         return (
-            <div>
-                <div style={{margin: 10}}>
-                    <Popover interactionKind={PopoverInteractionKind.CLICK}
-                             content={
-                                 <div style={{padding: 5}}>
-                                     <Button icon="trash" text={"Удалить электив"} minimal
-                                             className={Classes.POPOVER_DISMISS}
-                                             onClick={this.props.onRemoveElective}/>
-                                 </div>
+            <div style={{width: "90%", margin: "0 auto", marginTop: "2%"}}>
+                <H5 style={{width: "100%", color: "#394B59", paddingBottom: "5px"}}>
+                    <EditableText placeholder={"Название электива..."}
+                                  value={this.state.item.name}
+                                  maxLength={60}
+                                  maxLines={2}
+                                  multiline={true}
+                                  onConfirm={this.handleConfirmTitle}
+                                  onChange={this.handleChangeTitle}
+                    />
+                </H5>
 
-                             }
-                             target={
-                                 <H5 style={{ width:"100%", color:"#394B59"}}>
-                                     <EditableText placeholder={"Название электива..."}
-                                                   value={this.state.item.name}
-                                                   maxLength={60}
-                                                   maxLines={2}
-                                                   multiline={true}
-                                                   onConfirm={this.handleConfirmTitle}
-                                                   onChange={this.handleChangeTitle}
-                                     />
-                                 </H5>
-                             }/>
-
-                    <Label style={{color:"#394B59"}}>
-                        <EditableText placeholder={"Имя руководителя..."}
-                                      value={this.state.item.teacher}
-                                      maxLength={100}
-                                      maxLines={3}
-                                      multiline={true}
-                                      onConfirm={this.handleConfirmTeacher}
-                                      onChange={this.handleChangeTeacher}
-                        />
-                    </Label>
-                    <Label style={{color:"#394B59"}}>
-                        <EditableText placeholder={"Место проведения..."}
-                                      value={this.state.item.place}
-                                      maxLength={30}
-                                      maxLines={1}
-                                      multiline={true}
-                                      onConfirm={this.handleConfirmPlace}
-                                      onChange={this.handleChangePlace}
-                        />
-                    </Label>
-                </div>
+                <Label style={{color: "#394B59", paddingBottom: "5px"}}>
+                    <EditableText placeholder={"Имя руководителя..."}
+                                  value={this.state.item.teacher}
+                                  maxLength={100}
+                                  maxLines={3}
+                                  multiline={true}
+                                  onConfirm={this.handleConfirmTeacher}
+                                  onChange={this.handleChangeTeacher}
+                    />
+                </Label>
+                <Label style={{color: "#394B59", paddingBottom: "5px"}}>
+                    <EditableText placeholder={"Место проведения..."}
+                                  value={this.state.item.place}
+                                  maxLength={30}
+                                  maxLines={1}
+                                  multiline={true}
+                                  onConfirm={this.handleConfirmPlace}
+                                  onChange={this.handleChangePlace}
+                    />
+                </Label>
             </div>
         );
     }

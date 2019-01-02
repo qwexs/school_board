@@ -67,7 +67,7 @@ export default class ElectiveHeaderBar extends PureComponent {
                                      {this.state.icon
                                          ?
                                          <div style={{position: "relative", margin: "auto"}}>
-                                             <img src={imgSrc} width={"auto"} height={'auto'} alt={"icon"}/>
+                                             <img src={imgSrc} width={"144px"} height={'auto'} alt={"icon"}/>
                                          </div>
                                          :
                                          <label className="bp3-label"
