@@ -115,7 +115,7 @@ class News extends React.PureComponent {
                             <p/>
                             <Icon icon={"add"} iconSize={35}/>
                             <p/>
-                            <H2 style={{color: styles.cardLayout.color}}>Добавить новость</H2>
+                            <H2 style={{color: styles.cardLayout.color, paddingTop:"10px"}}>Добавить новость</H2>
                         </Card>
                         {
                             this.state.list.map((item, index) => {
