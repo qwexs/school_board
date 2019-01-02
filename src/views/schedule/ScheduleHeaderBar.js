@@ -21,10 +21,14 @@ export default class ScheduleHeaderBar extends React.PureComponent {
             <div style={this.props.style}>
                 <div style={{
                     display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
                     alignItems: "center",
                     justifyContent: "center",
+                    width: "100%",
+                    height: "100%"
                 }}>
-                    <div style={{height: 20, paddingRight: 7}}>
+                    <div style={{height: 20}}>
                         <h5 style={{color: "#5C7080"}} className="bp3-heading disable-select">Классы</h5>
                     </div>
                     <Popover interactionKind={PopoverInteractionKind.CLICK} captureDismiss={true}

@@ -24,7 +24,7 @@ const styles = {
     },
     tableCell: {
         boxSizing: "border-box",
-        padding: 10,
+        padding: "3px 2vw 5vh 3px",
         overflow: "hidden",
     },
 };

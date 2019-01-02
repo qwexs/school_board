@@ -7,12 +7,16 @@ export default React.memo(({...props}) => {
         <div style={props.style}>
             <div style={{
                 display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
                 alignItems: "center",
                 justifyContent: "center",
+                width: "100%",
                 height: "100%"
             }}>
-                <h5 style={{color: "#5C7080", paddingTop: 10, paddingRight: 7}}
-                    className="bp3-heading disable-select">Неделя</h5>
+                <div style={{height: 20}}>
+                    <h5 style={{color: "#5C7080"}} className="bp3-heading disable-select">Неделя</h5>
+                </div>
                 <Popover interactionKind={PopoverInteractionKind.CLICK}
                          content={
                              <DateWeekPicker

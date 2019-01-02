@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Button, EditableText, H5, Label, Popover, PopoverInteractionKind} from "@blueprintjs/core";
-import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
+import {EditableText, H5, Label} from "@blueprintjs/core";
 import * as PropTypes from "prop-types";
 
 class ElectiveTitleGroup extends PureComponent {
@@ -14,7 +13,7 @@ class ElectiveTitleGroup extends PureComponent {
         item: {}
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.componentWillReceiveProps(this.props);
     }
 

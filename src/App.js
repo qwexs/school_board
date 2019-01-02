@@ -13,7 +13,7 @@ import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/Footer
 
 class App extends Component {
 
-    componentWillMount() {
+    componentDidMount() {
         // axios.create({
         //     headers: {
         //         'Content-Type': 'application/json'
@@ -51,7 +51,6 @@ const styles = {
         flexGrow: 0,
         flexShrink: 0,
         flexBasis: "20vw",
-        minWidth: "10vw",
         overflowX: "hidden",
         paddingTop: "2%",
         background: "#8A9BA8",
@@ -69,7 +68,6 @@ const styles = {
         display: "flex",
         overflow: "hidden",
         flexGrow:1,
-        // backgroundColor: "#F5F8FA"
     },
 
     sideMenuContainer: {

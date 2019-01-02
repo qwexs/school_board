@@ -17,7 +17,7 @@ export default React.memo(({...props}) => {
             {days && days.map((itemDay, index) => {
                 sparseCellData = {};
                 itemDay.less.map((item, index) => {
-                    Object.assign(sparseCellData, {[index + "-0"]: item["text"] || ""})
+                    return Object.assign(sparseCellData, {[index + "-0"]: item["text"] || ""});
                 });
 
                 const dayData = {

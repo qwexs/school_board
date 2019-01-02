@@ -45,6 +45,8 @@ const styles = {
 
 };
 
+let isMounted = false;
+
 class Gallery extends PureComponent {
 
     static ACTION_SELECT_ALL = "selectAll";
@@ -63,13 +65,18 @@ class Gallery extends PureComponent {
     }
 
     componentDidMount() {
+        isMounted = true;
         this.refreshAll();
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
     }
 
     refreshAll = (selectedItem = null) => {
         axios.get('/gallery').then(value => {
             const currentList = value.data;
-            this.props.setOpen(false, () => {
+            isMounted && this.props.setOpen(false, () => {
                 this.setState({
                     list: currentList,
                     selectedItem: selectedItem || currentList[0],
@@ -102,7 +109,7 @@ class Gallery extends PureComponent {
     refreshItem = (id) => {
         this.props.setOpen(false);
         axios.get(`/gallery/${id}`).then(value => {
-            this.setState({selectedItem: value.data, isLoadItem: false});
+            isMounted && this.setState({selectedItem: value.data, isLoadItem: false});
         });
     };
 

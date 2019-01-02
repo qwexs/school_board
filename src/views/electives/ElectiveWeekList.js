@@ -59,6 +59,7 @@ class ElectiveWeekList extends PureComponent {
                             ?
                             <div style={{
                                 position: "relative",
+                                minWidth: contentStyle.minWidth,
                                 top: "50%"
                             }}>
                                 <Spinner/>

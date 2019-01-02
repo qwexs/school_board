@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Button, FileInput, H5, Popover, PopoverInteractionKind} from "@blueprintjs/core";
+import {Button, FileInput, Popover, PopoverInteractionKind} from "@blueprintjs/core";
 import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 
 export default class ElectiveHeaderBar extends PureComponent {
@@ -31,12 +31,16 @@ export default class ElectiveHeaderBar extends PureComponent {
             <div style={this.props.style}>
                 <div style={{
                     display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100%",
+                    width: "100%",
+                    height: "100%"
                 }}>
-                    <H5 style={{color: "#5C7080", paddingTop: 10, paddingRight: 7}}
-                        className="disable-select">Элективные курсы</H5>
+                    <div style={{height: 20}}>
+                        <h5 style={{color: "#5C7080"}} className="bp3-heading disable-select">Элективы</h5>
+                    </div>
 
                     <Popover interactionKind={PopoverInteractionKind.CLICK} captureDismiss={true}
                              onClosed={this.handleClosingPopover}

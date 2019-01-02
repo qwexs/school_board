@@ -27,11 +27,13 @@ const styles = {
     },
     headerBar: {
         backgroundColor: "#E1E8ED",
-        padding: 10,
         border: "1px solid lightgrey",
-        height: 50
+        height: 50,
+        width: "100%"
     }
 };
+
+let isMounted = false;
 
 class Schedule extends PureComponent {
 
@@ -53,8 +55,13 @@ class Schedule extends PureComponent {
         this.scheduleList = React.createRef();
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        isMounted = true;
         this.refreshAll();
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
     }
 
     handleResizeView = (entries) => {
@@ -89,18 +96,20 @@ class Schedule extends PureComponent {
     refreshAll = (selectedItem = null) => {
         this.props.setOpen(false);
         axios.get('/schedule').then(res => {
-            const currentList = res.data;
-            const currentItem = (selectedItem
-                && currentList.filter(item => item._id === selectedItem._id)[0])
-                || currentList[0];
-            this.setState({
-                list: currentList,
-                selectedItem: currentItem || null,
-                isLoad: true,
-                isLoadItem: true,
-            });
-            if (currentItem)
-                this.refreshItem(currentItem);
+            if (isMounted) {
+                const currentList = res.data;
+                const currentItem = (selectedItem
+                    && currentList.filter(item => item._id === selectedItem._id)[0])
+                    || currentList[0];
+                this.setState({
+                    list: currentList,
+                    selectedItem: currentItem || null,
+                    isLoad: true,
+                    isLoadItem: true,
+                });
+                if (currentItem)
+                    this.refreshItem(currentItem);
+            }
         });
     };
 
@@ -108,7 +117,7 @@ class Schedule extends PureComponent {
         this.setState({selectedItem: currentItem, isLoadItem: false});
         axios.get(`/schedule/${currentItem._id}`)
             .then((res) => {
-                this.setState({selectedItem: res.data, isLoadItem: true})
+                isMounted && this.setState({selectedItem: res.data, isLoadItem: true})
             });
     };
 

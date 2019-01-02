@@ -17,7 +17,7 @@ class DateWeekPicker extends PureComponent {
         selectedRange: null
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.setState({selectedRange: this.weekFromDay(this.props.value)})
     }
 

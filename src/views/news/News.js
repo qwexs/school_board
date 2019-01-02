@@ -25,11 +25,14 @@ const styles = {
         margin: "0 3% 5% 0",
         backgroundColor: "#FFFFFF",
         color: "#394B59",
-        opacity: .8
+        opacity: .9
     }
 };
 
+let isMounted = false;
+
 class News extends React.PureComponent {
+
 
     state = {
         isDialogOpen: false,
@@ -39,13 +42,18 @@ class News extends React.PureComponent {
         isNew: false,
     };
 
-    componentWillMount() {
+    componentDidMount() {
+        isMounted = true;
         this.refreshAll();
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
     }
 
     refreshAll = () => {
         axios.get('/news').then(resolve => {
-            this.setState({list: resolve.data});
+            isMounted && this.setState({list: resolve.data});
         });
     };
 

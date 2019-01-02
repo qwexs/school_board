@@ -11,35 +11,26 @@ import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import IsNoPage from "../../components/IsNoPage";
 
 const styles = {
-    sideItem: {
-        display: "flex",
-        flexDirection: "row",
-        width: "30vw",
-        minWidth: 200,
-        height: 120,
-        margin: "auto",
-        overflow: "hidden",
-        textAlign: "left",
-        justifyContent: "space-between"
-    },
     contentStyle: {
         display: "flex",
         flexDirection: "column",
         flexGrow: 1,
         height: "100%",
         overflowY: "auto",
+        minWidth: "270px",
+        marginTop:"10px"
     },
     headerBar: {
         backgroundColor: "#E1E8ED",
-        flexGrow: 1,
         justifyItems: "middle",
         justifyContent: "center",
         border: "1px solid lightgrey",
         height: 50,
-        padding: 10
     }
 
 };
+
+let isMounted = false;
 
 class Elective extends PureComponent {
 
@@ -54,31 +45,43 @@ class Elective extends PureComponent {
         isLoadList: true
     };
 
-    componentWillMount() {
+    componentDidMount() {
+        isMounted = true;
         this.refreshAll();
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
     }
 
     refreshAll = (selectedItem = null) => {
         axios.get('/elective').then(res => {
-            const currentList = res.data;
-            const currentItem = selectedItem ? selectedItem : currentList[0];
-            this.setState({
-                list: currentList,
-                selectedItem: currentItem,
-                isLoadList: false
-            }, () => {
-                this.sideMenuRef && this.sideMenuRef.scrollToSelect();
-                this.props.setOpen(false)
-            });
-            if (currentItem)
-                this.refreshItem(currentItem._id);
+            if (isMounted) {
+                const currentList = res.data;
+                const currentItem = selectedItem ? selectedItem : currentList[0];
+                this.setState({
+                    list: currentList,
+                    selectedItem: currentItem,
+                    isLoadList: false
+                }, () => {
+                    this.sideMenuRef && this.sideMenuRef.scrollToSelect();
+                    this.props.setOpen(false)
+                });
+                if (currentItem)
+                    this.refreshItem(currentItem._id);
+            }
+
         });
     };
 
     refreshItem = (id) => {
         this.props.setOpen(false);
         axios.get(`/elective/${id}`).then(value => {
-            this.setState({selectedItem: {...this.state.selectedItem, items: value.data}, isLoadItem: false});
+            isMounted &&
+            this.setState({
+                selectedItem: {...this.state.selectedItem, items: value.data},
+                isLoadItem: false
+            });
         });
     };
 
@@ -157,7 +160,7 @@ class Elective extends PureComponent {
                                           <ElectiveHeaderBar style={styles.headerBar}
                                                              onAdd={this.handleElectiveAdd}/>
                                       }>
-                                <ElectiveSideItem {...styles}
+                                <ElectiveSideItem
                                                   onRemoveItem={this.handleElectiveRemove}/>
                             </SideMenu>
                         }

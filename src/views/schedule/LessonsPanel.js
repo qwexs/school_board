@@ -121,7 +121,6 @@ class LessonsPanel extends PureComponent {
                                     </div>
                                     :
                                     this.state.list.map((item, index) => {
-                                        console.log(moment(item.beginTime).format());
                                         return (
                                             <Label key={index}
                                                    title={item.name}>
@@ -136,7 +135,6 @@ class LessonsPanel extends PureComponent {
                                                                             list: Array.from(this.state.list, (d, i) => {
                                                                                 if (i === index) {
                                                                                     d.beginTime = moment(time).toDate();
-                                                                                    console.log(d.beginTime);
                                                                                 }
                                                                                 return d;
 
@@ -154,7 +152,6 @@ class LessonsPanel extends PureComponent {
                                                                             list: Array.from(this.state.list, (d, i) => {
                                                                                 if (i === index) {
                                                                                     d.endTime = moment(time).toDate();
-                                                                                    console.log( d.endTime);
                                                                                 }
                                                                                 return d;
                                                                             })

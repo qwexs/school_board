@@ -26,13 +26,14 @@ const styles = {
     },
     headerBar: {
         backgroundColor: "#E1E8ED",
-        flexGrow: 1,
-        justifyItems: "middle",
         justifyContent: "center",
         border: "1px solid lightgrey",
-        height: 50
+        height: 50,
+        width: "100%"
     }
 };
+
+let isMounted = false;
 
 class Announce extends PureComponent {
 
@@ -46,8 +47,13 @@ class Announce extends PureComponent {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        isMounted = true;
         this.refreshAll();
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
     }
 
     refreshAll = () => {
@@ -55,7 +61,7 @@ class Announce extends PureComponent {
         axios.get('/announce').then(res => {
             const currentList = res.data.items;
             const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
-            this.setState({
+            isMounted && this.setState({
                 list: currentList,
                 selectedItem: currentItem,
                 selectedDate: new Date(res.data.date),

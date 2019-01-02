@@ -22,6 +22,8 @@ const styles = {
     },
 };
 
+let isMounted = false;
+
 class Holidays extends PureComponent {
 
     constructor(props) {
@@ -43,8 +45,13 @@ class Holidays extends PureComponent {
     }
 
     componentDidMount() {
+        isMounted = true;
         this.setState({date: moment()});
         this.refreshAll();
+    }
+
+    componentWillUnmount() {
+        isMounted = false;
     }
 
     renderMonthElement = ({month}) => {
@@ -63,7 +70,7 @@ class Holidays extends PureComponent {
         if (currentDayIndex !== -1) {
             content = this.state.items[currentDayIndex];
         }
-        this.setState({date, content});
+        isMounted && this.setState({date, content});
     };
 
     handleResizeView = (entries) => {
@@ -114,23 +121,23 @@ class Holidays extends PureComponent {
     };
 
     refreshAll = (selectedItem = null) => {
-        this.setState({loaded: false});
-        axios.get('/holidays').then(resolve => {
-            const items = resolve.data;
-            console.log(items);
-            this.setState(prevState => ({
-                dates: Array.from(items, (item) => moment(item.date).toDate()),
-                items,
-                content: selectedItem || prevState.content,
-                loaded: true,
-            }), () => {
-                this.handleDateChange(this.state.date);
+        if (isMounted) {
+            this.setState({loaded: false});
+            axios.get('/holidays').then(resolve => {
+                const items = resolve.data;
+                this.setState(prevState => ({
+                    dates: Array.from(items, (item) => moment(item.date).toDate()),
+                    items,
+                    content: selectedItem || prevState.content,
+                    loaded: true,
+                }), () => {
+                    this.handleDateChange(this.state.date);
+                });
             });
-        });
+        }
     };
 
     handleDayHighlighted = (day) => {
-        console.log("handleDayHighlighted ", day.toString());
         return this.getDayHighlightedIndex(day) !== -1;
     };
 
@@ -214,7 +221,7 @@ class Holidays extends PureComponent {
                                     renderCalendarInfo={this.renderInfo}
                                     renderMonthElement={this.renderMonthElement}
                                     onFocusChange={(focusedInput) => {
-                                        this.setState({focusedInput})
+                                        isMounted && this.setState({focusedInput})
                                     }}
                                     date={this.state.date}
                                 />

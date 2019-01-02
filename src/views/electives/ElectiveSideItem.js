@@ -3,9 +3,18 @@ import * as PropTypes from "prop-types";
 import {Button, H5, Popover, PopoverInteractionKind, Text} from "@blueprintjs/core";
 import {Intent, PopoverPosition} from "@blueprintjs/core/lib/cjs";
 import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
-import Modal from "../../components/Modal";
 
 const styles = {
+    sideItem: {
+        display: "flex",
+        flexDirection: "row",
+        height: 120,
+        margin: "auto",
+        overflow: "hidden",
+        textAlign: "left",
+        justifyContent: "space-between"
+    },
+
     title: {
         width: "100%",
         fontWeight: "500",
@@ -31,11 +40,10 @@ const styles = {
     icon: {
         display: "flex",
         justifyItems: "center",
-        // paddingLeft: "3%",
-        maxWidth: "25%",
-        height: "120px",
+        width: "25%",
+        height: "70%",
         margin: 'auto',
-        marginRight:"2%"
+        marginRight: "2%",
     }
 };
 
@@ -50,24 +58,24 @@ export default class ElectiveSideItem extends React.PureComponent {
     };
 
     render() {
-        const {item, sideItem} = this.props;
+        const {item} = this.props;
         return (
-            <div style={sideItem} className="disable-select"
+            <div style={styles.sideItem} className="disable-select"
                  onMouseOver={() => this.setState({onOver: true})}
                  onMouseLeave={() => this.setState({onOver: false})}>
-                <div style={{width: "100%"}}>
-                    <div style={styles.title} className="bp3-ui-text">{item.name}</div>
-                    <div style={styles.info} className="bp3-text-small">
-                        <dl>
-                            <dd>{item.teacher}</dd>
-                            <dd>{item.place}</dd>
-                        </dl>
+                    <div style={{width: "100%"}}>
+                        <div style={styles.title} className="bp3-ui-text">{item.name}</div>
+                        <div style={styles.info} className="bp3-text-small">
+                            <dl>
+                                <dd>{item.teacher}</dd>
+                                <dd>{item.place}</dd>
+                            </dl>
+                        </div>
                     </div>
-                </div>
-                <div style={styles.icon}>
-                    <img style={{maxWidth: '100%', maxHeight: '100%', margin: "auto"}} src={`/${item.icon}`}
-                         alt={item.name}/>
-                </div>
+                    <div style={styles.icon}>
+                        <img style={{maxWidth: '100%', maxHeight: '100%', margin: "auto"}} src={`/${item.icon}`}
+                             alt={item.name}/>
+                    </div>
 
                 {this.state.onOver &&
                 <div style={{position: "relative", marginRight:-30, right:30}}>

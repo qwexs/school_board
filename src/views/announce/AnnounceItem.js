@@ -10,7 +10,7 @@ class AnnounceItem extends PureComponent {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.componentWillReceiveProps(this.props);
     }
 
