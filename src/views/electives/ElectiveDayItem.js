@@ -25,7 +25,6 @@ const styles = {
         fontSize: "12pt",
         margin: 0,
         width: "100%",
-        height: 30,
         textAlign: "center",
         overflowWrap: "normal",
     },
@@ -36,7 +35,7 @@ const styles = {
         borderTop: "1px solid #5C7080",
     },
     labelDescription: {
-        width: "60%",
+        width: "70%",
         color: "#5C7080",
     },
     editPanelContainer: {
@@ -237,7 +236,7 @@ class ElectiveDayItem extends PureComponent {
                                     <label style={styles.labelDescription}
                                            className="bp3-monospace-text disable-select">
                                         {!this.state.edited && <div style={styles.lineElement}/>}
-                                        класс
+                                        имя
                                     </label>
                                 </div>
                                 <div style={styles.labelBlockContainer}>

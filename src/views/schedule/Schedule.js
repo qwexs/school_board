@@ -140,7 +140,7 @@ class Schedule extends PureComponent {
                         ?
                         <div style={{
                             position: "relative",
-                            margin: "auto"
+                            margin: "auto",
                         }}>
                             <Spinner/>
                         </div>
@@ -163,7 +163,8 @@ class Schedule extends PureComponent {
                                     ?
                                     <div style={{
                                         position: "relative",
-                                        margin: "auto"
+                                        margin: "auto",
+                                        minWidth: 230
                                     }}>
                                         <Spinner/>
                                     </div>

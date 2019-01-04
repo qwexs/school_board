@@ -25,7 +25,6 @@ const styles = {
 
     titleLabel: {
         textAlign: "left",
-        // paddingLeft: "7%",
         fontWeight: "bold",
         margin: 0
     },
@@ -36,7 +35,7 @@ const styles = {
     },
 
     groupItemContainerStyle: {
-        width: "90%",
+        width: "95%",
         margin: "0 auto",
         minWidth: "35vw",
         maxWidth: "450px",

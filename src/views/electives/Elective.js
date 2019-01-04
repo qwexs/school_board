@@ -17,8 +17,8 @@ const styles = {
         flexGrow: 1,
         height: "100%",
         overflowY: "auto",
-        minWidth: "270px",
-        marginTop:"10px"
+        minWidth: "220px",
+        paddingTop:"10px"
     },
     headerBar: {
         backgroundColor: "#E1E8ED",

@@ -60,7 +60,7 @@ export default class GalleryHeaderBar extends PureComponent {
                     height: "100%",
                 }}>
                     <H5 style={{color: "#5C7080", paddingTop: 10, paddingRight: 7}}
-                        className="disable-select">Альбомы фотографий</H5>
+                        className="disable-select">Альбомы</H5>
 
                     <Popover interactionKind={PopoverInteractionKind.CLICK} captureDismiss={true}
                              onClosed={this.handleClosingPopover}

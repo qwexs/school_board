@@ -3,6 +3,7 @@ import * as PropTypes from "prop-types";
 import {Button, H5, Popover, PopoverInteractionKind, Text} from "@blueprintjs/core";
 import {Intent, PopoverPosition} from "@blueprintjs/core/lib/cjs";
 import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
+import Radium from "radium";
 
 const styles = {
     sideItem: {
@@ -12,7 +13,7 @@ const styles = {
         margin: "auto",
         overflow: "hidden",
         textAlign: "left",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
 
     title: {
@@ -42,12 +43,17 @@ const styles = {
         justifyItems: "center",
         width: "25%",
         height: "70%",
-        margin: 'auto',
-        marginRight: "2%",
+        margin: "auto",
+        padding: "0 5% 0 0",
+        '@media (max-width: 550px)': {
+            width: "70%",
+            padding: 0,
+            margin: "auto"
+        },
     }
 };
 
-export default class ElectiveSideItem extends React.PureComponent {
+class ElectiveSideItem extends React.PureComponent {
 
     static propTypes = {
         onRemoveItem: PropTypes.func
@@ -60,10 +66,18 @@ export default class ElectiveSideItem extends React.PureComponent {
     render() {
         const {item} = this.props;
         return (
-            <div style={styles.sideItem} className="disable-select"
+            <Radium.StyleRoot>
+            <div style={[styles.sideItem]} className="disable-select"
                  onMouseOver={() => this.setState({onOver: true})}
                  onMouseLeave={() => this.setState({onOver: false})}>
-                    <div style={{width: "100%"}}>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                        '@media (max-width: 550px)': {
+                            display: "none"
+                        },
+                    }}>
                         <div style={styles.title} className="bp3-ui-text">{item.name}</div>
                         <div style={styles.info} className="bp3-text-small">
                             <dl>
@@ -118,6 +132,9 @@ export default class ElectiveSideItem extends React.PureComponent {
                 </div>
                 }
             </div>
+            </Radium.StyleRoot>
         );
     }
 }
+
+export default ElectiveSideItem;
