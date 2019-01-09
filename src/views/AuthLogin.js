@@ -1,6 +1,6 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom'
-import {Button, H5, InputGroup, Intent, Label, Position, Tooltip} from "@blueprintjs/core";
+import {Button, H5, InputGroup, Intent, Label, Position, Spinner, Tooltip} from "@blueprintjs/core";
 
 class AuthLogin extends React.Component {
 
@@ -13,7 +13,8 @@ class AuthLogin extends React.Component {
             showPassword: false,
             changePassword: false,
             redirectToReferrer: false,
-            isValid: true
+            isValid: true,
+            loaded: false
         };
         this.onLogin = this.onLogin.bind(this);
     }
@@ -23,7 +24,8 @@ class AuthLogin extends React.Component {
         auth.getSession((isAuth) => {
             this.setState(() => ({
                 redirectToReferrer: isAuth,
-                isValid: true
+                isValid: true,
+                loaded: true
             }));
         });
     }
@@ -76,7 +78,7 @@ class AuthLogin extends React.Component {
         const {from} = this.props.location.state || {from: {pathname: redirectTo}};
         const {
             redirectToReferrer, login, isValid,
-            showPassword, changePassword
+            showPassword, changePassword, loaded
         } = this.state;
 
         if (redirectToReferrer === true) {
@@ -95,7 +97,15 @@ class AuthLogin extends React.Component {
             </Tooltip>
         );
 
-        return (
+        return ( !loaded ?
+            <div style={{
+                position: "absolute",
+                left: "50%", top: "50%",
+                transform: "translate(-50%,-50%)"
+            }}>
+                <Spinner />
+            </div>
+            :
             <div style={{display: "flex", height: "100vh", overflowY: "auto"}}>
                 <div style={{
                     margin: "auto",
