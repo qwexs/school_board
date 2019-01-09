@@ -31,6 +31,12 @@ class Menu extends PureComponent {
         return currentIndex;
     }
 
+    handleLogout = () => {
+        this.props.auth.signOut(() => {
+            this.props.history.push("/");
+        });
+    };
+
     render() {
         const {routes, style} = this.props;
         return (
@@ -69,6 +75,18 @@ class Menu extends PureComponent {
                                         selected={this.state.selectedIndex === index}
                                         onClick={this.menuClickHandler}/>
                         )}
+                    </div>
+                    <div style={{position:"fixed", left:"20px", bottom:"15px",
+                        '@media screen and (max-width: 600px)': {
+                            position: "relative",
+                            left: 0,
+                            top:15,
+                            paddingBottom: 10,
+                            margin: "0 auto"
+                        }}}>
+                        <a style={{color:"#E1E8ED"}} href="javascript:void(0)" onClick={this.handleLogout}>
+                            Выйти
+                        </a>
                     </div>
                 </Radium.StyleRoot>
             </div>

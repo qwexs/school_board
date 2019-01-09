@@ -2,7 +2,6 @@ import React, {PureComponent} from 'react';
 import GalleryComponent from "react-photo-gallery";
 import Gallery from './Gallery';
 import SelectedImage from "./SelectImage";
-import Dropzone from 'react-dropzone';
 import * as PropTypes from "prop-types";
 import {Checkbox} from "@blueprintjs/core";
 
@@ -17,14 +16,13 @@ class GalleryAlbum extends PureComponent {
     state = {
         photos: [],
         files: [],
-        dropzoneActive: false,
+        // dropzoneActive: false,
         slideShow: false
     };
 
     handleSlideShowChange = (event) => {
         const {checked} = event.target;
         this.setState({slideShow: checked}, () => {
-            console.log(this.state.slideShow);
             this.props.onChange(this.state);
         });
     };
@@ -66,7 +64,7 @@ class GalleryAlbum extends PureComponent {
         );
     };
 
-    onDragEnter = () => {
+    /*onDragEnter = () => {
         this.setState({
             dropzoneActive: true
         });
@@ -83,11 +81,11 @@ class GalleryAlbum extends PureComponent {
             files,
             dropzoneActive: false
         });
-    };
+    };*/
 
     render() {
         const {contentStyle} = this.props;
-        const {dropzoneActive} = this.state;
+        // const {dropzoneActive} = this.state;
         return (
             <div style={{
                 width: "100%",
@@ -111,7 +109,7 @@ class GalleryAlbum extends PureComponent {
                     </div>
                 </div>
                 <div style={contentStyle} ref={(ref) => this.listContainer = ref}>
-                    <Dropzone
+                    {/*<Dropzone
                         accept="image/jpeg, image/jpg, image/png"
                         disableClick
                         style={{position: "relative", opacity: dropzoneActive ? .5 : 1}}
@@ -119,11 +117,13 @@ class GalleryAlbum extends PureComponent {
                         onDragEnter={this.onDragEnter}
                         onDragLeave={this.onDragLeave}
                     >
-                        <GalleryComponent
-                            photos={this.state.photos}
-                            ImageComponent={SelectedImage}
-                            onClick={this.selectPhoto}/>
-                    </Dropzone>
+
+                    </Dropzone>*/}
+
+                    <GalleryComponent
+                        photos={this.state.photos}
+                        ImageComponent={SelectedImage}
+                        onClick={this.selectPhoto}/>
 
                 </div>
             </div>

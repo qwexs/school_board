@@ -14,11 +14,6 @@ import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/Footer
 class App extends Component {
 
     componentDidMount() {
-        // axios.create({
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // });
     }
 
   render() {
@@ -84,10 +79,10 @@ const styles = {
     }
 };
 
-const AccessPage = React.memo(() => {
+const AccessPage = React.memo((...props) => {
     return (
         <div style={styles.stageStyle}>
-            <Menu style={styles.menuStyle} routes={routes}/>
+            <Menu style={styles.menuStyle} routes={routes} auth={setAuth}/>
             <FooterBarProvider>
                 <FooterPanelConsumer>
                     {({setOpen, isOpen, setAction, action}) => (

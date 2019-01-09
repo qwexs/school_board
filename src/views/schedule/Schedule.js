@@ -49,7 +49,8 @@ class Schedule extends PureComponent {
             list: [],
             selectedItem: null,
             isLoad: false,
-            isLoadItem: true
+            isLoadItem: true,
+            vWidth: 0
         };
 
         this.scheduleList = React.createRef();
@@ -69,6 +70,7 @@ class Schedule extends PureComponent {
             const vWidth = entries[0].contentRect.width;
             const element = ReactDOM.findDOMNode(this.scheduleList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
+            this.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
             this.footerBarRef.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
             this.lessonsPanelRef.setState({vWidth: `calc(${vWidth / 2}px + ${offsetScroll ? 1 : 0}vw - 150px`});
         }
@@ -122,6 +124,7 @@ class Schedule extends PureComponent {
     };
 
     handleChangeItem = (item) => {
+        this.props.setOpen(false);
         this.refreshItem(item);
     };
 
@@ -164,7 +167,7 @@ class Schedule extends PureComponent {
                                     <div style={{
                                         position: "relative",
                                         margin: "auto",
-                                        minWidth: 230
+                                        minWidth: this.state.vWidth
                                     }}>
                                         <Spinner/>
                                     </div>
