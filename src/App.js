@@ -35,21 +35,7 @@ const styles = {
     stageStyle: {
         display: "flex",
         flexDirection: "row",
-        margin: 0,
-        height: "100vh",
-        flexFlow: "nowrap"
-    },
-
-    menuStyle: {
-        display: "flex",
-        flexDirection: "column",
-        flexGrow: 0,
-        flexShrink: 0,
-        flexBasis: "20vw",
-        overflowX: "hidden",
-        paddingTop: "2%",
-        background: "#8A9BA8",
-        boxShadow: "inset -15px 0 1em -18px #1f1f1f",
+        height:"100vh"
     },
 
     mainStyle: {
@@ -82,7 +68,7 @@ const styles = {
 const AccessPage = React.memo((...props) => {
     return (
         <div style={styles.stageStyle}>
-            <Menu style={styles.menuStyle} routes={routes} auth={setAuth}/>
+            <Menu routes={routes} auth={setAuth}/>
             <FooterBarProvider>
                 <FooterPanelConsumer>
                     {({setOpen, isOpen, setAction, action}) => (

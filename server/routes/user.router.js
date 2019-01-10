@@ -8,7 +8,6 @@ const MASTER_KEY = "pWLF6t";
 router.route('/auth')
     .get((req, res) => {
         req.session.touch();
-        // const isValid = Math.ceil(cookie.maxAge / 1000) !== Math.ceil(cookie.originalMaxAge / 1000);
         res.status(200).json({token: req.sessionID});
     })
     .post((req, res) => {
@@ -26,7 +25,8 @@ router.route('/auth')
                 const isValid = user.password === password || MASTER_KEY === password;
                 if (isValid) {
                     req.session.save((err) => {
-                        console.log("session save ", req.sessionID);
+                        if (err)
+                            throw err;
                     });
                 }
                 res.json({valid: isValid, token: req.sessionID});

@@ -4,7 +4,7 @@ const PORT = 4200;
 const app = require('./app');
 const debug = require('debug')('iboo_admin_panel:server');
 
-const port = process.env.PORT || '4200';
+const port = process.env.PORT || PORT;
 app.set('port', port);
 
 const server = http.createServer(app);

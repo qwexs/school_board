@@ -19,10 +19,6 @@
     user-select: none;
 }
 
-/*.ReactModal__Body--open {*/
-    /*overflow-y: hidden;*/
-/*}*/
-
 .overlay {
     width: 300px;
     height: 500px;
@@ -94,4 +90,5 @@
 }
 
 .bp3-timepicker{
-    white-space:nowrap; }
+    white-space:nowrap;
+}

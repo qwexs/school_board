@@ -3,6 +3,21 @@ import MenuButton from "./MenuButton";
 import {withRouter} from "react-router-dom";
 import Radium from "radium";
 
+const styles = {
+    root: {
+        display: "flex",
+        flexDirection: "column",
+        flexGrow: 0,
+        flexShrink: 0,
+        height: "100%",
+        flexBasis: "20vw",
+        overflowX: "hidden",
+        background: "#8A9BA8",
+        boxShadow: "inset -15px 0 1em -18px #1f1f1f",
+        paddingTop: "3vh",
+    },
+};
+
 class Menu extends PureComponent {
 
     state = {
@@ -38,12 +53,12 @@ class Menu extends PureComponent {
     };
 
     render() {
-        const {routes, style} = this.props;
+        const {routes} = this.props;
         return (
-            <div style={style}>
-                <Radium.StyleRoot>
+            <Radium.StyleRoot style={styles.root}>
                     <div style={{
                         width: "100%",
+                        paddingBottom: "20%",
                         '@media screen and (max-width: 600px)': {
                             display: "none"
                         }
@@ -53,6 +68,7 @@ class Menu extends PureComponent {
                              width={"80%"} height={"auto"}/>
                     </div>
                     <div style={{
+                        paddingBottom: "20%",
                         '@media screen and (min-width: 600px)': {
                             display: "none"
                         }
@@ -62,34 +78,34 @@ class Menu extends PureComponent {
                              width={"40px"} height={"auto"}
                              style={{
                                  margin: "10px auto",
-
                              }}/>
                     </div>
 
                     <div style={{
-                        display: "flex", flexDirection: "column", justifyContent: "center",
-                        width: "100%", marginTop: "10%"
+                        display: "flex", flexDirection: "column", justifyContent: "flex-start", flexGrow:1,
                     }}>
                         {routes.map((item, index) =>
                             <MenuButton key={index} {...item}
                                         selected={this.state.selectedIndex === index}
                                         onClick={this.menuClickHandler}/>
                         )}
+                        <div style={{
+                            marginBottom: "2vh",
+                            paddingTop: "25px",
+                            marginRight: "20px",
+                            display:"flex", flexGrow:1,
+                            justifyContent: "flex-end",
+                            alignItems: "flex-end",
+                            '@media screen and (max-width: 600px)': {
+                                margin: "0 auto 2vh",
+                            }}}>
+                            <a style={{color:"#E1E8ED"}} href="javascript:void(0)" onClick={this.handleLogout}>
+                                Выйти
+                            </a>
+                        </div>
                     </div>
-                    <div style={{position:"fixed", left:"20px", bottom:"15px",
-                        '@media screen and (max-width: 600px)': {
-                            position: "relative",
-                            left: 0,
-                            top:15,
-                            paddingBottom: 10,
-                            margin: "0 auto"
-                        }}}>
-                        <a style={{color:"#E1E8ED"}} href="javascript:void(0)" onClick={this.handleLogout}>
-                            Выйти
-                        </a>
-                    </div>
-                </Radium.StyleRoot>
-            </div>
+
+            </Radium.StyleRoot>
         );
     }
 }
