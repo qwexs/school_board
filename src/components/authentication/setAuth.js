@@ -6,7 +6,7 @@ const cookies = new Cookies();
 export const setAuth = {
     isAuthenticated: false,
     signIn(params, response) {
-        axios.post(process.env.PROXY+'/user/auth', params, {withCredentials: true}).then(resolve => {
+        axios.post('/user/auth', params, {withCredentials: true}).then(resolve => {
             const {valid, token} = resolve.data;
             if (valid) {
                 cookies.remove("iboard");
@@ -17,13 +17,12 @@ export const setAuth = {
         });
     },
     newPassword(params, response) {
-        axios.put(process.env.PROXY+'/user/auth', params).then(resolve => {
+        axios.put('/user/auth', params).then(resolve => {
             response.call(null,  resolve.data.valid);
         });
     },
     getSession(response) {
-        console.log(process.env.PROXY);
-        axios.get(process.env.PROXY+'/user/auth', {withCredentials: true}).then(resolve => {
+        axios.get('/user/auth', {withCredentials: true}).then(resolve => {
             const {token} = resolve.data;
             const currentToken = cookies.get('iboard');
             const valid = currentToken && currentToken.token === token;
@@ -34,7 +33,7 @@ export const setAuth = {
     signOut(response) {
         this.isAuthenticated = false;
         cookies.remove("iboard");
-        axios.get(process.env.PROXY+'/user/auth/logout').then(() => {
+        axios.get('/user/auth/logout').then(() => {
             response.call();
         });
     }

@@ -7,8 +7,8 @@ const async = require('async');
 const im = require('imagemagick');
 const uniqid = require('uniqid');
 const gcdMath = require('../utils/gcdMath');
-
-const UPLOAD_DIR = "./public/gallery-files/";
+const STATIC_DIR = process.env.STATIC_DIR;
+const UPLOAD_DIR = STATIC_DIR + "/gallery-files/";
 const upload = multer({ storage: multer.diskStorage({
         destination: (req, file, callback) => {
             let {id} = req.body;
@@ -59,7 +59,7 @@ router.route('/')
                     });
                     im.resize({
                         srcPath: filePath,
-                        dstPath: './public/gallery-files/' + dirName + "/thumbs/" + file.filename,
+                        dstPath: STATIC_DIR+'/gallery-files/' + dirName + "/thumbs/" + file.filename,
                         width: "144^", height: "144^"
                     }, (err) => {
                         if (err) throw err;
@@ -101,7 +101,7 @@ router.route("/:id")
             currentAlbum.photos = useful;
             currentAlbum.quantity = useful.length;
             async.eachSeries(useless, (filePath, done) => {
-                const absolutePath = "./public" + filePath;
+                const absolutePath = STATIC_DIR + filePath;
                 fs.remove(absolutePath, err => {
                     if (err) throw err;
                     fs.remove(absolutePath.replace("full", "thumbs"), err => {

@@ -1,14 +1,19 @@
-
+require('dotenv').config();
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'development') {
+    process.env.PORT = 4200;
+    process.env.STATIC_DIR = "./public";
+}
 const http = require('http');
-const PORT = 4200;
 const app = require('./app');
 const debug = require('debug')('iboo_admin_panel:server');
-
-const port = process.env.PORT || PORT;
+const colog = require('colog');
+const port = process.env.PORT;
+colog.success('Порт сервера: ' + port);
 app.set('port', port);
 
 const server = http.createServer(app);
-server.listen(PORT);
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -19,7 +24,10 @@ app.use(function(err, req, res, next) {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     res.status(err.status || 500);
-    res.render('error');
+    if (err) {
+        colog.error(err.message);
+    }
+    // res.render('error');
 });
 
 function onError(error) {
@@ -34,11 +42,11 @@ function onError(error) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
+            colog.error(bind + ' requires elevated privileges');
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
+            colog.error(bind + ' is already in use');
             process.exit(1);
             break;
         default:

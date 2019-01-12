@@ -6,11 +6,11 @@ const multer = require('multer');
 const uniqid = require('uniqid');
 const im = require('imagemagick');
 const fs = require('fs-extra');
-
+const STATIC_DIR = process.env.STATIC_DIR;
 const PATH_DIR = "elective-files/";
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const path = `./public/${PATH_DIR}`;
+        const path = `${STATIC_DIR}/${PATH_DIR}`;
         fs.mkdirsSync(path);
         cb(null, path);
     },
@@ -90,7 +90,7 @@ router.route('/:id')
         Elective.findByIdAndDelete(req.params.id).then(result => {
             const {icon} = result;
             if (icon) {
-                fs.remove(`./public/${icon}`, (err) => {
+                fs.remove(`${STATIC_DIR}/${icon}`, (err) => {
                     if (err) throw err;
 
                     res.status(200).json({status: "ok"});
