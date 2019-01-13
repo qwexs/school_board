@@ -44,6 +44,11 @@ class ScheduleContent extends PureComponent {
         this.setState({text: listData.name});
     }
 
+    componentWillReceiveProps(nextProps, nextContext) {
+        const {listData} = nextProps;
+        this.setState({text: listData.name});
+    }
+
     handleChangeTitle = (text) => {
         this.setState({text});
     };
@@ -66,7 +71,6 @@ class ScheduleContent extends PureComponent {
                                                          className={Classes.POPOVER_DISMISS}
                                                          onClick={this.props.onRemoveKlass}/>
                                              </div>
-
                                          }
                                          target={
                                              <H4>

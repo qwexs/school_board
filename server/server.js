@@ -7,9 +7,8 @@ if (process.env.NODE_ENV === 'development') {
 const http = require('http');
 const app = require('./app');
 const debug = require('debug')('iboo_admin_panel:server');
-const colog = require('colog');
 const port = process.env.PORT;
-colog.success('Порт сервера: ' + port);
+console.log('\x1b[33m%s\x1b[0m', 'Порт сервера: ' + port)
 app.set('port', port);
 
 const server = http.createServer(app);
@@ -25,7 +24,7 @@ app.use(function(err, req, res, next) {
 
     res.status(err.status || 500);
     if (err) {
-        colog.error(err.message);
+        console.error(err.message);
     }
     // res.render('error');
 });
@@ -42,11 +41,11 @@ function onError(error) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            colog.error(bind + ' requires elevated privileges');
+            console.error(bind + ' requires elevated privileges');
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            colog.error(bind + ' is already in use');
+            console.error(bind + ' is already in use');
             process.exit(1);
             break;
         default:

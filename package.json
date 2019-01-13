@@ -2,6 +2,7 @@
   "name": "iboo_admin_panel",
   "version": "1.1.0",
   "private": true,
+  "author": "Sergey Pastuhov",
   "proxy": "http://localhost:4200",
   "dependencies": {
     "@blueprintjs/core": "^3.10.0",
@@ -13,7 +14,6 @@
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "classnames": "^2.2.6",
-    "colog": "^1.0.4",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",

@@ -2,7 +2,6 @@ const News = require('../models/news.model');
 const express = require('express');
 const router = express.Router();
 const fs = require('fs-extra');
-const async = require('async');
 const im = require('imagemagick');
 const multer = require('multer');
 const uniqid = require('uniqid');
@@ -31,15 +30,31 @@ router.route('/')
     })
     .post(upload.single("image"), (req, res) => {
         const {title, text} = req.body;
+        const {file} = req;
+        const date = Date.now();
         let image = "";
-        if (req.file)
-            image = PATH_DIR + req.file.filename;
-        News.create({title, text, image, date: Date.now()}).then(() => {
-            res.status(201).json({status: "ok"});
-            return req.app.emit('news', req, res);
-        });
-
+        if (file) {
+            image = PATH_DIR + file.filename;
+            const filePath = file.destination + "/" + file.filename;
+            im.resize({
+                srcPath: filePath,
+                dstPath: filePath,
+                width: "800", height: "800"
+            }, (err) => {
+                if (err) throw err;
+                createNews(req, res, {title, text, image, date});
+            });
+        } else {
+            createNews(req, res, {title, text, image, date})
+        }
     });
+
+createNews = (req, res, params) => {
+    News.create(params).then(() => {
+        res.status(201).json({status: "ok"});
+        return req.app.emit('news', req, res);
+    });
+};
 
 router.route('/:id')
     .put(upload.single("image"), (req, res) => {
