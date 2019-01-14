@@ -1,6 +1,6 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom'
-import {Button, H5, InputGroup, Intent, Label, Position, Spinner, Tooltip} from "@blueprintjs/core";
+import {Button, H3, H5, InputGroup, Intent, Label, Position, Spinner, Tooltip} from "@blueprintjs/core";
 
 class AuthLogin extends React.Component {
 
@@ -113,7 +113,9 @@ class AuthLogin extends React.Component {
                     padding: 20
                 }}>
                     <img src={"/assets/logo_iboard.png"} width={"35%"} alt={"logo"}/>
-                    <H5 style={{padding: "10px 0 10px 0", color: "#5C7080"}}
+                    <H3 style={{padding: "10px 0 0 0", color: "#5C7080",fontWeight:"500"}}
+                    >Информационная <br/>доска</H3>
+                    <H5 style={{padding: "20px 0 10px 0", color: "#738694"}}
                         className="bp3-ui-text">
                         {changePassword ? "Установить новый пароль" : "Вход в систему"}
                     </H5>
