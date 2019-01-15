@@ -27,11 +27,11 @@ app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({parameterLimit: 100000, limit: '100mb', extended: true }));
 
 if(process.env.NODE_ENV === 'production') {
-    app.use(express.static("build"));
-    app.get('/', function (req, res, next) {
-        res.sendFile(path.resolve(path.join(__dirname, '/dist/index.html')));
+    app.get('/app/*', function (req, res, next) {
+        res.redirect("/");
         next();
     });
+    app.use(express.static("build"));
 }
 
 if(process.env.NODE_ENV === 'development') {
@@ -50,7 +50,6 @@ const connectDb = () => {
     mongoose.connect(uri, {useNewUrlParser: true, useFindAndModify: false});
     return mongoose.connection;
 };
-
 
 app.use('/update', observerRouter);
 app.use('/user', userRouter);
