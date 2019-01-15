@@ -103,8 +103,8 @@ class Elective extends PureComponent {
     };
 
     handleElectiveAdd = (dataHeader) => {
-        const {name, teacher, place, icon} = dataHeader;
         this.setState({isLoadItem: true});
+        const {name, teacher, place, icon} = dataHeader;
         const formData = new FormData();
         formData.append('name', name || "");
         formData.append('teacher', teacher || "");
@@ -132,10 +132,15 @@ class Elective extends PureComponent {
     };
 
     handleSaveElective = (item) => {
-        this.setState({
-            isLoadItem: true,
-        });
-        axios.put(`/elective/${item._id}`, item).then(value => {
+        this.setState({isLoadItem: true});
+        const {name, teacher, place, icon, items} = item;
+        const formDataSend = new FormData();
+        formDataSend.append('name', name || "");
+        formDataSend.append('teacher', teacher || "");
+        formDataSend.append('place', place || "");
+        formDataSend.append('items', JSON.stringify(items));
+        formDataSend.append('icon', icon);
+        axios.put(`/elective/${item._id}`, formDataSend).then(value => {
             this.refreshAll(value.data);
         });
     };

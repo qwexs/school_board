@@ -73,18 +73,38 @@ router.route('/:id')
             res.status(200).json(result.items);
         });
     })
-    .put((req, res) => {
+    .put(upload.single("icon"), (req, res) => {
         const {name, teacher, place, items} = req.body;
-        async.eachSeries(items, (obj, done) => {
+        const {file} = req;
+        const itemsResult = JSON.parse(items);
+        async.eachSeries(itemsResult, (obj, done) => {
             ElectiveDay.updateOne({ _id: obj._id }, { $set : { less: obj.less }}, done);
         }, function allDone (err) {
-            Elective.findByIdAndUpdate(req.params.id, {$set: {name, teacher, place}}, {new: true})
+            if (file) {
+                const icon = PATH_DIR + file.filename;
+                const filePath = file.destination + "/" + file.filename;
+                im.resize({
+                    srcPath: filePath,
+                    dstPath: filePath,
+                    width: "512", height: "512"
+                }, (err) => {
+                    if (err) throw err;
+
+                    updateItem({name, teacher, place, icon});
+                });
+            } else {
+                updateItem({name, teacher, place})
+            }
+        });
+
+        function updateItem(params) {
+            Elective.findByIdAndUpdate(req.params.id, {$set: params}, {new: true})
                 .populate('items')
                 .then((value) => {
                     res.status(200).json(value);
                     return req.app.emit('elective', req, res);
                 });
-        });
+        }
     })
     .delete((req, res) => {
         Elective.findByIdAndDelete(req.params.id).then(result => {

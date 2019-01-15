@@ -23,8 +23,8 @@ class ElectiveWeekList extends PureComponent {
         this.setState({item});
 
         if (!isLoadItem && action === Elective.ACTION_SAVE_ITEM) {
-            const {name, teacher, place} = this.titleGroupRef.state.item;
-            this.setState({item:{...this.state.item, name, teacher, place}}, () => {
+            const {name, teacher, place, icon} = this.titleGroupRef.state.item;
+            this.setState({item:{...this.state.item, name, teacher, place, icon}}, () => {
                 nextProps.onSaveElective(this.state.item);
             });
         }

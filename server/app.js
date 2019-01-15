@@ -1,5 +1,4 @@
 global.rootPath = require('app-root-path').path;
-global.Promise = require('bluebird');
 const express = require('express');
 const app = module.exports = express();
 const cors = require("cors");

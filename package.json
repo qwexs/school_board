@@ -52,7 +52,8 @@
     "server": "NODE_ENV=development nodemon --inspect server/server.js --ignore ./src",
     "start-production": "NODE_ENV=production node ./server/server.js",
     "start-dev": "NODE_ENV=development node ./server/server.js",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "build-server": "pkg server/server.js --output bin/iboard.exe"
   },
   "eslintConfig": {
     "extends": "react-app"
