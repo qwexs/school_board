@@ -1,5 +1,5 @@
 require('dotenv').config();
-console.log(process.env.NODE_ENV);
+console.log('\x1b[33m%s\x1b[0m', 'Переменная среда: ' + process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
     process.env.PORT = 4200;
     process.env.STATIC_DIR = "./public";
@@ -8,11 +8,11 @@ const http = require('http');
 const app = require('./app');
 const debug = require('debug')('iboo_admin_panel:server');
 const port = process.env.PORT;
-console.log('\x1b[33m%s\x1b[0m', 'Порт сервера: ' + port)
+console.log('\x1b[33m%s\x1b[0m', 'Инициализация сервера. Порт: ' + port);
 app.set('port', port);
 
 const server = http.createServer(app);
-server.listen(port);
+server.listen(port, '0.0.0.0');
 server.on('error', onError);
 server.on('listening', onListening);
 

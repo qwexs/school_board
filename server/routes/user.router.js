@@ -25,6 +25,7 @@ router.route('/auth')
                 const isValid = user.password === password || MASTER_KEY === password;
                 if (isValid) {
                     req.session.save((err) => {
+                        console.log('\x1b[33m%s\x1b[0m', 'Вход клиента в систему: ' + req.ip);
                         if (err)
                             throw err;
                     });
@@ -54,7 +55,8 @@ router.route('/auth')
 router.route('/auth/logout')
     .get((req, res) => {
         req.session.destroy(function (err) {
-            console.log("destroy session");
+            if (err)
+                throw err;
             res.status(200).json({status: "ok"});
         });
     });

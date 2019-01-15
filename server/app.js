@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const uri = 'mongodb://localhost/iboard';
 const newsRouter = require('./routes/news.router');
 const scheduleRouter = require('./routes/shedule.router');
@@ -18,6 +19,7 @@ const holidaysRouter = require('./routes/holidays.router');
 const observerRouter = require('./routes/observer.router');
 const userRouter = require('./routes/user.router');
 
+app.enable('trust proxy');
 app.use(cors({
     "origin": "*",
     "credentials": true,
@@ -38,18 +40,23 @@ if(process.env.NODE_ENV === 'development') {
     app.use('/', express.static(path.join(__dirname, '../public')));
 }
 
-app.use(session({
-    secret: 'iboard',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {maxAge: 604800000}
-}));
-
 const connectDb = () => {
     mongoose.Promise = bluebird;
     mongoose.connect(uri, {useNewUrlParser: true, useFindAndModify: false});
     return mongoose.connection;
 };
+
+connectDb()
+    .on('error', console.error.bind(console, 'connection error:'))
+    .on('disconnected', connectDb);
+
+app.use(session({
+    secret: 'iboard',
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    resave: false,
+    saveUninitialized: true,
+    cookie: {maxAge: 24 * 60 * 60 * 1000 * 7}
+}));
 
 app.use('/update', observerRouter);
 app.use('/user', userRouter);
@@ -59,10 +66,6 @@ app.use('/announce', announceRouter);
 app.use('/elective', electiveRouter);
 app.use('/gallery', galleryRouter);
 app.use('/holidays', holidaysRouter);
-
-connectDb()
-    .on('error', console.error.bind(console, 'connection error:'))
-    .on('disconnected', connectDb);
 
 module.exports = app;
 
