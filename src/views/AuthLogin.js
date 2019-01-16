@@ -115,7 +115,7 @@ class AuthLogin extends React.Component {
                     <img src={"/assets/logo_iboard.png"} width={"35%"} alt={"logo"}/>
                     <H3 style={{padding: "10px 0 0 0", color: "#5C7080",fontWeight:"500"}}
                     >Информационная <br/>доска</H3>
-                    <H5 style={{padding: "20px 0 10px 0", color: "#738694"}}
+                    <H5 style={{padding: "20px 0 10px 0", color: "#304970"}}
                         className="bp3-ui-text">
                         {changePassword ? "Установить новый пароль" : "Вход в систему"}
                     </H5>
