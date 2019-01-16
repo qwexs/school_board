@@ -38,7 +38,7 @@ router.route('/')
     })
     .post(upload.single("icon"), (req, res) => {
         ElectiveDay.create(getEmptyElective(), (err, items) => {
-            const {name, place, teacher, icon} = req.body;
+            const {name, place, teacher} = req.body;
             const {file} = req;
             let data = {
                 name, place, teacher,
@@ -53,18 +53,21 @@ router.route('/')
                     width: "512", height: "512"}, (err) => {
                     if (err) throw err;
 
-                    data = {...data, icon};
-                    Elective.create(data,
-                        (err, doc) => {
-                            res.status(200).json(doc);
-                            return req.app.emit('elective', req, res);
-                        });
+                    electiveCreate({...data, icon})
                 });
             } else {
-                res.status(200).json({error: "Необходимо загрузить файл иконки"});
+                electiveCreate(data);
             }
 
         });
+
+        function electiveCreate(params) {
+            Elective.create(params,
+                (err, doc) => {
+                    res.status(200).json(doc);
+                    return req.app.emit('elective', req, res);
+                });
+        }
     });
 
 router.route('/:id')

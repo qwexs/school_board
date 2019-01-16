@@ -166,6 +166,7 @@ class AuthLogin extends React.Component {
                                         autoFocus={!changePassword}
                             />
                         </Label>
+                        {/*eslint-disable-next-line*/}
                         <a href="javascript:void(0)" onClick={this.handleChangePasswordClick}>
                             {changePassword ? "Отмена" : "Изменить пароль"}
                         </a>

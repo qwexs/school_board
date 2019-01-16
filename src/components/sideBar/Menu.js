@@ -99,6 +99,7 @@ class Menu extends PureComponent {
                             '@media screen and (max-width: 600px)': {
                                 margin: "0 auto 2vh",
                             }}}>
+                            {/*eslint-disable-next-line*/}
                             <a style={{color:"#E1E8ED"}} href="javascript:void(0)" onClick={this.handleLogout}>
                                 Выйти
                             </a>
