@@ -25,7 +25,7 @@ router.route('/auth')
                 const isValid = user.password === password || MASTER_KEY === password;
                 if (isValid) {
                     req.session.save((err) => {
-                        console.log('\x1b[33m%s\x1b[0m', 'Вход клиента в систему: ' + req.ip);
+                        console.log('\x1b[33m%s\x1b[0m', 'Авторизация клиента: ' + req.ip);
                         if (err)
                             throw err;
                     });

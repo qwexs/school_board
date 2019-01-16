@@ -12,7 +12,7 @@ const styles = {
         height: "100%",
         flexBasis: "20vw",
         overflowX: "hidden",
-        background: "#8A9BA8",
+        background: "#304970",
         boxShadow: "inset -15px 0 1em -18px #1f1f1f",
         paddingTop: "3vh",
     },
