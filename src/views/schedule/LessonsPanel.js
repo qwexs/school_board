@@ -75,7 +75,7 @@ class LessonsPanel extends PureComponent {
                     bottom: 0, right: this.state.vWidth,
                     width: 300,
                     paddingTop: 10,
-                    backgroundColor: "#304970",
+                    backgroundColor: "#27446a",
                     borderRadius: "5px 5px 0 0",
                     boxShadow: "0 0 3px 0 #10161A",
                     transition: "transform 200ms ease-out",
