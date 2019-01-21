@@ -9,7 +9,9 @@ const uniqid = require('uniqid');
 const gcdMath = require('../utils/gcdMath');
 const STATIC_DIR = process.env.STATIC_DIR;
 const UPLOAD_DIR = STATIC_DIR + "/gallery-files/";
-const upload = multer({ storage: multer.diskStorage({
+const Promise = require('bluebird');
+const upload = multer({
+    storage: multer.diskStorage({
         destination: (req, file, callback) => {
             let {id} = req.body;
             const albumName = "album" + id;
@@ -37,45 +39,20 @@ router.route('/')
         const {name, id} = req.body;
         const {files} = req;
         const dirName = "album" + id;
-        const photos = [];
 
-        async.eachSeries(files, (file, done) => {
-            const filePath = file.destination + "/" + file.filename;
-            im.resize({
-                srcPath: filePath,
-                dstPath: filePath,
-                width: "2560", height: "1440"}, (err) => {
-                if (err) throw err;
-
-                im.identify(['-format', '%wx%h', filePath], (err, features) => {
-                    if (err) throw err;
-
-                    const [width, height] = features.split('x');
-                    const gcd = gcdMath(width, height);
-                    photos.push({
-                        src: '/gallery-files/' + dirName + '/full/' + file.filename,
-                        width: width / gcd,
-                        height: height / gcd
-                    });
-                    im.resize({
-                        srcPath: filePath,
-                        dstPath: STATIC_DIR+'/gallery-files/' + dirName + "/thumbs/" + file.filename,
-                        width: "144^", height: "144^"
-                    }, (err) => {
-                        if (err) throw err;
-
-                        done();
-                    });
-                });
-
-            });
-        }, function allDone(err) {
-            Gallery.create({name, quantity: files.length, dirName:dirName+"/full", photos, date: Date.now()}).then((value) => {
+        processingImage(dirName, files).then(photos => {
+            return Gallery.create({
+                name, quantity: files.length,
+                dirName: dirName + "/full", photos,
+                date: Date.now()
+            }).then((value) => {
                 res.status(201).json(value);
                 return res.app.emit('gallery', req, res);
             });
+        }).catch(err => {
+            if (err)
+                throw err;
         });
-
     });
 
 router.route("/:id")
@@ -110,6 +87,9 @@ router.route("/:id")
                     });
                 });
             }, function allDone(err) {
+                if (err)
+                    throw err;
+
                 currentAlbum.save(() => {
                     res.status(200).send(currentAlbum);
                     return res.app.emit('gallery', req, res);
@@ -123,41 +103,70 @@ router.route("/:id")
             res.status(200).send(value);
             return res.app.emit('gallery', req, res);
         });
+    })
+    .post(upload.array('photos'), (req, res) => {
+        const {id} = req.params;
+        const {files} = req;
+
+        Gallery.findById(id).then(gallery => {
+            const dirName = gallery.dirName.replace("/full", "");
+            processingImage(dirName, files).then(photos => {
+                gallery.photos = gallery.photos.concat(photos);
+                gallery.quantity = gallery.photos.length;
+                return gallery.save(function (err, resolve) {
+                    if (err)
+                        throw err;
+
+                    res.status(201).json(resolve);
+                    return res.app.emit('gallery', req, res);
+                });
+            }).catch(err => {
+                if (err)
+                    throw err;
+            });
+        });
     });
 
-module.exports = router;
-
-/*
-const fileFilter = function (req, file, cb) {
-    if (!file.originalname.toLocaleLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
-        return cb(new Error('Only image files are allowed!'), false);
-    }
-    cb(null, true);
-};*/
-
-/*
-Gallery.findById(req.params.id).then((value) => {
-    res.status(200).json(value);
-    /!*const {name, quantity, pathDir} = value;
+const processingImage = (dirName, files) => {
     const photos = [];
-    const absolutePath = path.join(rootPath, UPLOAD_DIR, pathDir);
-    fs.readdir(absolutePath, (err, files) => {
-        if (files) {
-            async.eachSeries(files, (file, done) => {
-                const stream = fs.createReadStream(absolutePath + "\\" + file, {encoding: 'base64'});
-                stream.on('data', data => {
-                    photos.push(data);
-                    stream.destroy();
+    return new Promise((resolve, reject) => {
+        async.eachSeries(files, (file, done) => {
+            const filePath = file.destination + "/" + file.filename;
+            im.resize({
+                srcPath: filePath,
+                dstPath: filePath,
+                width: "1600", height: "1200"}, (err) => {
+                if (err) throw err;
+
+                im.identify(['-format', '%wx%h', filePath], (err, features) => {
+                    if (err) throw err;
+
+                    const [width, height] = features.split('x');
+                    const gcd = gcdMath(width, height);
+                    photos.push({
+                        src: '/gallery-files/' + dirName + '/full/' + file.filename,
+                        width: width / gcd,
+                        height: height / gcd
+                    });
+                    im.resize({
+                        srcPath: filePath,
+                        dstPath: STATIC_DIR+'/gallery-files/' + dirName + "/thumbs/" + file.filename,
+                        width: "144^", height: "144^"
+                    }, (err) => {
+                        if (err) throw err;
+
+                        done();
+                    });
                 });
-                stream.on('close', () => {
-                    done();
-                });
-            }, function allDone(err) {
-                res.status(201).json({name, quantity, photos:[]})
+
             });
-        } else {
-            res.status(201).json({name, quantity, photos:[]})
-        }
-    })*!/
-});
-*/
+        }, function allDone(err) {
+            if (err)
+                reject(err);
+
+            resolve(photos);
+        });
+    });
+};
+
+module.exports = router;

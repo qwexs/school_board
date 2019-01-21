@@ -4,19 +4,20 @@ import Gallery from './Gallery';
 import SelectedImage from "./SelectImage";
 import * as PropTypes from "prop-types";
 import {Checkbox} from "@blueprintjs/core";
+import Dropzone from "react-dropzone";
 
 class GalleryAlbum extends PureComponent {
 
     static propTypes = {
         onDeleteItems: PropTypes.func,
         onChange: PropTypes.func,
-        setOpen: PropTypes.func
+        setOpen: PropTypes.func,
+        onInsert: PropTypes.func
     };
 
     state = {
         photos: [],
         files: [],
-        // dropzoneActive: false,
         slideShow: false
     };
 
@@ -64,28 +65,12 @@ class GalleryAlbum extends PureComponent {
         );
     };
 
-    /*onDragEnter = () => {
-        this.setState({
-            dropzoneActive: true
-        });
-    };
-
-    onDragLeave = () => {
-        this.setState({
-            dropzoneActive: false
-        });
-    };
-
     onDrop = (files) => {
-        this.setState({
-            files,
-            dropzoneActive: false
-        });
-    };*/
+        this.props.onInsert(files);
+    };
 
     render() {
         const {contentStyle} = this.props;
-        // const {dropzoneActive} = this.state;
         return (
             <div style={{
                 width: "100%",
@@ -98,33 +83,42 @@ class GalleryAlbum extends PureComponent {
                     paddingTop: 10,
                     height: 40,
                     maxWidth: 150,
-                    float:"right",
+                    float: "right",
                     right: 25
                 }}>
-                    <div style={{background: "#BFCCD6",
-                        borderRadius: 3, height:"100%"}}>
-                        <div style={{padding:5}}>
-                            <Checkbox checked={this.state.slideShow} label="Слайд-шоу" onChange={this.handleSlideShowChange} />
+                    <div style={{
+                        background: "#BFCCD6",
+                        borderRadius: 3, height: "100%"
+                    }}>
+                        <div style={{padding: 5}}>
+                            <Checkbox checked={this.state.slideShow} label="Слайд-шоу"
+                                      onChange={this.handleSlideShowChange}/>
                         </div>
                     </div>
                 </div>
                 <div style={contentStyle} ref={(ref) => this.listContainer = ref}>
-                    {/*<Dropzone
-                        accept="image/jpeg, image/jpg, image/png"
-                        disableClick
-                        style={{position: "relative", opacity: dropzoneActive ? .5 : 1}}
-                        onDrop={this.onDrop}
-                        onDragEnter={this.onDragEnter}
-                        onDragLeave={this.onDragLeave}
+                    <Dropzone style={{width: "100%", height: "100%"}}
+                              disableClick
+                              accept="image/jpeg, image/jpg, image/png"
+                              onDrop={this.onDrop}
                     >
+                        {({getRootProps, getInputProps, isDragActive}) => {
+                            return (
+                                <div {...getRootProps()}
+                                     style={{
+                                         width: "100%", height: "100%",
+                                         opacity: isDragActive ? .5 : 1
+                                     }}>
+                                    <GalleryComponent
+                                        {...getInputProps()}
+                                        photos={this.state.photos}
+                                        ImageComponent={SelectedImage}
+                                        onClick={this.selectPhoto}/>
+                                </div>
 
-                    </Dropzone>*/}
-
-                    <GalleryComponent
-                        photos={this.state.photos}
-                        ImageComponent={SelectedImage}
-                        onClick={this.selectPhoto}/>
-
+                            );
+                        }}
+                    </Dropzone>
                 </div>
             </div>
         );

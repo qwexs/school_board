@@ -171,6 +171,24 @@ class Gallery extends PureComponent {
         });
     };
 
+    handleInsertFiles = (files) => {
+        const fromData = new FormData();
+        const {dirName} = this.state.selectedItem;
+        fromData.append('id', dirName.substring(dirName.indexOf("_"), dirName.indexOf("/")));
+        files.forEach((file) =>
+            fromData.append('photos', file));
+
+        const toastKey = this.toaster.show(this.renderToastProgress(false));
+
+        axios.post(`/gallery/${this.state.selectedItem._id}`, fromData,
+            {headers: {'Content-Type': 'multipart/form-data'}, timeout: 7000000}).then(value => {
+            this.refreshAll(value.data);
+            if (this.toaster) {
+                this.toaster.show(this.renderToastProgress(true), toastKey);
+            }
+        });
+    };
+
     render() {
         const {windowStyle} = this.props;
         return (
@@ -185,43 +203,45 @@ class Gallery extends PureComponent {
                             <Spinner/>
                         </div>
                         :
-                    <div style={windowStyle}>
-                        <SideMenu selectedItem={this.state.selectedItem}
-                                  items={this.state.list}
-                                  ref={ref => this.sideMenuRef = ref}
-                                  onChangeItem={this.onChangeItem}
-                                  {...this.props}
-                                  headerBar={
-                                      <GalleryHeaderBar onAdd={this.handleAddAlbum} style={styles.headerBar}/>
-                                  }>
-                            <GallerySideItem onRemoveItem={this.handleRemoveAlbum} {...styles}/>
-                        </SideMenu>
-                        <Modal>
-                            <Toaster ref={this.refToastHandlers.toaster}/>
-                        </Modal>
-                        <ResizeSensor onResize={this.handleResizeView}>
-                            <IsNoPage notEmpty={this.state.selectedItem}>
-                                <GalleryAlbum ref={input => this.albumListRef = input}
-                                              item={this.state.selectedItem}
-                                              onDeleteItems={this.handleDeleteItems}
-                                              onChange={this.handleChangeItems}
-                                              setOpen={setOpen}
-                                              action={action}
-                                              {...styles}/>
-                            </IsNoPage>
-                        </ResizeSensor>
+                        <div style={windowStyle}>
+                            <SideMenu selectedItem={this.state.selectedItem}
+                                      items={this.state.list}
+                                      ref={ref => this.sideMenuRef = ref}
+                                      onChangeItem={this.onChangeItem}
+                                      {...this.props}
+                                      headerBar={
+                                          <GalleryHeaderBar onAdd={this.handleAddAlbum} style={styles.headerBar}/>
+                                      }>
+                                <GallerySideItem onRemoveItem={this.handleRemoveAlbum} {...styles}/>
+                            </SideMenu>
+                            <Modal>
+                                <Toaster ref={this.refToastHandlers.toaster}/>
+                            </Modal>
+                            <ResizeSensor onResize={this.handleResizeView}>
+                                <IsNoPage notEmpty={this.state.selectedItem}>
+                                    <GalleryAlbum ref={input => this.albumListRef = input}
+                                                  item={this.state.selectedItem}
+                                                  onDeleteItems={this.handleDeleteItems}
+                                                  onChange={this.handleChangeItems}
+                                                  onInsert={this.handleInsertFiles}
+                                                  setOpen={setOpen}
+                                                  action={action}
+                                                  {...styles}/>
+                                </IsNoPage>
+                            </ResizeSensor>
 
-                        <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
-                            <Button minimal icon="multi-select" onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать
-                                все</Button>
-                            <Button minimal icon="disable"
-                                    onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>Снять
-                                выделение</Button>
-                            <Button minimal icon="trash"
-                                    onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
-                        </FooterBar>
+                            <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
+                                <Button minimal icon="multi-select"
+                                        onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать
+                                    все</Button>
+                                <Button minimal icon="disable"
+                                        onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>Снять
+                                    выделение</Button>
+                                <Button minimal icon="trash"
+                                        onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
+                            </FooterBar>
 
-                    </div>
+                        </div>
                 )}
             </FooterPanelConsumer>
         );
