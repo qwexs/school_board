@@ -29,7 +29,7 @@ class MenuButton extends PureComponent {
                     }}>
                         <Button style={{
                             textAlign: "right",
-                            color: selected ? "#27446a" : "#E1E8ED",
+                            color: selected ? "#325079" : "#E1E8ED",
                             fontSize: "12px",
                             fontWeight: "bold",
                             boxShadow: selected ? "0 1px 2px 0 #5C7080" : "",
