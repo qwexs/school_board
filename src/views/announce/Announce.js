@@ -152,8 +152,10 @@ class Announce extends PureComponent {
                                           list={this.state.selectedItem} {...styles}/>
                         </ResizeSensor>
                         <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
-                            <Button minimal icon="undo" onClick={this.handleCancelSave}>Отменить</Button>
-                            <Button minimal icon="edit" onClick={this.handleSaveItem}>Сохранить изменения</Button>
+                            <Button minimal icon="undo" onClick={this.handleCancelSave}
+                                    intent={"#"} style={{color:"#F5F8FA"}}>Отменить</Button>
+                            <Button minimal icon="edit" onClick={this.handleSaveItem}
+                                    intent={"#"} style={{color:"#F5F8FA"}}>Сохранить изменения</Button>
                         </FooterBar>
                     </div>
                 )}

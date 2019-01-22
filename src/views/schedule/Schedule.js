@@ -187,8 +187,10 @@ class Schedule extends PureComponent {
                             }
 
                             <FooterBar ref={input => this.footerBarRef = input} isOpen={isOpen}>
-                                <Button minimal icon="undo" onClick={this.handleClickUndo}>Отменить</Button>
-                                <Button minimal icon="edit" onClick={this.handleClickSave}>Сохранить изменения</Button>
+                                <Button minimal icon="undo" onClick={this.handleClickUndo}
+                                        intent={"#"} style={{color:"#F5F8FA"}}>Отменить</Button>
+                                <Button minimal icon="edit" onClick={this.handleClickSave}
+                                        intent={"#"} style={{color:"#F5F8FA"}}>Сохранить изменения</Button>
                             </FooterBar>
                             <LessonsPanel ref={input => this.lessonsPanelRef = input}/>
                         </div>

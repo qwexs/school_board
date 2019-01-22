@@ -71,7 +71,6 @@ class ElectiveTitleGroup extends PureComponent {
     };
 
     render() {
-        console.log(this.state.onOver);
         const {item} = this.state;
         const imgSrc = item.icon && typeof item.icon !== 'string'
             ? URL.createObjectURL(item.icon)

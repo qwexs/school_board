@@ -180,8 +180,10 @@ class Elective extends PureComponent {
                                 </IsNoPage>
                             </ResizeSensor>
                             <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
-                                <Button minimal icon="undo" onClick={this.handleClickCancelChanges}>Отменить</Button>
-                                <Button minimal icon="edit" onClick={this.handleClickSaveChanges}>Сохранить изменения</Button>
+                                <Button minimal icon="undo" onClick={this.handleClickCancelChanges}
+                                        intent={"#"} style={{color:"#F5F8FA"}}>Отменить</Button>
+                                <Button minimal icon="edit" onClick={this.handleClickSaveChanges}
+                                        intent={"#"} style={{color:"#F5F8FA"}}>Сохранить изменения</Button>
                             </FooterBar>
                     </div>
                 )}

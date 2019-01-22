@@ -231,13 +231,13 @@ class Gallery extends PureComponent {
                             </ResizeSensor>
 
                             <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
-                                <Button minimal icon="multi-select"
-                                        onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>Выбрать
-                                    все</Button>
-                                <Button minimal icon="disable"
-                                        onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>Снять
-                                    выделение</Button>
-                                <Button minimal icon="trash"
+                                <Button minimal icon="multi-select" intent={"#"} style={{color:"#F5F8FA"}}
+                                        onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>
+                                    Выбрать все</Button>
+                                <Button minimal icon="disable" icon="multi-select" intent={"#"} style={{color:"#F5F8FA"}}
+                                        onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>
+                                    Снять выделение</Button>
+                                <Button minimal icon="trash" icon="multi-select" intent={"#"} style={{color:"#F5F8FA"}}
                                         onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
                             </FooterBar>
 
