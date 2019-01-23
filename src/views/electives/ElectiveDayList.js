@@ -166,20 +166,3 @@ class ElectiveDayList extends PureComponent {
 }
 
 export default ElectiveDayList;
-/*less && less.map(item => {
-            const timeRange = item['time'];
-            const start = new Date();
-            const end = new Date();
-            const startStr = timeRange.substr(0, timeRange.indexOf(" "));
-            const endStr = timeRange.substr(timeRange.indexOf(" ") + 1, timeRange.length);
-            let times = startStr.split('.');
-            start.setHours(Number(times[0]), Number(times[1]), 0);
-            times = endStr.split('.');
-            end.setHours(Number(times[0]), Number(times[1]), 0);
-            less.push({
-                id: item._id,
-                name: item['klass'],
-                start, end
-            });
-            return item;
-        });*/
