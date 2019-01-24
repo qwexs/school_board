@@ -31,9 +31,12 @@ class DateWeekPicker extends PureComponent {
     });
 
     handelDayChange = (date, modifiers, e) => {
-        const { onChange } = this.props;
 
-        onChange(date);
+        this.props.onChange(
+            moment(date)
+            .startOf("isoWeek")
+            .toDate().getTime()
+        );
 
         this.setState(prevState => ({
             ...prevState,

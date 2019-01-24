@@ -43,7 +43,8 @@ class Announce extends PureComponent {
             list: [],
             selectedItem: null,
             selectedDate: null,
-            isLoad:false
+            isLoad:false,
+            isLoadList:false
         };
     }
 
@@ -58,14 +59,15 @@ class Announce extends PureComponent {
 
     refreshAll = () => {
         this.setState({isLoad: false});
-        axios.get('/announce').then(res => {
+        axios.get(`/announce${this.state.selectedDate ? "/"+this.state.selectedDate.getTime() : ""}`).then(res => {
             const currentList = res.data.items;
             const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
             isMounted && this.setState({
                 list: currentList,
                 selectedItem: currentItem,
                 selectedDate: new Date(res.data.date),
-                isLoad: true
+                isLoad: true,
+                isLoadList: true,
             }, () => this.props.setOpen(false));
         });
     };
@@ -77,9 +79,9 @@ class Announce extends PureComponent {
     };
 
     handleResizeView = (entries) => {
-        if (entries) {
+        const element = ReactDOM.findDOMNode(this.componentList);
+        if (entries && element && this.footerBar) {
             const vWidth = entries[0].contentRect.width;
-            const element = ReactDOM.findDOMNode(this.componentList);
             const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
             this.footerBar.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
         }
@@ -91,20 +93,27 @@ class Announce extends PureComponent {
     };
 
     handleSaveItem = () => {
-        axios.put(`/announce/${this.state.selectedItem._id}`, this.savedItem)
+        axios.put(`/announce/day/${this.state.selectedItem._id}`, this.savedItem)
             .then(this.refreshAll);
     };
 
     handleCancelSave = () => {
-        axios.get(`/announce/${this.state.selectedItem._id}`).then((value => {
+        axios.get(`/announce/day/${this.state.selectedItem._id}`).then((value => {
             this.setState({selectedItem: value.data},
                 () => this.props.setOpen(false));
         }));
     };
 
     handleChangeWeek = (date) => {
-        axios.patch('/announce', {date}).then((value) => {
-            this.setState(prevState => ({...prevState, selectedDate: new Date(value.data)}));
+        this.setState({isLoadList: false});
+        axios.get(`/announce/${date}`).then((value) => {
+            this.setState(prevState => ({
+                ...prevState,
+                list: value.data.items,
+                selectedItem: value.data.items[0],
+                selectedDate: new Date(value.data.date),
+                isLoadList: true
+            }));
         });
     };
 
@@ -143,13 +152,24 @@ class Announce extends PureComponent {
                             <AnnounceSideItem {...styles}/>
                         </SideMenu>
                         <ResizeSensor onResize={this.handleResizeView}>
-                            <AnnounceList onInsert={this.handleInsertItem}
-                                          setOpen={setOpen}
-                                          ref={ref => this.componentList = ref}
-                                          titleDay={
-                                              moment(this.state.selectedDate).day(indexDay).toDate()
-                                                  .toLocaleDateString('ru', dateFormatOptions)}
-                                          list={this.state.selectedItem} {...styles}/>
+                            {
+                                !this.state.isLoadList
+                                    ?
+                                    <div style={{
+                                        position: "relative",
+                                        margin: "auto"
+                                    }}>
+                                        <Spinner/>
+                                    </div>
+                                    :
+                                    <AnnounceList onInsert={this.handleInsertItem}
+                                                  setOpen={setOpen}
+                                                  ref={ref => this.componentList = ref}
+                                                  titleDay={
+                                                      moment(this.state.selectedDate).day(indexDay).toDate()
+                                                          .toLocaleDateString('ru', dateFormatOptions)}
+                                                  list={this.state.selectedItem} {...styles}/>
+                            }
                         </ResizeSensor>
                         <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
                             <Button minimal icon="undo" onClick={this.handleCancelSave}

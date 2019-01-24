@@ -1,21 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment');
+const Promise = require('bluebird');
 const {Announce, AnnounceWeek, getEmptyAnnounce} = require('../models/announce.model');
 
 router.route('/')
     .get((req, res) => {
-        AnnounceWeek.findOne({}).populate('items').then(week => {
-            if (week == null) {
-                Announce.create(getEmptyAnnounce(), (err, items) => {
-                    AnnounceWeek.create({date: moment(new Date()).startOf("isoWeek").toDate().getTime(), items: Array.from(items, (i) => i._id)},
-                        (err, week) => {
-                            res.status(200).json({_id: week._id, date: week.date, items});
-                        });
-                });
-            } else {
-                res.status(200).json(week);
-            }
+        const currentWeekDate = moment().startOf("isoWeek").toDate().getTime();
+        getWeekAnnounce(currentWeekDate).then(week => {
+            res.status(200).json(week);
+        }).catch(err => {
+            if (err)
+                throw err;
         });
     })
     .patch((req, res) => {
@@ -26,7 +22,40 @@ router.route('/')
         });
     });
 
-router.route('/:id')
+const getWeekAnnounce = (date) => {
+    return new Promise((resolve, reject) => {
+        return AnnounceWeek.findOne({date}).populate('items').then(week => {
+            if (week == null) {
+                Announce.create(getEmptyAnnounce(), (err, items) => {
+                    if (err)
+                        reject(err);
+
+                    AnnounceWeek.create({
+                            date,
+                            items: Array.from(items, (i) => i._id)
+                        },
+                        (err, week) => {
+                            if (err)
+                                reject(err);
+
+                            resolve({_id: week._id, date: week.date, items});
+                        });
+                });
+            } else {
+                resolve(week);
+            }
+        }).catch(reject);
+    });
+};
+
+router.route('/:date')
+    .get((req, res) => {
+        getWeekAnnounce(req.params.date).then(week => {
+            res.status(200).json(week);
+        });
+    });
+
+router.route('/day/:id')
     .get((req, res) => {
         Announce.findById(req.params.id, (err, doc) => {
             res.status(200).json(doc);
