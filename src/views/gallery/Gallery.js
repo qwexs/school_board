@@ -234,10 +234,10 @@ class Gallery extends PureComponent {
                                 <Button minimal icon="multi-select" intent={"#"} style={{color:"#F5F8FA"}}
                                         onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>
                                     Выбрать все</Button>
-                                <Button minimal icon="disable" icon="multi-select" intent={"#"} style={{color:"#F5F8FA"}}
+                                <Button minimal icon="disable" intent={"#"} style={{color:"#F5F8FA"}}
                                         onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>
                                     Снять выделение</Button>
-                                <Button minimal icon="trash" icon="multi-select" intent={"#"} style={{color:"#F5F8FA"}}
+                                <Button minimal icon="trash" intent={"#"} style={{color:"#F5F8FA"}}
                                         onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
                             </FooterBar>
 

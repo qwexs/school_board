@@ -6,19 +6,12 @@ const {Announce, AnnounceWeek, getEmptyAnnounce} = require('../models/announce.m
 
 router.route('/')
     .get((req, res) => {
-        const currentWeekDate = moment().startOf("isoWeek").toDate().getTime();
+        const currentWeekDate = moment().startOf("isoWeek").utc(true).toDate().getTime();
         getWeekAnnounce(currentWeekDate).then(week => {
             res.status(200).json(week);
         }).catch(err => {
             if (err)
                 throw err;
-        });
-    })
-    .patch((req, res) => {
-        const date = moment(req.body.date).startOf("isoWeek").toDate().getTime();
-        AnnounceWeek.updateOne({date}, (err, doc) => {
-            res.status(200 ).json(date);
-            return req.app.emit('announce', req, res);
         });
     });
 

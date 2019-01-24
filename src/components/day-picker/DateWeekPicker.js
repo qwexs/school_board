@@ -35,7 +35,7 @@ class DateWeekPicker extends PureComponent {
         this.props.onChange(
             moment(date)
             .startOf("isoWeek")
-            .toDate().getTime()
+            .utc(true).toDate().getTime()
         );
 
         this.setState(prevState => ({

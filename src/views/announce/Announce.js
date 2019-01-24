@@ -59,7 +59,8 @@ class Announce extends PureComponent {
 
     refreshAll = () => {
         this.setState({isLoad: false});
-        axios.get(`/announce${this.state.selectedDate ? "/"+this.state.selectedDate.getTime() : ""}`).then(res => {
+        axios.get(`/announce${this.state.selectedDate ? "/" + 
+            moment(this.state.selectedDate).startOf("isoWeek").utc(true).toDate().getTime() : ""}`).then(res => {
             const currentList = res.data.items;
             const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
             isMounted && this.setState({
