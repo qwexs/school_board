@@ -15,7 +15,7 @@ const gallerySchema = new Schema({
         type: Schema.Types.Mixed
     },
     slideShow: {
-        type: Schema.Types.Boolean, default: true
+        type: Schema.Types.Boolean, default: false
     },
     date: {
         type: Schema.Types.Number

@@ -133,12 +133,8 @@ class Gallery extends PureComponent {
         let fromData = new FormData();
         fromData.append('name', name);
         fromData.append('id', ID());
-        files.forEach((file, index) => {
-            if (index < 50) {
-                fromData.append('photos', file);
-            } else {
-                return false;
-            }
+        files.forEach((file) => {
+            fromData.append('photos', file);
         });
 
         const toastKey = this.toaster.show(this.renderToastProgress(false));
