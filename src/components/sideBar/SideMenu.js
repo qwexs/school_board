@@ -1,28 +1,35 @@
 import React, {forwardRef, PureComponent} from "react";
 import SideMenuItem from "./SideMenuItem";
 import Radium from "radium";
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {changeItem} from "../../actions";
+
+const styles = {
+    sideMenuContainer: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "start",
+        margin: "0 auto",
+        overflowX: "hidden",
+        overflowY: "auto",
+        background: "#E1E8ED",
+        border: "1px solid lightgrey",
+        height: "100%",
+        scrollBehavior: "smooth"
+    }
+};
 
 class SideMenu extends PureComponent {
 
     static propTypes = {
         headerBar: PropTypes.element,
-        items: PropTypes.array.isRequired,
-        selectedItem: PropTypes.object,
-        onChangeItem: PropTypes.func.isRequired
     };
 
-    static defaultProps = {
-        selectedItem: null,
-        items: []
-    };
-
-    onClickHandler = (item) => {
-        const {onChangeItem} = this.props;
-        if (!this.props.selectedItem || this.props.selectedItem._id !== item._id) {
-            onChangeItem(item);
-        }
-    };
+    componentDidMount() {
+        this.scrollToSelect()
+    }
 
     scrollToSelect() {
         if (this.selectedRef && this.selectedRef.current && this.containerRef) {
@@ -32,16 +39,21 @@ class SideMenu extends PureComponent {
         }
     }
 
+    onClickHandler = (item) => {
+        if (item._id !== this.props.selectedItem._id)
+            this.props.changeItem(item);
+    };
+
     render() {
-        const {items, sideMenuContainer, headerBar, selectedItem} = this.props;
+        const {list, headerBar, selectedItem} = this.props;
         return (
             <div style={{height: "100%"}}>
                 {headerBar && headerBar}
                 <div style={[
-                    sideMenuContainer,
+                    styles.sideMenuContainer,
                     {height: `calc(100% - ${headerBar ? headerBar.props.style.height : 0}px)`}
                 ]} ref={(ref) => (this.containerRef = ref)}>
-                    {items.map((item, index) => {
+                    {list.map((item, index) => {
                         const selected = selectedItem && item._id === selectedItem._id;
                         const ref = React.createRef();
                         if (selected)
@@ -67,4 +79,14 @@ const ForwardingSideMenuItem = forwardRef((props, ref) => {
     return <div ref={ref}>{props.children}</div>;
 });
 
-export default Radium(SideMenu);
+const mapStateToProps = (state) => {
+    const {selectedItem, list} = state.schedule;
+    return {
+        selectedItem, list
+    };
+};
+
+const mapDispatchToProps = dispatch => bindActionCreators({changeItem}, dispatch);
+
+SideMenu = Radium(SideMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);

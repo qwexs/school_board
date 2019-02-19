@@ -19,13 +19,13 @@ const isNoPage = (({...props}) => {
         }
     };
 
-    const {notEmpty, style} = props;
+    const {title, notEmpty, style} = props;
 
     return (
         notEmpty
             ? props.children
             : <div style={[styles.container, style]}>
-                <H5 style={styles.title}>Пустая страница</H5>
+                <H5 style={styles.title}>{title || "Пустая страница"}</H5>
               </div>
     );
 

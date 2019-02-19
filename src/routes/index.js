@@ -4,19 +4,21 @@ import Elective from "../views/electives/Elective";
 import Gallery from "../views/gallery/Gallery";
 import News from "../views/news/News";
 import Holidays from "../views/holidays/Holidays";
+import {ScheduleAPI} from "../api/schedule.api";
 
 const routes = [
     {
         title: "Новости",
         path: "/app/news",
         icon: "/assets/menu_icons/news.png",
-        component: News
+        component: News,
     },
     {
         title: "Расписание уроков",
         path: "/app/schedule",
         icon: "/assets/menu_icons/task.png",
-        component: Schedule
+        component: Schedule,
+        api: ScheduleAPI
     },
     {
         title: "Анонсы и события",

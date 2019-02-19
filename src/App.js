@@ -1,35 +1,14 @@
-import React, {Component} from "react";
+import React from "react";
 import Menu from "./components/sideBar/Menu";
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import "./App.css";
 import routes from "./routes";
-import NoMatch from "./views/NoMatch";
 import AuthLogin from "./views/AuthLogin";
 import PropsRoute from "./components/routes/PropsRoute";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import {setAuth} from "./components/authentication/setAuth";
-import Radium from 'radium';
 import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/FooterBarProvider";
-
-class App extends Component {
-
-    componentDidMount() {
-    }
-
-  render() {
-    return (
-        <BrowserRouter>
-            <div className="App">
-                <Switch>
-                    <PropsRoute exact path="/" redirectTo='/app/news' auth={setAuth} component={AuthLogin} />
-                    <PrivateRoute path="/app" redirectTo='/' auth={setAuth} component={AccessPage} />
-                    <Route component={NoMatch}/>
-                </Switch>
-            </div>
-        </BrowserRouter>
-    );
-  }
-}
+import IsNoPage from "./components/IsNoPage";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 const styles = {
     stageStyle: {
@@ -50,19 +29,21 @@ const styles = {
         overflow: "hidden",
         flexGrow:1,
     },
+};
 
-    sideMenuContainer: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "start",
-        margin: "0 auto",
-        overflowX: "hidden",
-        overflowY: "auto",
-        background: "#E1E8ED",
-        border: "1px solid lightgrey",
-        height: "100%",
-        scrollBehavior: "smooth"
-    }
+
+const App = () => {
+    return (
+        <BrowserRouter>
+            <div className="App">
+                <Switch>
+                    <PropsRoute exact path="/" redirectTo='/app/news' auth={setAuth} component={AuthLogin}/>
+                    <PrivateRoute path="/app" redirectTo='/' auth={setAuth} component={AccessPage}/>
+                </Switch>
+            </div>
+        </BrowserRouter>
+
+    );
 };
 
 const AccessPage = React.memo((...props) => {
@@ -78,7 +59,7 @@ const AccessPage = React.memo((...props) => {
                                     <PropsRoute key={index} path={item.path} title={item.title} component={item.component} {...styles}
                                                 setAction={setAction} action={action} setOpen={setOpen} isOpen={isOpen}/>
                                 ))}
-                                <Route component={NoMatch}/>
+                                <Route component={IsNoPage}/>
                             </Switch>
                         </main>
                     )}
@@ -88,4 +69,4 @@ const AccessPage = React.memo((...props) => {
     );
 });
 
-export default Radium(App);
+export default App;

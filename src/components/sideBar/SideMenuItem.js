@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import "../../App.css";
 import Radium from 'radium';
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
 
 const defaultColor = "#E1E8ED",
     overColor = "#EBF1F5";

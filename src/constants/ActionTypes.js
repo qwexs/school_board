@@ -1,0 +1,8 @@
+export const CONFIRM_SET = 'CONFIRM_SET';
+export const CONTENT_WIDTH = 'CONTENT_WIDTH';
+export const IS_LOADING = 'IS_LOADING';
+export const RECEIVE_LIST = 'RECEIVE_LIST';
+export const RECEIVE_ITEM = 'RECEIVE_ITEM';
+export const SCHEDULE_EDIT = 'SCHEDULE_EDIT';
+export const SCHEDULE_SAVE = 'SCHEDULE_SAVE';
+export const SCHEDULE_CANCEL = 'SCHEDULE_CANCEL';

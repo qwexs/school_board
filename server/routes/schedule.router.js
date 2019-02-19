@@ -64,14 +64,13 @@ router.route('/:id')
     })
     .put((req, res) => {
         const {name, days} = req.body;
-        Schedule.findByIdAndUpdate(req.params.id, {$set: {name}}, {new: true}, function (err, schedule) {
-            async.eachSeries(days, (day, done) => {
-                const {title, less} = day;
-                ScheduleDays.updateOne({_id: day._id}, {$set: {title, less}},{overwrite: true}).then(() => done());
-            }, function allDone(err) {
-                if (err) throw err;
-
-                res.status(200).json(schedule);
+        async.eachSeries(days, (day, done) => {
+            const {title, less} = day;
+            ScheduleDays.updateOne({_id: day._id}, {$set: {title, less}},{overwrite: true}).then(() => done());
+        }, function allDone(err) {
+            if (err) throw err;
+            Schedule.findByIdAndUpdate(req.params.id, {$set: {name}}, {new: true}).populate('days').then(resolve => {
+                res.status(200).json(resolve);
                 return req.app.emit('schedule', req, res);
             });
         });

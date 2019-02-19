@@ -1,10 +1,13 @@
 import React, {PureComponent} from 'react';
-import TableList from "./TableList";
 import {Button, Classes, EditableText, H4, Popover, PopoverInteractionKind} from "@blueprintjs/core";
 import Radium from "radium";
-import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import * as PropTypes from "prop-types";
-import Schedule from "./Schedule";
+import TableDay from "./TableDay";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as scheduleActions from "../../actions/schedule.actions";
+import {createSelector} from "reselect";
+import {editTitle, editContent} from "../../actions/schedule.actions";
 
 const styles = {
     listContainer: {
@@ -31,79 +34,99 @@ const styles = {
 
 class ScheduleContent extends PureComponent {
 
-    state = {
-        text: "",
-    };
-
-    getData() {
-        return {name: this.state.text, days: this.props.listData.days, _id: this.props.listData['_id']};
-    }
-
     componentDidMount() {
-        const {listData} = this.props;
-        this.setState({text: listData.name});
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        const {listData} = nextProps;
-        this.setState({text: listData.name});
+        // console.log(this.props);
     }
 
     handleChangeTitle = (text) => {
-        this.setState({text});
+        this.props.editTitle(text);
     };
 
-    handleConfirmData = () => {
-        this.props.setAction(Schedule.ACTION_EDIT_ITEM);
+    handleChangeContent = (index, dataKey, text) => {
+        const keys = dataKey.split('-');
+        this.props.editContent(index, keys, text);
     };
 
     render() {
         return (
-            <FooterPanelConsumer>
-                {({isOpen}) => (
-                    <div style={[styles.listContainer, {paddingBottom: isOpen ? 60 : 0}]}>
-                        <div style={{display: "flex", width: "100%"}}>
-                            <div style={{marginTop: 10, width: "100%"}}>
-                                <Popover interactionKind={PopoverInteractionKind.CLICK}
-                                         content={
-                                             <div style={{padding: 5}}>
-                                                 <Button icon="trash" text={"Удалить класс"} minimal
-                                                         className={Classes.POPOVER_DISMISS}
-                                                         onClick={this.props.onRemoveKlass}/>
-                                             </div>
-                                         }
-                                         target={
-                                             <H4>
-                                                 <EditableText placeholder={"Название класса..."}
-                                                               value={this.state.text}
-                                                               maxLength={20}
-                                                               minWidth={"20vw"}
-                                                               onConfirm={this.handleConfirmData}
-                                                               onChange={this.handleChangeTitle}/>
-                                             </H4>
-                                         }/>
-                                <div style={{
-                                    width: "90%", margin: "auto",
-                                    borderBottom: "2px solid silver"
-                                }}/>
-                            </div>
-                        </div>
-
-                        <TableList days={this.props.listData.days} onConfirm={this.handleConfirmData} {...styles}/>
+            <div style={[styles.listContainer, {paddingBottom: this.props.isOpen ? 60 : 0}]}>
+                <div style={{display: "flex", width: "100%"}}>
+                    <div style={{marginTop: 10, width: "100%"}}>
+                        <Popover interactionKind={PopoverInteractionKind.CLICK}
+                                 content={
+                                     <div style={{padding: 5}}>
+                                         <Button icon="trash" text={"Удалить класс"} minimal
+                                                 className={Classes.POPOVER_DISMISS}
+                                                 onClick={this.props.onRemoveKlass}/>
+                                     </div>
+                                 }
+                                 target={
+                                     <H4>
+                                         <EditableText placeholder={"Название класса..."}
+                                                       value={this.props.title}
+                                                       maxLength={20}
+                                                       minWidth={"20vw"}
+                                                       onConfirm={this.handleConfirmTitle}
+                                                       onChange={this.handleChangeTitle}/>
+                                     </H4>
+                                 }/>
+                        <div style={{
+                            width: "90%", margin: "auto",
+                            borderBottom: "2px solid silver"
+                        }}/>
                     </div>
-                )}
-            </FooterPanelConsumer>
+                </div>
+
+                <div style={styles.tableContainer}>
+                    {this.props.days.map((itemDay, index) => {
+                        return (
+                            <div key={index} style={styles.tableCell}>
+                                <TableDay index={index} day={itemDay} onConfirm={this.handleChangeContent}/>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
         );
     }
 }
+
+export const geTitleState = createSelector(
+    [(state) => state.selectedItem.name],
+    (title) => title
+);
+
+export const getDaysState = createSelector(
+    [(state) => state.selectedItem.days],
+    (days) => {
+        return days.map(item => {
+            let sparseCellData = {};
+            item.less.forEach((item, index) => {
+                Object.assign(sparseCellData, {[index + "-0"]: item["text"] || ""});
+            });
+            return {
+                columnNames: [item.title],
+                sparseCellData
+            };
+        });
+    }
+);
+
+const mapStateToProps = state => {
+    const {schedule, footer} = state;
+    return {
+        title: geTitleState(schedule),
+        days: getDaysState(schedule),
+        isOpen: footer.isOpen
+    }
+};
+
+const mapDispatchToProps = dispatch => bindActionCreators({editTitle, editContent}, dispatch);
 
 ScheduleContent.propTypes = {
     listData: PropTypes.object,
     onRemoveKlass: PropTypes.func
 };
 
-ScheduleContent.defaultProps = {
-    listData: {}
-};
-
-export default Radium(ScheduleContent);
+ScheduleContent = Radium(ScheduleContent);
+export default connect(mapStateToProps, mapDispatchToProps)(ScheduleContent);
