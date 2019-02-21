@@ -6,7 +6,7 @@ import {reorder} from "../../utils/reorder";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
 import Radium from "radium";
 import {Button, H5} from "@blueprintjs/core";
-import IsNoPage from "../../components/IsNoPage";
+import emptyPage from "../../components/emptyPage";
 import PropTypes from "prop-types";
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -192,7 +192,7 @@ class AnnounceList extends PureComponent {
                                         style={styles.titleLabel}>{`${this.state.title}, ${this.state.titleDay}`}</H5>
                                     <Button minimal icon="add-to-artifact" onClick={this.handleAddAnnounce}/>
                                 </div>
-                                <IsNoPage notEmpty={this.state.collectionList && this.state.collectionList.length > 0}
+                                <emptyPage notEmpty={this.state.collectionList && this.state.collectionList.length > 0}
                                           style={{width: "100%", height: `calc(100% - ${styles.topContainer.height})`}}>
                                     <div style={[styles.listContainer, {paddingBottom: isOpen ? 60 : 0}]}>
                                         <DragDropContext
@@ -221,7 +221,7 @@ class AnnounceList extends PureComponent {
                                             </Droppable>
                                         </DragDropContext>
                                     </div>
-                                </IsNoPage>
+                                </emptyPage>
                                 <AnnounceDialog isOpen={this.state.isDialogOpen} content={this.state.content}
                                                 onSave={this.onSaveDialogHandler}
                                                 onCancel={this.onCancelDialogHandler}/>

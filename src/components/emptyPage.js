@@ -1,8 +1,7 @@
 import React from 'react';
 import {H5} from "@blueprintjs/core";
-import Radium from "radium";
 
-const isNoPage = (({...props}) => {
+const emptyPage = (({...props}) => {
 
     const styles = {
         container: {
@@ -24,11 +23,11 @@ const isNoPage = (({...props}) => {
     return (
         notEmpty
             ? props.children
-            : <div style={[styles.container, style]}>
+            : <div style={{...styles.container, style}}>
                 <H5 style={styles.title}>{title || "Пустая страница"}</H5>
               </div>
     );
 
 });
 
-export default Radium(isNoPage);
+export default emptyPage;

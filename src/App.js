@@ -1,52 +1,46 @@
 import React from "react";
 import Menu from "./components/sideBar/Menu";
 import "./App.css";
-import routes from "./routes";
+import routes from "./store/routes";
 import AuthLogin from "./views/AuthLogin";
-import PropsRoute from "./components/routes/PropsRoute";
-import PrivateRoute from "./components/routes/PrivateRoute";
 import {setAuth} from "./components/authentication/setAuth";
 import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/FooterBarProvider";
-import IsNoPage from "./components/IsNoPage";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router";
+import {renderMergedProps} from "./utils/renderMergedProps";
+import emptyPage from "./components/emptyPage";
 
 const styles = {
     stageStyle: {
         display: "flex",
         flexDirection: "row",
-        height:"100vh"
+        height: "100vh"
     },
-
     mainStyle: {
         display: "flex",
         flexDirection: "row",
         flexGrow: 1,
     },
-
     windowStyle: {
         margin: "0 auto",
         display: "flex",
         overflow: "hidden",
-        flexGrow:1,
+        flexGrow: 1,
     },
 };
 
 
 const App = () => {
     return (
-        <BrowserRouter>
-            <div className="App">
-                <Switch>
-                    <PropsRoute exact path="/" redirectTo='/app/news' auth={setAuth} component={AuthLogin}/>
-                    <PrivateRoute path="/app" redirectTo='/' auth={setAuth} component={AccessPage}/>
-                </Switch>
-            </div>
-        </BrowserRouter>
-
+        <div className="App">
+            <Switch>
+                <PropsRoute exact path="/" redirectTo='/app/news' auth={setAuth} component={AuthLogin}/>
+                <PrivateRoute path="/app" redirectTo='/' auth={setAuth} component={MainContainer}/>
+            </Switch>
+        </div>
     );
 };
 
-const AccessPage = React.memo((...props) => {
+const MainContainer = () => {
     return (
         <div style={styles.stageStyle}>
             <Menu routes={routes} auth={setAuth}/>
@@ -56,10 +50,12 @@ const AccessPage = React.memo((...props) => {
                         <main style={styles.mainStyle}>
                             <Switch>
                                 {routes.map((item, index) => (
-                                    <PropsRoute key={index} path={item.path} title={item.title} component={item.component} {...styles}
-                                                setAction={setAction} action={action} setOpen={setOpen} isOpen={isOpen}/>
+                                    <PropsRoute key={index} path={item.path} title={item.title}
+                                                component={item.component} {...styles}
+                                                setAction={setAction} action={action} setOpen={setOpen}
+                                                isOpen={isOpen}/>
                                 ))}
-                                <Route component={IsNoPage}/>
+                                <Route component={emptyPage}/>
                             </Switch>
                         </main>
                     )}
@@ -67,6 +63,22 @@ const AccessPage = React.memo((...props) => {
             </FooterBarProvider>
         </div>
     );
-});
+};
+
+const PrivateRoute = ({component, redirectTo, auth, ...rest}) =>
+    <Route {...rest} render={routeProps => {
+        return auth.isAuthenticated ? (
+            renderMergedProps(component, routeProps, rest)
+        ) : (
+            <Redirect to={{
+                pathname: redirectTo,
+                state: {from: routeProps.location}
+            }}/>
+        );
+    }}/>;
+
+const PropsRoute = ({component, ...rest}) =>
+    <Route {...rest} render={routeProps => renderMergedProps(component, routeProps, rest)}/>;
+
 
 export default App;

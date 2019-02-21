@@ -1,13 +1,11 @@
 import React, {PureComponent} from 'react';
 import {Button, Classes, EditableText, H4, Popover, PopoverInteractionKind} from "@blueprintjs/core";
-import Radium from "radium";
 import * as PropTypes from "prop-types";
 import TableDay from "./TableDay";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import * as scheduleActions from "../../actions/schedule.actions";
 import {createSelector} from "reselect";
-import {editTitle, editContent} from "../../actions/schedule.actions";
+import {editTitle, editContent} from "../../store/reducers/schedule.reducer";
 
 const styles = {
     listContainer: {
@@ -34,10 +32,6 @@ const styles = {
 
 class ScheduleContent extends PureComponent {
 
-    componentDidMount() {
-        // console.log(this.props);
-    }
-
     handleChangeTitle = (text) => {
         this.props.editTitle(text);
     };
@@ -49,7 +43,7 @@ class ScheduleContent extends PureComponent {
 
     render() {
         return (
-            <div style={[styles.listContainer, {paddingBottom: this.props.isOpen ? 60 : 0}]}>
+            <div style={{...styles.listContainer, paddingBottom: this.props.isOpen ? 60 : 0}}>
                 <div style={{display: "flex", width: "100%"}}>
                     <div style={{marginTop: 10, width: "100%"}}>
                         <Popover interactionKind={PopoverInteractionKind.CLICK}
@@ -98,18 +92,16 @@ export const geTitleState = createSelector(
 
 export const getDaysState = createSelector(
     [(state) => state.selectedItem.days],
-    (days) => {
-        return days.map(item => {
-            let sparseCellData = {};
-            item.less.forEach((item, index) => {
-                Object.assign(sparseCellData, {[index + "-0"]: item["text"] || ""});
-            });
-            return {
-                columnNames: [item.title],
-                sparseCellData
-            };
+    (days) => days.map(item => {
+        let sparseCellData = {};
+        item.less && item.less.forEach((item, index) => {
+            Object.assign(sparseCellData, {[index + "-0"]: item["text"] || ""});
         });
-    }
+        return {
+            columnNames: [item.title],
+            sparseCellData
+        };
+    })
 );
 
 const mapStateToProps = state => {
@@ -128,5 +120,4 @@ ScheduleContent.propTypes = {
     onRemoveKlass: PropTypes.func
 };
 
-ScheduleContent = Radium(ScheduleContent);
 export default connect(mapStateToProps, mapDispatchToProps)(ScheduleContent);

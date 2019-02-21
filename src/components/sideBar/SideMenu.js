@@ -4,7 +4,7 @@ import Radium from "radium";
 import * as PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {changeItem} from "../../actions";
+import {changeItem} from "../../store/actions";
 
 const styles = {
     sideMenuContainer: {
@@ -28,7 +28,7 @@ class SideMenu extends PureComponent {
     };
 
     componentDidMount() {
-        this.scrollToSelect()
+        this.scrollToSelect();
     }
 
     scrollToSelect() {

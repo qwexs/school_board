@@ -7,12 +7,12 @@ import ScheduleHeaderBar from "./ScheduleHeaderBar";
 import Radium from "radium";
 import ScheduleContent from "./ScheduleContent";
 import * as ReactDOM from "react-dom";
-import IsNoPage from "../../components/IsNoPage";
+import EmptyPage from "../../components/emptyPage";
 import LessonsPanel from "./LessonsPanel";
 import {connect} from 'react-redux';
-import * as footerActions from "../../actions/footer.actions";
+import * as footerActions from "../../store/actions/footer.actions";
 import {bindActionCreators} from "redux";
-import {addItem, refreshAll, refreshItem, removeItem, saveItem} from "../../actions";
+import {addItem, refreshAll, refreshItem, removeItem, saveItem} from "../../store/actions";
 
 const styles = {
     sideItem: {
@@ -39,23 +39,12 @@ class Schedule extends PureComponent {
 
     constructor(props) {
         super(props);
-
         this.scheduleList = React.createRef();
     }
 
     componentDidMount() {
         this.props.api.refreshAll();
     }
-
-    handleResizeView = (entries) => {
-        if (entries && this.scheduleList) {
-            const contentWidth = entries[0].contentRect.width;
-            const element = ReactDOM.findDOMNode(this.scheduleList);
-            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
-            this.props.footer.setContentWidth(`calc(${contentWidth}px + ${offsetScroll ? 1 : 0}vw)`);
-            this.lessonsPanelRef.setState({vWidth: `calc(${contentWidth / 2}px + ${offsetScroll ? 1 : 0}vw - 150px)`});
-        }
-    };
 
     handleAddKlass = (name) => {
         this.props.api.addItem(name);
@@ -71,6 +60,16 @@ class Schedule extends PureComponent {
 
     handleClickUndo = () => {
         this.props.footer.cancelChanges();
+    };
+
+    handleResizeView = (entries) => {
+        if (entries && this.scheduleList) {
+            const contentWidth = entries[0].contentRect.width;
+            const element = ReactDOM.findDOMNode(this.scheduleList);
+            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
+            this.props.footer.setContentWidth(`calc(${contentWidth}px + ${offsetScroll ? 1 : 0}vw)`);
+            this.lessonsPanelRef.setState({vWidth: `calc(${contentWidth / 2}px + ${offsetScroll ? 1 : 0}vw - 150px)`});
+        }
     };
 
     render() {
@@ -105,14 +104,14 @@ class Schedule extends PureComponent {
                                 <Spinner/>
                             </div>
                             :
-                            <IsNoPage
+                            <EmptyPage
                                 notEmpty={this.props.selectedItem !== null && typeof this.props.selectedItem.days[0] !== 'string'}>
                                 <ResizeSensor onResize={this.handleResizeView}>
                                     <ScheduleContent ref={inputRef => (this.scheduleList = inputRef)}
                                                      onRemoveKlass={this.handleRemoveKlass}
                                                      {...styles}/>
                                 </ResizeSensor>
-                            </IsNoPage>
+                            </EmptyPage>
                     }
 
                     <FooterBar>

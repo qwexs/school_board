@@ -12,7 +12,7 @@ import Modal from "../../components/Modal";
 import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 import {Intent} from "@blueprintjs/core/lib/cjs/common/intent";
 import classNames from 'classnames';
-import IsNoPage from "../../components/IsNoPage";
+import emptyPage from "../../components/emptyPage";
 import * as ReactDOM from "react-dom";
 
 const styles = {
@@ -214,7 +214,7 @@ class Gallery extends PureComponent {
                                 <Toaster ref={this.refToastHandlers.toaster}/>
                             </Modal>
                             <ResizeSensor onResize={this.handleResizeView}>
-                                <IsNoPage notEmpty={this.state.selectedItem}>
+                                <emptyPage notEmpty={this.state.selectedItem}>
                                     <GalleryAlbum ref={input => this.albumListRef = input}
                                                   item={this.state.selectedItem}
                                                   onDeleteItems={this.handleDeleteItems}
@@ -223,7 +223,7 @@ class Gallery extends PureComponent {
                                                   setOpen={setOpen}
                                                   action={action}
                                                   {...styles}/>
-                                </IsNoPage>
+                                </emptyPage>
                             </ResizeSensor>
 
                             <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>

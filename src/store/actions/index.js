@@ -1,9 +1,6 @@
 import {createAction} from "redux-actions";
 import {cancelChanges, saveChanges, setOpen} from "./footer.actions";
-
-// export const apiRequest = createAction("API_REQUEST");
-// export const apiSuccess = createAction("API_SUCCESS");
-// export const apiFailure = createAction("API_FAILURE");
+import routes from "../routes";
 
 export const isFetching = createAction("IS_FETCHING",
     (isLoadingList = false, isLoadingItem = false) => ({isLoadingList, isLoadingItem}));
@@ -26,7 +23,7 @@ export const changeItem = (item) => async (dispatch, getState) => {
 
 export const saveItem = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
-    const {selectedItem} = getState().schedule;
+    const {selectedItem} = factoryCurrentState(getState());
     try {
         dispatch(saveChanges());
         dispatch(isFetching(false, true));
@@ -52,14 +49,14 @@ export const refreshAll = () => async (dispatch, getState, getAPI) => {
 
 export const refreshItem = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
-    const {list, selectedItem} = getState().schedule;
-    const listIds = Array.from(list, (v) => v["_id"]);
-    const selectedId = selectedItem ? selectedItem._id : list[0];
-    const newIndex = listIds.indexOf(selectedId);
+    const {list, selectedItem} = factoryCurrentState(getState());
+    if (!list || !list.length)
+        return;
+    const newItem = selectedItem && list.find(v => v["_id"] === selectedItem._id) || list[0];
     try {
         dispatch(setOpen(false));
         dispatch(isFetching(false, true));
-        dispatch(receiveItem(await api.getById(listIds[newIndex !== -1 ? newIndex : 0])));
+        dispatch(receiveItem(await api.getById(newItem._id)));
     }
     catch (err) {
         throw err;
@@ -70,6 +67,7 @@ export const refreshItem = () => async (dispatch, getState, getAPI) => {
 
 export const addItem = (name) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
+    dispatch(isFetching(true));
     const newItem = await api.create(name);
     dispatch(await refreshAll());
     dispatch(sideMenuChangeItem(newItem));
@@ -77,7 +75,7 @@ export const addItem = (name) => async (dispatch, getState, getAPI) => {
 
 export const removeItem = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
-    const {selectedItem} = getState().schedule;
+    const {selectedItem} = factoryCurrentState(getState());
     try {
         await api.removeById(selectedItem._id);
         dispatch(await refreshAll());
@@ -86,3 +84,10 @@ export const removeItem = () => async (dispatch, getState, getAPI) => {
         throw err;
     }
 };
+
+function factoryCurrentState(reducers) {
+    const {router} = reducers;
+    const {pathname} = router.location;
+    const name = routes.find(v => v.path === pathname).name;
+    return reducers[name];
+}

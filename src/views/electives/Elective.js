@@ -8,7 +8,7 @@ import * as ReactDOM from "react-dom";
 import axios from "axios";
 import ElectiveHeaderBar from "./ElectiveHeaderBar";
 import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
-import IsNoPage from "../../components/IsNoPage";
+import emptyPage from "../../components/emptyPage";
 
 const styles = {
     contentStyle: {
@@ -170,14 +170,14 @@ class Elective extends PureComponent {
                             </SideMenu>
                         }
                             <ResizeSensor onResize={this.handleResizeView}>
-                                <IsNoPage notEmpty={isNotEmpty}>
+                                <emptyPage notEmpty={isNotEmpty}>
                                     <ElectiveWeekList ref={input => this.weekList = input}
                                                       isLoadItem={this.state.isLoadItem}
                                                       setAction={setAction} action={action}
                                                       setOpen={setOpen}
                                                       onSaveElective={this.handleSaveElective}
                                                       item={this.state.selectedItem} {...styles}/>
-                                </IsNoPage>
+                                </emptyPage>
                             </ResizeSensor>
                             <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
                                 <Button minimal icon="undo" onClick={this.handleClickCancelChanges}
