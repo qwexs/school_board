@@ -94,7 +94,7 @@ export const getDaysState = createSelector(
     [(state) => state.selectedItem.days],
     (days) => days.map(item => {
         let sparseCellData = {};
-        item.less && item.less.forEach((item, index) => {
+        item.less.forEach((item, index) => {
             Object.assign(sparseCellData, {[index + "-0"]: item["text"] || ""});
         });
         return {

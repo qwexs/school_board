@@ -1,10 +1,11 @@
 import store from "../configureStore";
-import {ScheduleAPI} from "./schedule.api";
-
+import Api from "./api";
+import routes from "../routes";
 
 export function getAPI() {
-    let api = new ScheduleAPI();
-    return api;
+    const {pathname} = store.getState().router.location;
+    const name = routes.find(v => v.path === pathname).name;
+    return new Api(name);
 }
 
 export default getAPI;

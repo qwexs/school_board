@@ -49,7 +49,7 @@ router.route('/')
         }
     });
 
-createNews = (req, res, params) => {
+const createNews = (req, res, params) => {
     News.create(params).then(() => {
         res.status(201).json({status: "ok"});
         return req.app.emit('news', req, res);

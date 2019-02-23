@@ -12,7 +12,7 @@ import LessonsPanel from "./LessonsPanel";
 import {connect} from 'react-redux';
 import * as footerActions from "../../store/actions/footer.actions";
 import {bindActionCreators} from "redux";
-import {addItem, refreshAll, refreshItem, removeItem, saveItem} from "../../store/actions";
+import {addItem, refreshAll, refreshItem, removeItem, saveItem} from "../../store/reducers/schedule.reducer";
 
 const styles = {
     sideItem: {

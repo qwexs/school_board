@@ -4,7 +4,7 @@ import Radium from "radium";
 import * as PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {changeItem} from "../../store/actions";
+import {changeItem} from "../../store/reducers/schedule.reducer";
 
 const styles = {
     sideMenuContainer: {
@@ -25,6 +25,7 @@ class SideMenu extends PureComponent {
 
     static propTypes = {
         headerBar: PropTypes.element,
+        onChangeItem: PropTypes.func
     };
 
     componentDidMount() {
@@ -79,12 +80,7 @@ const ForwardingSideMenuItem = forwardRef((props, ref) => {
     return <div ref={ref}>{props.children}</div>;
 });
 
-const mapStateToProps = (state) => {
-    const {selectedItem, list} = state.schedule;
-    return {
-        selectedItem, list
-    };
-};
+const mapStateToProps = (state) => ({...state.sideMenu});
 
 const mapDispatchToProps = dispatch => bindActionCreators({changeItem}, dispatch);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {H5} from "@blueprintjs/core";
 
-const emptyPage = (({...props}) => {
+const emptyPage = ({...props}) => {
 
     const styles = {
         container: {
@@ -28,6 +28,6 @@ const emptyPage = (({...props}) => {
               </div>
     );
 
-});
+};
 
 export default emptyPage;

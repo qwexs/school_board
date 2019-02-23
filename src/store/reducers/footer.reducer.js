@@ -6,14 +6,14 @@ const initialState = {
     isOpen: false
 };
 
-const footer = handleActions(
-    combineActions(
+const footer = handleActions(new Map([
+    [combineActions(
         setOpen,
         setContentWidth,
         cancelChanges,
         saveChanges
     ),
-    (state, action) => ({...state, ...action.payload}),
+    (state, action) => ({...state, ...action.payload})]]),
     initialState);
 
 export default footer;

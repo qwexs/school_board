@@ -4,7 +4,6 @@ import Elective from "../../views/electives/Elective";
 import Gallery from "../../views/gallery/Gallery";
 import News from "../../views/news/News";
 import Holidays from "../../views/holidays/Holidays";
-import {ScheduleAPI} from "../api/schedule.api";
 
 const routes = [
     {

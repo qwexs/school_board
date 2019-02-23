@@ -7,14 +7,13 @@ import {handleStringChange} from "@blueprintjs/docs-theme";
 class NewsDialog extends PureComponent {
 
     static propTypes = {
-        isNew: PropTypes.bool,
         onSave: PropTypes.func,
         onCancel: PropTypes.func,
         content: PropTypes.object
     };
 
     emptyState = {
-        _id: "",
+        _id:"",
         isOpen: false,
         isNew: false,
         title: "",
@@ -25,8 +24,8 @@ class NewsDialog extends PureComponent {
     state = Object.create(this.emptyState);
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const {isOpen, isNew} = nextProps;
-        this.setState({...nextProps.content || this.emptyState, isOpen, isNew});
+        const {isOpen, content} = nextProps;
+        this.setState({...content || this.emptyState, isOpen, isNew: content != null});
     }
 
     handleChangeInputTitle = handleStringChange(text => {

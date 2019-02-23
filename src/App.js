@@ -7,7 +7,7 @@ import {setAuth} from "./components/authentication/setAuth";
 import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/FooterBarProvider";
 import {Redirect, Route, Switch} from "react-router";
 import {renderMergedProps} from "./utils/renderMergedProps";
-import emptyPage from "./components/emptyPage";
+import EmptyPage from "./components/emptyPage";
 
 const styles = {
     stageStyle: {
@@ -55,7 +55,7 @@ const MainContainer = () => {
                                                 setAction={setAction} action={action} setOpen={setOpen}
                                                 isOpen={isOpen}/>
                                 ))}
-                                <Route component={emptyPage}/>
+                                <Route component={EmptyPage}/>
                             </Switch>
                         </main>
                     )}
