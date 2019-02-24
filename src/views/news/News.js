@@ -3,9 +3,15 @@ import {Alert, Card, H2, Icon, Spinner} from "@blueprintjs/core";
 import NewsDialog from "./NewsDialog";
 import NewsItem from "./NewsItem";
 import {Intent} from "@blueprintjs/core/lib/cjs/common/intent";
-import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {refreshAll, removeItem, saveItem, showDialog, showAlertRemove} from "../../store/reducers/news.reducer";
+import newsReducer, {
+    refreshAll,
+    removeItem,
+    saveItem,
+    showAlertRemove,
+    showDialog
+} from "../../store/reducers/news.reducer";
+import {withReducer} from "../../store/withReducer";
 
 const styles = {
     tileLayout: {
@@ -63,6 +69,7 @@ class News extends React.PureComponent {
 
     handleRemoveAlertConfirm = () => {
         this.props.removeItem();
+        this.props.showAlertRemove(false);
     };
 
     render() {
@@ -108,8 +115,7 @@ class News extends React.PureComponent {
                     intent={Intent.DANGER}
                     isOpen={this.props.isAlertOpen}
                     onCancel={this.handleRemoveAlertCancel}
-                    onConfirm={this.handleRemoveAlertConfirm}
-                >
+                    onConfirm={this.handleRemoveAlertConfirm}>
                     <p>
                         Вы действительно хотите удалить эту
                         новость?<br/><br/><b>{this.props.content && this.props.content.title}</b>
@@ -120,8 +126,9 @@ class News extends React.PureComponent {
     }
 }
 
-const mapStateToProps = (state) => ({...state.news});
+const mapStateToProps = state => state.news;
+
 const mapDispatchToProps = dispatch =>
     bindActionCreators({refreshAll, removeItem, showDialog, saveItem, showAlertRemove}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(News)
+export default withReducer("news", newsReducer, mapStateToProps, mapDispatchToProps)(News);

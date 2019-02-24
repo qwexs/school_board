@@ -4,7 +4,6 @@ import "./App.css";
 import routes from "./store/routes";
 import AuthLogin from "./views/AuthLogin";
 import {setAuth} from "./components/authentication/setAuth";
-import FooterBarProvider, {FooterPanelConsumer} from "./components/footer/FooterBarProvider";
 import {Redirect, Route, Switch} from "react-router";
 import {renderMergedProps} from "./utils/renderMergedProps";
 import EmptyPage from "./components/emptyPage";
@@ -28,7 +27,6 @@ const styles = {
     },
 };
 
-
 const App = () => {
     return (
         <div className="App">
@@ -44,23 +42,16 @@ const MainContainer = () => {
     return (
         <div style={styles.stageStyle}>
             <Menu routes={routes} auth={setAuth}/>
-            <FooterBarProvider>
-                <FooterPanelConsumer>
-                    {({setOpen, isOpen, setAction, action}) => (
-                        <main style={styles.mainStyle}>
-                            <Switch>
-                                {routes.map((item, index) => (
-                                    <PropsRoute key={index} path={item.path} title={item.title}
-                                                component={item.component} {...styles}
-                                                setAction={setAction} action={action} setOpen={setOpen}
-                                                isOpen={isOpen}/>
-                                ))}
-                                <Route component={EmptyPage}/>
-                            </Switch>
-                        </main>
-                    )}
-                </FooterPanelConsumer>
-            </FooterBarProvider>
+                <main style={styles.mainStyle}>
+                    <Switch>
+                        {routes.map((item, index) => (
+                            <PropsRoute key={index} path={item.path} title={item.title}
+                                        component={item.component} {...styles}
+                                        />
+                        ))}
+                        <Route component={EmptyPage}/>
+                    </Switch>
+                </main>
         </div>
     );
 };

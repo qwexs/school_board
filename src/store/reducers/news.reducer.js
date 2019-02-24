@@ -27,7 +27,6 @@ export const showAlertRemove = (isOpen = false, item = null) => dispatch => {
 
 export const saveItem = (item) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
-    const {news} = getState();
     const {title, text, image} = item;
     const formData = new FormData();
     formData.append('title', title || "");
@@ -69,7 +68,6 @@ export const refreshAll = () => async (dispatch, getState, getAPI) => {
 export const removeItem = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     try {
-        dispatch(isAlertOpen(false));
         dispatch(isFetching(true));
         await api.removeItem(getState().news.selectedItem._id);
         dispatch(receiveList(await api.getList()));
@@ -88,7 +86,9 @@ const news = handleActions(new Map([
         receiveItem,
         isDialogOpen,
         isAlertOpen
-    ), (state, action) => ({...state, ...action.payload})],
+    ), (state, action) => {
+        return {...state, ...action.payload};
+}],
 ]), initialState);
 
 export default news;

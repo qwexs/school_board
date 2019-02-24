@@ -1,11 +1,14 @@
-import store from "../configureStore";
 import Api from "./api";
 import routes from "../routes";
+import {store} from "../../index";
 
 export function getAPI() {
+    return new Api(getRouterName());
+}
+
+export function getRouterName() {
     const {pathname} = store.getState().router.location;
-    const name = routes.find(v => v.path === pathname).name;
-    return new Api(name);
+    return routes.find(v => v.path === pathname).name;
 }
 
 export default getAPI;

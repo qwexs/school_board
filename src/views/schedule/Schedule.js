@@ -4,15 +4,20 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor, Spinner} from "@blueprintjs/core";
 import ScheduleHeaderBar from "./ScheduleHeaderBar";
-import Radium from "radium";
 import ScheduleContent from "./ScheduleContent";
 import * as ReactDOM from "react-dom";
 import EmptyPage from "../../components/emptyPage";
 import LessonsPanel from "./LessonsPanel";
-import {connect} from 'react-redux';
 import * as footerActions from "../../store/actions/footer.actions";
 import {bindActionCreators} from "redux";
-import {addItem, refreshAll, refreshItem, removeItem, saveItem} from "../../store/reducers/schedule.reducer";
+import scheduleReducer, {
+    addItem,
+    refreshAll,
+    refreshItem,
+    removeItem,
+    saveItem
+} from "../../store/reducers/schedule.reducer";
+import {withReducer} from "../../store/withReducer";
 
 const styles = {
     sideItem: {
@@ -36,11 +41,6 @@ const styles = {
 };
 
 class Schedule extends PureComponent {
-
-    constructor(props) {
-        super(props);
-        this.scheduleList = React.createRef();
-    }
 
     componentDidMount() {
         this.props.api.refreshAll();
@@ -126,14 +126,12 @@ class Schedule extends PureComponent {
     }
 }
 
-const mapStateToProps = (state) => ({...state.schedule});
+const mapStateToProps = (state) => state.schedule;
 
-const mapDispatchToProps = dispatch => {
-    return {
-        footer: bindActionCreators(footerActions, dispatch),
-        api: bindActionCreators({refreshAll, refreshItem, removeItem, saveItem, addItem}, dispatch)
-    }
-};
+const mapDispatchToProps = dispatch => ({
+    footer: bindActionCreators(footerActions, dispatch),
+    api: bindActionCreators({refreshAll, refreshItem, removeItem, saveItem, addItem}, dispatch)
+});
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Radium(Schedule));
+export default withReducer("schedule", scheduleReducer, mapStateToProps, mapDispatchToProps)(Schedule);

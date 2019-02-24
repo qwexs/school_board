@@ -66,7 +66,7 @@ export const refreshItem = () => async (dispatch, getState, getAPI) => {
     const {list, selectedItem} = getState().schedule;
     if (!list || !list.length)
         return;
-    const newItem = selectedItem && list.find(v => v["_id"] === selectedItem._id) || list[0];
+    const newItem = (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
     try {
         dispatch(setOpen(false));
         dispatch(isFetching(false, true));
