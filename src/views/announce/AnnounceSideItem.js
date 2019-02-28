@@ -1,14 +1,11 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-class AnnounceSideItem extends Component {
-    render() {
-        const {item, sideItem} = this.props;
-        return (
-            <div className="disable-select" style={sideItem}>
-                {item.title}
-            </div>
-        );
-    }
-}
+const AnnounceSideItem = ({item, sideItem}) => {
+    return (
+        <div className="disable-select" style={sideItem}>
+            {item.title}
+        </div>
+    );
+};
 
 export default AnnounceSideItem;

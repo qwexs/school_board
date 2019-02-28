@@ -48,12 +48,7 @@ router.route('/:date')
         });
     });
 
-router.route('/day/:id')
-    .get((req, res) => {
-        Announce.findById(req.params.id, (err, doc) => {
-            res.status(200).json(doc);
-        });
-    })
+router.route('/:id')
     .put((req, res) => {
         const {education} = req.body;
         Announce.findByIdAndUpdate(req.params.id, {$set: {education}}, {new: true},

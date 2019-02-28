@@ -6,10 +6,10 @@ import FooterBar from "../../components/footer/FooterBar";
 import {Button, Spinner} from "@blueprintjs/core";
 import {ResizeSensor} from "@blueprintjs/core";
 import AnnounceHeaderBar from "./AnnounceHeaderBar";
-import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
-import axios from "axios";
-import * as ReactDOM from "react-dom";
-import moment from "moment";
+import {withReducer} from "../../store/withReducer";
+import announceReducer, {changeDate, refreshAll, saveItem} from "../../store/reducers/announce.reducer";
+import {bindActionCreators} from "redux";
+import * as footerActions from "../../store/reducers/footer.reducer";
 
 const styles = {
     sideItem: {
@@ -33,156 +33,76 @@ const styles = {
     }
 };
 
-let isMounted = false;
-
 class Announce extends PureComponent {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            list: [],
-            selectedItem: null,
-            selectedDate: null,
-            isLoad:false,
-            isLoadList:false
-        };
-    }
-
     componentDidMount() {
-        isMounted = true;
-        this.refreshAll();
+        this.props.refreshAll();
     }
-
-    componentWillUnmount() {
-        isMounted = false;
-    }
-
-    refreshAll = () => {
-        this.setState({isLoad: false});
-        axios.get(`/announce${this.state.selectedDate ? "/" + 
-            moment(this.state.selectedDate).startOf("isoWeek").utc(true).toDate().getTime() : ""}`).then(res => {
-            const currentList = res.data.items;
-            const currentItem = (this.state.selectedItem && currentList.filter(item => item._id === this.state.selectedItem._id)[0]) || currentList[0];
-            isMounted && this.setState({
-                list: currentList,
-                selectedItem: currentItem,
-                selectedDate: new Date(res.data.date),
-                isLoad: true,
-                isLoadList: true,
-            }, () => this.props.setOpen(false));
-        });
-    };
-
-    handleChangeItem = (item) => {
-        this.props.setOpen(false);
-        this.setState({selectedItem: JSON.parse(JSON.stringify(item))});
-        this.componentList.scrollTop = 0;
-    };
 
     handleResizeView = (entries) => {
-        const element = ReactDOM.findDOMNode(this.componentList);
-        if (entries && element && this.footerBar) {
-            const vWidth = entries[0].contentRect.width;
-            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
-            this.footerBar.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
+        if (entries) {
+            const contentWidth = entries[0].contentRect.width;
+            this.props.footer.setContentWidth(`${contentWidth}px`);
         }
     };
 
-    handleInsertItem = (itemList, callback = null) => {
-        this.savedItem = itemList;
-        this.props.setOpen(true, callback);
-    };
-
     handleSaveItem = () => {
-        axios.put(`/announce/day/${this.state.selectedItem._id}`, this.savedItem)
-            .then(this.refreshAll);
+        this.props.saveItem();
     };
 
-    handleCancelSave = () => {
-        axios.get(`/announce/day/${this.state.selectedItem._id}`).then((value => {
-            this.setState({selectedItem: value.data},
-                () => this.props.setOpen(false));
-        }));
+    handleCancelItem = () => {
+        this.props.footer.setCancelFooter();
     };
 
     handleChangeWeek = (date) => {
-        this.setState({isLoadList: false});
-        axios.get(`/announce/${date}`).then((value) => {
-            this.setState(prevState => ({
-                ...prevState,
-                list: value.data.items,
-                selectedItem: value.data.items[0],
-                selectedDate: new Date(value.data.date),
-                isLoadList: true
-            }));
-        });
+        this.props.changeDate(date);
     };
 
     render() {
-        const {windowStyle, sideMenuContainer} = this.props;
-        let indexDay = 0;
-        const dateFormatOptions = {year: 'numeric', month: 'long', day: 'numeric'};
-        this.state.list.forEach((item, index) => {
-            if (item._id === this.state.selectedItem._id) {
-                indexDay = index + 1;
-            }
-        });
+        const {windowStyle} = this.props;
         return (
-            <FooterPanelConsumer>
-                {({setOpen, isOpen}) => (
-                    !this.state.isLoad
-                    ?
-                    <div style={{
-                        position: "relative",
-                        margin: "auto"
-                    }}>
-                        <Spinner/>
-                    </div>
-                    :
-                    <div style={windowStyle}>
-                        <SideMenu {...{sideMenuContainer}}
-                                  items={this.state.list}
-                                  selectedItem={this.state.selectedItem}
-                                  headerBar={
-                                      <AnnounceHeaderBar style={styles.headerBar}
-                                                         value={this.state.selectedDate}
-                                                         onChange={this.handleChangeWeek}
-                                      />
-                                  }
-                                  onChangeItem={this.handleChangeItem}>
-                            <AnnounceSideItem {...styles}/>
-                        </SideMenu>
-                        <ResizeSensor onResize={this.handleResizeView}>
-                            {
-                                !this.state.isLoadList
-                                    ?
-                                    <div style={{
-                                        position: "relative",
-                                        margin: "auto"
-                                    }}>
-                                        <Spinner/>
-                                    </div>
-                                    :
-                                    <AnnounceList onInsert={this.handleInsertItem}
-                                                  setOpen={setOpen}
-                                                  ref={ref => this.componentList = ref}
-                                                  titleDay={
-                                                      moment(this.state.selectedDate).day(indexDay).toDate()
-                                                          .toLocaleDateString('ru', dateFormatOptions)}
-                                                  list={this.state.selectedItem} {...styles}/>
-                            }
-                        </ResizeSensor>
-                        <FooterBar ref={input => this.footerBar = input} isOpen={isOpen}>
-                            <Button minimal icon="undo" onClick={this.handleCancelSave}
-                                    intent={"#"} style={{color:"#F5F8FA"}}>Отменить</Button>
-                            <Button minimal icon="edit" onClick={this.handleSaveItem}
-                                    intent={"#"} style={{color:"#F5F8FA"}}>Сохранить изменения</Button>
-                        </FooterBar>
-                    </div>
-                )}
-            </FooterPanelConsumer>
+            this.props.isLoadingList
+                ?
+                <div style={{
+                    position: "relative",
+                    margin: "auto"
+                }}>
+                    <Spinner/>
+                </div>
+                :
+                <div style={windowStyle}>
+                    <SideMenu
+                        headerBar={
+                            <AnnounceHeaderBar style={styles.headerBar}
+                                               value={this.props.selectedDate}
+                                               onChange={this.handleChangeWeek}
+                            />
+                        }>
+                        <AnnounceSideItem {...styles}/>
+                    </SideMenu>
+                    <ResizeSensor onResize={this.handleResizeView}>
+                        <AnnounceList {...styles}/>
+                    </ResizeSensor>
+                    <FooterBar>
+                        <Button minimal icon="undo" onClick={this.handleCancelItem}
+                                intent={"#"} style={{color: "#F5F8FA"}}>Отменить</Button>
+                        <Button minimal icon="edit" onClick={this.handleSaveItem}
+                                intent={"#"} style={{color: "#F5F8FA"}}>Сохранить изменения</Button>
+                    </FooterBar>
+                </div>
         );
     }
 }
 
-export default Announce;
+const mapStateToProps = state => {
+    return state.announce;
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        footer: bindActionCreators(footerActions, dispatch),
+        ...bindActionCreators({refreshAll, changeDate, saveItem}, dispatch)
+    }
+};
+
+export default withReducer("announce", announceReducer, mapStateToProps, mapDispatchToProps)(Announce);

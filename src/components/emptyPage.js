@@ -23,7 +23,7 @@ const emptyPage = ({...props}) => {
     return (
         notEmpty
             ? props.children
-            : <div style={{...styles.container, style}}>
+            : <div style={{...styles.container, ...style}}>
                 <H5 style={styles.title}>{title || "Пустая страница"}</H5>
               </div>
     );

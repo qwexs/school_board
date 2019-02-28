@@ -1,23 +1,19 @@
 import React from "react";
-import {store} from "../index";
-import * as PropTypes from 'prop-types';
+import store from "../store";
 import {connect} from "react-redux";
 
 const withReducer = (key, reducer, mapStateToProps, mapDispatchToProps) => WrappedComponent => {
 
-    const Extended = (props, context) => {
+    const Extended = (props) => {
         store.injectReducer(key, reducer);
 
         WrappedComponent = connect(
-            () => mapStateToProps(store.getState(), props),
-            () => mapDispatchToProps(store.dispatch, props))(WrappedComponent);
+            mapStateToProps ? () => mapStateToProps(store.getState(), props) : null,
+            mapDispatchToProps ? () => mapDispatchToProps(store.dispatch, props) : null
+        )(WrappedComponent);
 
         return <WrappedComponent {...props}
         />;
-    };
-
-    Extended.contextTypes = {
-        store: PropTypes.object
     };
 
     return Extended;

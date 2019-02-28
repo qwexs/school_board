@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Popover, PopoverInteractionKind} from "@blueprintjs/core";
 import DateWeekPicker from "../../components/day-picker/DateWeekPicker";
 
-export default React.memo(({...props}) => {
+export default ({...props}) => {
     return (
         <div style={props.style}>
             <div style={{
@@ -29,4 +29,4 @@ export default React.memo(({...props}) => {
             </div>
         </div>
     );
-});
+};

@@ -1,6 +1,6 @@
 import Api from "./api";
 import routes from "../routes";
-import {store} from "../../index";
+import store from "../../store";
 
 export function getAPI() {
     return new Api(getRouterName());

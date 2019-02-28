@@ -2,19 +2,17 @@ import React, {PureComponent} from 'react';
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import AnnounceItem from "./AnnounceItem";
 import AnnounceDialog from "./AnnounceDialog";
-import {reorder} from "../../utils/reorder";
-import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
-import Radium from "radium";
 import {Button, H5} from "@blueprintjs/core";
-import emptyPage from "../../components/emptyPage";
-import PropTypes from "prop-types";
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-    margin: `0 0 ${25}px 0`,
-    // background: isDragging ? "#A7B6C2" : null,
-    // width: "100%",
-    ...draggableStyle
-});
+import EmptyPage from "../../components/emptyPage";
+import {createSelector} from "reselect";
+import {withReducer} from "../../store/withReducer";
+import announceReducer, {
+    reorderWeekList,
+    saveItemWeek,
+} from "../../store/reducers/announce.reducer";
+import {setOpenDialog} from "../../store/reducers/root.reducer";
+import moment from "moment";
+import {bindActionCreators} from "redux";
 
 const styles = {
     mainContainer: {
@@ -69,174 +67,125 @@ const styles = {
 };
 
 class AnnounceList extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            collectionList: [],
-            isDialogOpen: false,
-            content: null,
-            title: "",
-            titleDay: ""
-        };
-    }
 
     componentDidMount() {
-        this.componentWillReceiveProps(this.props);
+        this.forceUpdate();
     }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        const {list} = nextProps;
-        const collectionList = list ? list.education : null;
-        this.setState({
-            isDialogOpen: false,
-            collectionList,
-            title: list.title,
-            titleDay: nextProps.titleDay
-        });
-    }
-
-    getItems = () => {
-        const result = [];
-        const {collectionList} = this.state;
-        collectionList && collectionList
-            .map((item, index) => {
-                item.index = index;
-                return result.push({
-                    id: `item-${index}`,
-                    content: <AnnounceItem style={styles.announceItem} item={item}
-                                           onItemEditedClick={this.onItemEditedClick}
-                                           onItemRemoveClick={this.onRemoveClickHandler}/>
-                })
-            });
-        return result;
-    };
-
-    onItemEditedClick = (item) => {
-        this.setState({
-            isDialogOpen: true,
-            content: item
-        });
-    };
-
-    onRemoveClickHandler = (itemTarget) => {
-        const collectionList = this.state.collectionList.filter(item => item !== itemTarget).slice(0);
-        this.props.onInsert({education: collectionList}, () => {
-            this.setState({collectionList});
-        });
-    };
 
     onDragEnd = (result) => {
         if (!result.destination) {
             return;
         }
-
-        const collectionList = reorder(
-            this.state.collectionList,
-            result.source.index,
-            result.destination.index
-        );
-
-        this.props.onInsert({education: collectionList}, () => {
-            this.setState({
-                collectionList,
-            });
-        });
-    };
-
-    onSaveDialogHandler = (content) => {
-        const collectionList = this.state.collectionList;
-        if (content.isNew) { //is new
-            collectionList.push({
-                index: collectionList.length,
-                timeDay: content.title,
-                text: content.description
-            });
-        } else {
-            collectionList.forEach(item => {
-                if (item.index === content.index) {
-                    item.text = content.description;
-                    item.timeDay = content.title;
-                }
-            });
-        }
-        this.props.onInsert({education: collectionList},
-            () => {
-                this.setState({
-                    collectionList,
-                    isDialogOpen: false,
-                    content: null,
-                });
-            });
-    };
-
-    onCancelDialogHandler = () => {
-        this.setState({
-            isDialogOpen: false,
-            content: null
-        });
+        this.props.reorderWeekList({result});
     };
 
     handleAddAnnounce = () => {
-        this.setState({isDialogOpen: true});
+        this.props.openDialog();
+    };
+
+    handleSaveDialog = (content) => {
+        this.props.saveDialog(content);
+    };
+
+    handleCancelDialog = () => {
+        this.props.closeDialog();
     };
 
     render() {
-        return this.state.collectionList && (
-            <FooterPanelConsumer>
-                {({setOpen, isOpen}) => (
-                    <div style={styles.mainContainer}>
-                        <div style={styles.wrapperContainer}>
-                            <div style={{width: "100%", minHeight: 0}}>
-                                <div style={styles.topContainer}>
-                                    <H5 className="bp3-text-large"
-                                        style={styles.titleLabel}>{`${this.state.title}, ${this.state.titleDay}`}</H5>
-                                    <Button minimal icon="add-to-artifact" onClick={this.handleAddAnnounce}/>
-                                </div>
-                                <emptyPage notEmpty={this.state.collectionList && this.state.collectionList.length > 0}
-                                          style={{width: "100%", height: `calc(100% - ${styles.topContainer.height})`}}>
-                                    <div style={[styles.listContainer, {paddingBottom: isOpen ? 60 : 0}]}>
-                                        <DragDropContext
-                                            onDragEnd={this.onDragEnd}>
-                                            <Droppable droppableId="droppable">
-                                                {(provided) => (
-                                                    <div ref={provided.innerRef} style={styles.announceContainer}>
-                                                        {this.getItems().map((item, index) => (
-                                                            <Draggable key={index} draggableId={item.id} index={index}>
-                                                                {(provided, snapshot) => (
-                                                                    <div ref={provided.innerRef}
-                                                                         {...provided.draggableProps}
-                                                                         {...provided.dragHandleProps}
-                                                                         style={getItemStyle(
-                                                                             snapshot.isDragging,
-                                                                             provided.draggableProps.style
-                                                                         )}
-                                                                    >
-                                                                        {item.content}
-                                                                    </div>
-                                                                )}
-                                                            </Draggable>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </Droppable>
-                                        </DragDropContext>
-                                    </div>
-                                </emptyPage>
-                                <AnnounceDialog isOpen={this.state.isDialogOpen} content={this.state.content}
-                                                onSave={this.onSaveDialogHandler}
-                                                onCancel={this.onCancelDialogHandler}/>
-                            </div>
-
+        return (
+            <div style={styles.mainContainer}>
+                <div style={styles.wrapperContainer}>
+                    <div style={{width: "100%", minHeight: 0}}>
+                        <div style={styles.topContainer}>
+                            <H5 className="bp3-text-large"
+                                style={styles.titleLabel}>{this.props.titleDay}</H5>
+                            <Button minimal icon="add-to-artifact" onClick={this.handleAddAnnounce}/>
                         </div>
+                        <EmptyPage notEmpty={this.props.educationList && this.props.educationList.length > 0}
+                                    style={{height: `calc(100% - ${styles.topContainer.height})`}}>
+                            <div
+                                style={{...styles.listContainer, ...{paddingBottom: this.props.footer.isOpen ? 60 : 0}}}>
+                                <DragDropContext
+                                    onDragEnd={this.onDragEnd}>
+                                    <Droppable droppableId="droppable">
+                                        {(provided) => (
+                                            <div ref={provided.innerRef} style={styles.announceContainer}>
+                                                {this.props.educationList.map((item, index) => (
+                                                    <Draggable key={index} draggableId={item.id} index={index}>
+                                                        {(provided, snapshot) => (
+                                                            <div ref={provided.innerRef}
+                                                                 {...provided.draggableProps}
+                                                                 {...provided.dragHandleProps}
+                                                                 style={getItemStyle(
+                                                                     snapshot.isDragging,
+                                                                     provided.draggableProps.style
+                                                                 )}
+                                                            >
+                                                                {item.content}
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
+                            </div>
+                        </EmptyPage>
+                        <AnnounceDialog isOpen={this.props.isDialogOpen} content={this.props.contentDialog}
+                                        onSave={this.handleSaveDialog}
+                                        onCancel={this.handleCancelDialog}/>
                     </div>
-                )}
-            </FooterPanelConsumer>
+
+                </div>
+            </div>
         );
     }
 }
 
-AnnounceList.propTypes = {
-    onInsert: PropTypes.func
+const getItemStyle = (isDragging, draggableStyle) => ({
+    margin: `0 0 ${25}px 0`,
+    ...draggableStyle
+});
+
+const getEducationList = createSelector(
+    [state => state.selectedItem ? state.selectedItem.education : []],
+    (education) => education.map((item, index) => {
+        item.index = index;
+        return {
+            id: `item-${index}`,
+            content: <AnnounceItem style={styles.announceItem} item={item}/>
+        };
+    })
+);
+
+const getTitleDay = createSelector(
+    [state => state.selectedDate,
+    state => state.selectedItem,
+    state => state.list],
+    (selectedDate, selectedItem, list) => {
+        const weekDay = selectedItem && selectedItem.title;
+        if (!list) return "";
+        return `${weekDay}, ${moment(selectedDate).day(list.findIndex(item => item._id === selectedItem._id) + 1).toDate()
+            .toLocaleDateString('ru', {year: 'numeric', month: 'long', day: 'numeric'})}`;
+    }
+);
+
+const mapStateToProps = (state) => {
+    return {
+        footer: state.footer,
+        ...state.announce,
+        educationList: getEducationList(state.announce),
+        titleDay: getTitleDay(state.announce)
+    }
 };
 
-export default Radium(AnnounceList);
+const mapDispatchToProps = (dispatch) =>
+    bindActionCreators({
+        saveDialog: (data) => saveItemWeek(data),
+        openDialog: (data) => setOpenDialog(true, data),
+        closeDialog: () => setOpenDialog(false),
+        reorderWeekList
+    }, dispatch);
+
+export default withReducer("announce", announceReducer, mapStateToProps, mapDispatchToProps)(AnnounceList);

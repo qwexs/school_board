@@ -32,6 +32,10 @@ const styles = {
 
 class ScheduleContent extends PureComponent {
 
+    static propTypes = {
+        onRemoveKlass: PropTypes.func
+    };
+
     handleChangeTitle = (text) => {
         this.props.editTitle(text);
     };
@@ -85,12 +89,12 @@ class ScheduleContent extends PureComponent {
     }
 }
 
-export const geTitleState = createSelector(
+const geTitleState = createSelector(
     [(state) => state.selectedItem.name],
     (title) => title
 );
 
-export const getDaysState = createSelector(
+const getDaysState = createSelector(
     [(state) => state.selectedItem.days],
     (days) => days.map(item => {
         let sparseCellData = {};
@@ -114,10 +118,5 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({editTitle, editContent}, dispatch);
-
-ScheduleContent.propTypes = {
-    listData: PropTypes.object,
-    onRemoveKlass: PropTypes.func
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScheduleContent);

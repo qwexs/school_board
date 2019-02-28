@@ -1,5 +1,5 @@
 import {combineActions, createAction, handleActions} from "redux-actions";
-import {isFetching, receiveItem, receiveList} from "../actions";
+import {setOpenDialog, isFetching, receiveItem, receiveList} from "./root.reducer";
 
 const initialState = {
     isDialogOpen: false,
@@ -9,15 +9,12 @@ const initialState = {
     isLoadingList: false,
 };
 
-export const isDialogOpen = createAction("NEWS/OPEN_DIALOG",
-    (isDialogOpen) => ({isDialogOpen}));
-
 export const isAlertOpen = createAction("NEWS/OPEN_ALERT",
     (isAlertOpen) => ({isAlertOpen}));
 
 export const showDialog = (isOpen = false, item = null) => dispatch => {
     dispatch(receiveItem(item));
-    dispatch(isDialogOpen(isOpen));
+    dispatch(setOpenDialog(isOpen));
 };
 
 export const showAlertRemove = (isOpen = false, item = null) => dispatch => {
@@ -84,11 +81,9 @@ const news = handleActions(new Map([
         isFetching,
         receiveList,
         receiveItem,
-        isDialogOpen,
+        setOpenDialog,
         isAlertOpen
-    ), (state, action) => {
-        return {...state, ...action.payload};
-}],
+    ), (state, action) => ({...state, ...action.payload})],
 ]), initialState);
 
 export default news;

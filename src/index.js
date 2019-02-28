@@ -3,13 +3,10 @@ import ReactDOM from 'react-dom';
 import App from "./App";
 import "./index.css";
 import {Provider} from 'react-redux';
-import {createBrowserHistory} from "history";
-import rootReducer from "./store/reducers";
-import initializeStore from "./store/initializeStore";
+import rootReducer from "./store/reducers/root.reducer";
 import {ConnectedRouter} from "connected-react-router";
+import store, {history} from "./store";
 
-const history = createBrowserHistory();
-export let store = initializeStore(history);
 const rootElement = document.getElementById("root");
 ReactDOM.render(
     <Provider store={store}>
@@ -21,7 +18,7 @@ ReactDOM.render(
 );
 
 if (process.env.NODE_ENV !== 'production' && module.hot) {
-    module.hot.accept("./store/reducers", () => {
+    module.hot.accept("./store/reducers/root.reducer", () => {
         store.replaceReducer(rootReducer(history, store.asyncReducers));
     });
 }

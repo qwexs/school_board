@@ -16,23 +16,4 @@ export default class Api {
 
     removeItem = async (id) => (await axios.delete(`/${this.path}/${id}`)).data;
 
-   /* async getList() {
-        return null;
-    }
-
-    async getItem(id) {
-        return null;
-    }
-
-    async setItem(id, data) {
-        return null;
-    }
-
-    async createItem(name) {
-        return null;
-    }
-
-    async removeItem(id) {
-        return null;
-    }*/
 };

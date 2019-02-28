@@ -8,7 +8,7 @@ import ScheduleContent from "./ScheduleContent";
 import * as ReactDOM from "react-dom";
 import EmptyPage from "../../components/emptyPage";
 import LessonsPanel from "./LessonsPanel";
-import * as footerActions from "../../store/actions/footer.actions";
+import * as footerActions from "../../store/reducers/footer.reducer";
 import {bindActionCreators} from "redux";
 import scheduleReducer, {
     addItem,
@@ -43,19 +43,19 @@ const styles = {
 class Schedule extends PureComponent {
 
     componentDidMount() {
-        this.props.api.refreshAll();
+        this.props.service.refreshAll();
     }
 
     handleAddKlass = (name) => {
-        this.props.api.addItem(name);
+        this.props.service.addItem(name);
     };
 
     handleRemoveKlass = () => {
-        this.props.api.removeItem();
+        this.props.service.removeItem();
     };
 
     handleClickSave = () => {
-        this.props.api.saveItem();
+        this.props.service.saveItem();
     };
 
     handleClickUndo = () => {
@@ -105,7 +105,9 @@ class Schedule extends PureComponent {
                             </div>
                             :
                             <EmptyPage
-                                notEmpty={this.props.selectedItem !== null && typeof this.props.selectedItem.days[0] !== 'string'}>
+                                notEmpty={this.props.selectedItem !== null
+                                && this.props.selectedItem.days
+                                && typeof this.props.selectedItem.days[0] !== 'string'}>
                                 <ResizeSensor onResize={this.handleResizeView}>
                                     <ScheduleContent ref={inputRef => (this.scheduleList = inputRef)}
                                                      onRemoveKlass={this.handleRemoveKlass}
@@ -130,7 +132,7 @@ const mapStateToProps = (state) => state.schedule;
 
 const mapDispatchToProps = dispatch => ({
     footer: bindActionCreators(footerActions, dispatch),
-    api: bindActionCreators({refreshAll, refreshItem, removeItem, saveItem, addItem}, dispatch)
+    service: bindActionCreators({refreshAll, refreshItem, removeItem, saveItem, addItem}, dispatch)
 });
 
 

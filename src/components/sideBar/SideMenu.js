@@ -4,7 +4,7 @@ import Radium from "radium";
 import * as PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {changeItem} from "../../store/reducers/schedule.reducer";
+import {changeItem} from "../../store/reducers/sidemenu.reducer";
 
 const styles = {
     sideMenuContainer: {
@@ -25,7 +25,6 @@ class SideMenu extends PureComponent {
 
     static propTypes = {
         headerBar: PropTypes.element,
-        onChangeItem: PropTypes.func
     };
 
     componentDidMount() {

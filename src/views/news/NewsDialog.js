@@ -28,8 +28,8 @@ class NewsDialog extends PureComponent {
         this.setState({...content || this.emptyState, isOpen, isNew: content != null});
     }
 
-    handleChangeInputTitle = handleStringChange(text => {
-        this.setState(prevState => ({...prevState , title:text}));
+    handleChangeInputTitle = handleStringChange(title => {
+        this.setState(prevState => ({...prevState , title}));
     });
 
     handleChangeInputText = handleStringChange(text => {

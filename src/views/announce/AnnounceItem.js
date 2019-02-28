@@ -1,5 +1,8 @@
 import React, {PureComponent} from 'react';
 import {Button, Card, Elevation, Text} from "@blueprintjs/core";
+import {bindActionCreators} from "redux";
+import {editItemWeek, removeItemWeek} from "../../store/reducers/announce.reducer";
+import {connect} from "react-redux";
 
 class AnnounceItem extends PureComponent {
     constructor(props) {
@@ -9,7 +12,6 @@ class AnnounceItem extends PureComponent {
             content: null
         };
     }
-
     componentDidMount() {
         this.componentWillReceiveProps(this.props);
     }
@@ -17,9 +19,17 @@ class AnnounceItem extends PureComponent {
     componentWillReceiveProps(nextProps, nextContext) {
         const {item} = nextProps;
         this.setState(  {
-            content: {index: item.index, title: item.timeDay, description: item.text}
+            content: {...item}
         });
     }
+
+    handleEditItem = () => {
+        this.props.editItemWeek(this.props.item);
+    };
+
+    handleRemoveItem = () => {
+        this.props.removeItemWeek(this.props.item);
+    };
 
     onOverHandler = (event) => {
         event.stopPropagation();
@@ -32,7 +42,7 @@ class AnnounceItem extends PureComponent {
     };
 
     render() {
-        const {style, onItemRemoveClick, onItemEditedClick} = this.props;
+        const {style} = this.props;
         return this.state.content && (
             <Card style={style} interactive={true} elevation={Elevation.ONE}
                   onMouseOver={this.onOverHandler} onMouseLeave={this.onOutHandler}>
@@ -41,17 +51,17 @@ class AnnounceItem extends PureComponent {
                         this.state.isRoll &&
                         <div style={{display: "flex", justifyContent: "flex-end", paddingTop: 5}}>
                             <Button minimal icon="edit" title="Редактировать"
-                                    onClick={() => onItemEditedClick(this.state.content)}>
+                                    onClick={this.handleEditItem}>
                             </Button>
                             <Button minimal icon="cross" title="Удалить"
-                                    onClick={() => onItemRemoveClick(this.props.item)}>
+                                    onClick={this.handleRemoveItem}>
                             </Button>
 
                         </div>
                     }
                 </div>
                 {
-                    this.state.content.title
+                    this.state.content.timeDay
                         ?
                         <div style={{
                             pointerEvents: "none",
@@ -60,7 +70,7 @@ class AnnounceItem extends PureComponent {
                             marginBottom: 10
                         }} className="bp3-ui-text"
                         >
-                            <h3>{this.state.content.title}</h3>
+                            <h3>{this.state.content.timeDay}</h3>
                         </div>
                         :
                         <div style={{height: 5}}>
@@ -69,7 +79,7 @@ class AnnounceItem extends PureComponent {
 
                 <div style={{paddingBottom: 20, pointerEvents: "none"}} className="bp3-ui-text">
                     <Text ellipsize={false}>
-                        {this.state.content.description}
+                        {this.state.content.text}
                     </Text>
                 </div>
 
@@ -78,4 +88,7 @@ class AnnounceItem extends PureComponent {
     }
 }
 
-export default AnnounceItem;
+const mapDispatchToProps = dispatch =>
+    bindActionCreators({editItemWeek, removeItemWeek}, dispatch);
+
+export default connect(null, mapDispatchToProps)(AnnounceItem);
