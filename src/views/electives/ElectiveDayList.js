@@ -1,10 +1,10 @@
 import React, {PureComponent} from 'react';
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import {reorder} from "../../utils/reorder";
 import ElectiveDayItem from "./ElectiveDayItem";
 import {Button} from "@blueprintjs/core";
-import {ID} from "../../utils/ID";
-import Elective from "./Elective";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {addLessItem, changeLessItem, removeLessItem, reorderLessList} from "../../store/reducers/elective.reducer";
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     margin: `0 0 ${25}px 0`,
@@ -45,22 +45,8 @@ const styles = {
 class ElectiveDayList extends PureComponent {
 
     state = {
-        less: [],
         isDragDisabled: false,
     };
-
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props);
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        let {list: {less}} = nextProps;
-        this.setState({less: less || []});
-
-        if (nextProps.action === Elective.ACTION_SAVE_ITEM) {
-            this.props.onSave({id:nextProps.list._id, less: this.state.less});
-        }
-    }
 
     handleDraggableStop = (callback = null) => {
         this.setState({isDragDisabled: true}, callback);
@@ -70,37 +56,32 @@ class ElectiveDayList extends PureComponent {
         this.setState({isDragDisabled: false}, callback);
     };
 
-    handleClickItemRemove = props => {
-        const less = this.state.less.filter(item => item.id !== props.id);
-        this.props.setOpen(true, () => {
-            this.setState({
-                less,
-            });
-        });
+    handleClickItemRemove = lessItem => {
+        this.props.removeLessItem(lessItem, this.props.item);
     };
 
-    handleClickItemSave = itemSave => {
-        const {less} = this.state;
-        less.forEach((item, index) => {
-            if (item.id === itemSave.id) {
-                less[index] = itemSave;
-            }
+    handleClickItemSave = lessItem => {
+        this.props.changeLessItem(lessItem, this.props.item);
+        this.setState({
+            isDragDisabled: this.props.item.less.some(item => item.isNew)
         });
-        this.props.setOpen(true, () => this.setState({
-            less,
-            isDragDisabled: false
-        }));
     };
 
     handleClickItemAdd = () => {
-        this.setState(prevState => prevState.less.filter(item => item.isNew).length === 0 &&
-        {
-            less: [...prevState.less, {id: ID(), isNew: true}],
+        this.props.addLessItem(this.props.item);
+        this.setState({
             isDragDisabled: true
         });
     };
 
+    onDragEnd = (result) => {
+        if (!result.destination)
+            return;
+        this.props.reorderLessList(this.props.item, result);
+    };
+
     render() {
+        const {item} = this.props;
         return (
             <div style={styles.groupItemStyle}>
                 <DragDropContext
@@ -111,14 +92,14 @@ class ElectiveDayList extends PureComponent {
                                 <div style={styles.titleContainer}>
                                     <label style={styles.titleLabel}
                                            className="bp3-label bp3-monospace-text">
-                                        {this.props.list.title}
+                                        {item.title}
                                     </label>
                                     <Button minimal title="Добавить" icon="add-to-artifact"
                                             onClick={this.handleClickItemAdd}/>
                                 </div>
-                                {this.state.less.length
+                                {item.less.length
                                     ?
-                                    this.state.less.map((item, index) => (
+                                    item.less.map((item, index) => (
                                         <Draggable key={index} draggableId={`item-${index}`} index={index}
                                                    isDragDisabled={this.state.isDragDisabled}>
                                             {(provided, snapshot) => (
@@ -149,20 +130,14 @@ class ElectiveDayList extends PureComponent {
             </div>
         );
     }
-
-    onDragEnd = (result) => {
-        if (!result.destination) {
-            return;
-        }
-
-        const less = reorder(
-            this.state.less,
-            result.source.index,
-            result.destination.index
-        );
-
-        this.props.setOpen(true, () => this.setState({less}));
-    };
 }
 
-export default ElectiveDayList;
+function mapStateToProps(state) {
+    return state.elective.selectedItem;
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({reorderLessList, changeLessItem, addLessItem, removeLessItem}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ElectiveDayList);

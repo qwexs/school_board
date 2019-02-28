@@ -24,6 +24,7 @@ const styles = {
 class SideMenu extends PureComponent {
 
     static propTypes = {
+        onChange: PropTypes.func,
         headerBar: PropTypes.element,
     };
 
@@ -40,8 +41,11 @@ class SideMenu extends PureComponent {
     }
 
     onClickHandler = (item) => {
-        if (item._id !== this.props.selectedItem._id)
+        if (item._id !== this.props.selectedItem._id) {
             this.props.changeItem(item);
+            if (this.props.onChange)
+                this.props.onChange();
+        }
     };
 
     render() {
@@ -79,7 +83,7 @@ const ForwardingSideMenuItem = forwardRef((props, ref) => {
     return <div ref={ref}>{props.children}</div>;
 });
 
-const mapStateToProps = (state) => ({...state.sideMenu});
+const mapStateToProps = (state) => state.sideMenu;
 
 const mapDispatchToProps = dispatch => bindActionCreators({changeItem}, dispatch);
 

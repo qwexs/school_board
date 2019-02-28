@@ -2,6 +2,9 @@ import React, {PureComponent} from 'react';
 import {Button, EditableText, H5, Label} from "@blueprintjs/core";
 import * as PropTypes from "prop-types";
 import {Intent} from "@blueprintjs/core/lib/cjs";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {changeTitleGroup} from "../../store/reducers/elective.reducer";
 
 class ElectiveTitleGroup extends PureComponent {
 
@@ -11,7 +14,10 @@ class ElectiveTitleGroup extends PureComponent {
     };
 
     state = {
-        item: {},
+        name: "",
+        teacher: "",
+        place: "",
+        icon: null,
         onOver: false
     };
     handleOverMouse = () => {
@@ -21,67 +27,61 @@ class ElectiveTitleGroup extends PureComponent {
         this.setState({onOver: false});
     };
 
-    componentDidMount() {
+    componentWillMount() {
         this.componentWillReceiveProps(this.props);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const {item} = nextProps;
-        this.setState({item})
+        const {name, teacher, place, icon} = nextProps;
+        this.setState({name, teacher, place, icon});
     }
 
-    handleChangeTitle = (text) => {
-        this.setState(prevState => ({item: {...prevState.item, name: text}}));
+    handleChangeTitle = (name) => {
+        this.setState(prevState => ({...prevState, name}));
     };
 
-    handleChangeTeacher = (text) => {
-        this.setState(prevState => ({item: {...prevState.item, teacher: text}}));
+    handleChangeTeacher = (teacher) => {
+        this.setState(prevState => ({...prevState, teacher}));
     };
 
-    handleChangePlace = (text) => {
-        this.setState(prevState => ({item: {...prevState.item, place: text}}));
+    handleChangePlace = (place) => {
+        this.setState(prevState => ({...prevState, place}));
     };
 
     handleInputIcon = (event) => {
         const files = event.target.files || event.dataTransfer.files;
         const inputFile = files[0];
         if (inputFile) {
-            this.props.setOpen(true, () => {
-                this.setState(prevState => ({item: {...prevState.item, icon: inputFile}}));
+            this.setState(prevState => ({...prevState, icon: inputFile}), () => {
+                this.props.changeTitleGroup(this.state);
             });
         }
     };
 
-    handleConfirmTitle = (text) => {
-        this.props.setOpen(true, () => {
-            this.handleChangeTitle(text)
-        });
+    handleConfirmTitle = () => {
+        this.props.changeTitleGroup(this.state);
     };
 
-    handleConfirmTeacher = (text) => {
-        this.props.setOpen(true, () => {
-            this.handleChangeTeacher(text)
-        });
+    handleConfirmTeacher = () => {
+        this.props.changeTitleGroup(this.state);
     };
 
-    handleConfirmPlace = (text) => {
-        this.props.setOpen(true, () => {
-            this.handleChangePlace(text)
-        });
+    handleConfirmPlace = () => {
+        this.props.changeTitleGroup(this.state);
     };
 
     render() {
-        const {item} = this.state;
-        const imgSrc = item.icon && typeof item.icon !== 'string'
-            ? URL.createObjectURL(item.icon)
-            : `/${item.icon}`;
+        const {name, teacher, place, icon} = this.state;
+        const imgSrc = icon && typeof icon !== 'string'
+            ? URL.createObjectURL(icon)
+            : icon && `/${icon}`;
         return (
             <div style={{width: "90%", margin: "0 auto", paddingTop: "2%"}}
                  onMouseOver={this.handleOverMouse}
                  onMouseLeave={this.handleOutMouse}>
                 <H5 style={{width: "100%", color: "#394B59", paddingBottom: "5px"}}>
                     <EditableText placeholder={"Название электива..."}
-                                  value={item.name}
+                                  value={name}
                                   maxLength={60}
                                   maxLines={2}
                                   multiline={true}
@@ -92,7 +92,7 @@ class ElectiveTitleGroup extends PureComponent {
 
                 <Label style={{color: "#394B59", paddingBottom: "5px"}}>
                     <EditableText placeholder={"Имя руководителя..."}
-                                  value={item.teacher}
+                                  value={teacher}
                                   maxLength={100}
                                   maxLines={3}
                                   multiline={true}
@@ -102,7 +102,7 @@ class ElectiveTitleGroup extends PureComponent {
                 </Label>
                 <Label style={{color: "#394B59", paddingBottom: "5px"}}>
                     <EditableText placeholder={"Место проведения..."}
-                                  value={item.place}
+                                  value={place}
                                   maxLength={30}
                                   maxLines={1}
                                   multiline={true}
@@ -128,7 +128,7 @@ class ElectiveTitleGroup extends PureComponent {
                             width: "auto",
                             margin: "auto",
                         }} src={imgSrc}
-                             alt={item.name}/>
+                             alt={name}/>
                         <input style={{
                             opacity: 0,
                             lineHeight:4,
@@ -161,4 +161,12 @@ class ElectiveTitleGroup extends PureComponent {
     }
 }
 
-export default ElectiveTitleGroup;
+function mapStateToProps(state) {
+    return state.elective.selectedItem;
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({changeTitleGroup}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ElectiveTitleGroup);

@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Button, Card, Elevation} from "@blueprintjs/core";
 import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
-import Radium from "radium";
 import * as PropTypes from "prop-types";
 import TimePickerFixed from "../../components/TimePickerFixed";
 
@@ -52,6 +51,7 @@ const styles = {
 class ElectiveDayItem extends PureComponent {
 
     static propTypes = {
+        index: PropTypes.number,
         handleDraggableStart: PropTypes.func,
         handleDraggableStop: PropTypes.func,
         handleClickItemSave: PropTypes.func,
@@ -81,17 +81,17 @@ class ElectiveDayItem extends PureComponent {
         if (this.state.edited)
             return;
 
-        const {item} = nextProps;
+        const {item, index} = nextProps;
         const isNew = item && item.isNew;
         let data;
         if (isNew) {
             this.timePickerStartValue = new Date(new Date().setHours(15, 0));
             this.timePickerEndValue = new Date(new Date().setHours(16,0));
-            data = {id: item.id, name: "", start: this.timePickerStartValue, end: this.timePickerEndValue};
+            data = {index, name: "", start: this.timePickerStartValue, end: this.timePickerEndValue};
         } else if (item) {
             this.timePickerStartValue = new Date(item.start);
             this.timePickerEndValue = new Date(item.end);
-            data = {...item, start: this.timePickerStartValue, end: this.timePickerEndValue};
+            data = {...item, index, start: this.timePickerStartValue, end: this.timePickerEndValue};
         }
         this.setState({
             data, isNew,
@@ -219,11 +219,11 @@ class ElectiveDayItem extends PureComponent {
                                     )}
                             </div>
                             <div style={styles.viewContainer} className="bp3-ui-text">
-                                <div style={[styles.labelBlockContainer, {width: "30%"}]}>
+                                <div style={{...styles.labelBlockContainer, width: "30%"}}>
                                     {this.state.edited
                                         ?
                                         <input autoFocus className={Classes.INPUT}
-                                               style={[styles.labelItem, {width: "60%"}]}
+                                               style={{...styles.labelItem, width: "60%"}}
                                                value={this.state.data.name} maxLength={12}
                                                onChange={this.onInputNameChange}/>
                                         :
@@ -280,4 +280,4 @@ class ElectiveDayItem extends PureComponent {
     }
 }
 
-export default Radium(ElectiveDayItem)
+export default ElectiveDayItem;

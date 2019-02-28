@@ -73,7 +73,7 @@ router.route('/')
 router.route('/:id')
     .get((req, res) => {
         Elective.findById(req.params.id).populate('items').then(result => {
-            res.status(200).json(result.items);
+            res.status(200).json(result);
         });
     })
     .put(upload.single("icon"), (req, res) => {

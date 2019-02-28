@@ -3,12 +3,18 @@ import SideMenu from "../../components/sideBar/SideMenu";
 import ElectiveSideItem from "./ElectiveSideItem";
 import ElectiveWeekList from "./ElectiveWeekList";
 import FooterBar from "../../components/footer/FooterBar";
-import {Button, ResizeSensor} from "@blueprintjs/core";
-import * as ReactDOM from "react-dom";
-import axios from "axios";
+import {Button, ResizeSensor, Spinner} from "@blueprintjs/core";
 import ElectiveHeaderBar from "./ElectiveHeaderBar";
-import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
-import emptyPage from "../../components/emptyPage";
+import {withReducer} from "../../store/withReducer";
+import electiveReducer, {
+    addElective,
+    refreshAll,
+    refreshItem,
+    removeElective,
+    saveItem
+} from "../../store/reducers/elective.reducer";
+import {bindActionCreators} from "redux";
+import * as footerActions from "../../store/reducers/footer.reducer";
 
 const styles = {
     contentStyle: {
@@ -30,166 +36,86 @@ const styles = {
 
 };
 
-let isMounted = false;
-
 class Elective extends PureComponent {
 
-    static ACTION_EDIT_ITEM = "editItem";
-    static ACTION_CHANGE_ITEM = "changeItem";
-    static ACTION_SAVE_ITEM = "saveItem";
-
-    state = {
-        list: [],
-        selectedItem: null,
-        isLoadItem: true,
-        isLoadList: true
-    };
+    constructor(props) {
+        super(props);
+        this.weekListRef = React.createRef();
+    }
 
     componentDidMount() {
-        isMounted = true;
-        this.refreshAll();
+        this.props.refreshAll();
     }
-
-    componentWillUnmount() {
-        isMounted = false;
-    }
-
-    refreshAll = (selectedItem = null) => {
-        axios.get('/elective').then(res => {
-            if (isMounted) {
-                const currentList = res.data;
-                const currentItem = selectedItem ? selectedItem : currentList[0];
-                this.setState({
-                    list: currentList,
-                    selectedItem: currentItem,
-                    isLoadList: false
-                }, () => {
-                    this.sideMenuRef && this.sideMenuRef.scrollToSelect();
-                    this.props.setOpen(false)
-                });
-                if (currentItem)
-                    this.refreshItem(currentItem._id);
-            }
-
-        });
-    };
-
-    refreshItem = (id) => {
-        this.props.setOpen(false);
-        axios.get(`/elective/${id}`).then(value => {
-            isMounted &&
-            this.setState({
-                selectedItem: {...this.state.selectedItem, items: value.data},
-                isLoadItem: false
-            });
-        });
-    };
-
-    handleResizeView = (entries) => {
-        if (entries && this.weekList && this.footerBarRef) {
-            const vWidth = entries[0].contentRect.width;
-            const element = ReactDOM.findDOMNode(this.weekList);
-            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
-            this.footerBarRef.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
-        }
-    };
-
-    handleChangeItem = (item) => {
-        this.setState({selectedItem: item, isLoadItem: true});
-        this.refreshItem(item._id);
-        if (this.weekList) {
-            this.weekList.scrollToTop();
-        }
-    };
 
     handleElectiveAdd = (dataHeader) => {
-        this.setState({isLoadItem: true});
-        const {name, teacher, place, icon} = dataHeader;
-        const formData = new FormData();
-        formData.append('name', name || "");
-        formData.append('teacher', teacher || "");
-        formData.append('place', place || "");
-        formData.append('icon', icon || undefined);
-        axios.post('/elective', formData).then(value => {
-            this.refreshAll(value.data);
-        });
+        this.props.addElective(dataHeader);
     };
 
-    handleElectiveRemove = (item) => {
-        this.setState({isLoadItem: true});
-        axios.delete(`/elective/${item._id}`).then(value => {
-            this.refreshAll();
-        });
+    handleElectiveRemove = () => {
+        this.props.removeElective();
     };
 
     handleClickSaveChanges = () => {
-        this.props.setAction(Elective.ACTION_SAVE_ITEM, () => this.props.setAction(""));
+        this.props.saveItem();
     };
 
     handleClickCancelChanges = () => {
-        if (this.state.selectedItem)
-            this.refreshItem(this.state.selectedItem._id);
+        this.props.footer.setCancelFooter();
     };
 
-    handleSaveElective = (item) => {
-        this.setState({isLoadItem: true});
-        const {name, teacher, place, icon, items} = item;
-        const formDataSend = new FormData();
-        formDataSend.append('name', name || "");
-        formDataSend.append('teacher', teacher || "");
-        formDataSend.append('place', place || "");
-        formDataSend.append('items', JSON.stringify(items));
-        formDataSend.append('icon', icon);
-        axios.put(`/elective/${item._id}`, formDataSend).then(value => {
-            this.refreshAll(value.data);
-        });
+    handleResizeView = (entries) => {
+        if (entries)
+            this.props.footer.setContentWidth(entries[0].contentRect.width + "px");
+    };
+
+    handleSideMenuChange = () => {
+        if (this.weekListRef.current) {
+            this.weekListRef.current.scrollTop = 0;
+        }
     };
 
     render() {
-
-        const {windowStyle} = this.props;
-        const {selectedItem} = this.state;
-        const isNotEmpty = (selectedItem && selectedItem.items && selectedItem.items.length)
-            || this.state.isLoadList;
+        const {windowStyle, isLoadingList, selectedItem} = this.props;
         return (
-            <FooterPanelConsumer>
-                {({setAction, action, setOpen, isOpen}) => (
-                    <div style={windowStyle}>
-                        {!this.state.isLoadList &&
-                            <SideMenu selectedItem={this.state.selectedItem}
-                                      items={this.state.list}
-                                      onChangeItem={this.handleChangeItem}
-                                      ref={ref => this.sideMenuRef = ref}
-                                      {...this.props}
-                                      headerBar={
-                                          <ElectiveHeaderBar style={styles.headerBar}
-                                                             onAdd={this.handleElectiveAdd}/>
-                                      }>
-                                <ElectiveSideItem
-                                                  onRemoveItem={this.handleElectiveRemove}/>
-                            </SideMenu>
-                        }
-                            <ResizeSensor onResize={this.handleResizeView}>
-                                <emptyPage notEmpty={isNotEmpty}>
-                                    <ElectiveWeekList ref={input => this.weekList = input}
-                                                      isLoadItem={this.state.isLoadItem}
-                                                      setAction={setAction} action={action}
-                                                      setOpen={setOpen}
-                                                      onSaveElective={this.handleSaveElective}
-                                                      item={this.state.selectedItem} {...styles}/>
-                                </emptyPage>
-                            </ResizeSensor>
-                            <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
-                                <Button minimal icon="undo" onClick={this.handleClickCancelChanges}
-                                        intent={"#"} style={{color:"#F5F8FA"}}>Отменить</Button>
-                                <Button minimal icon="edit" onClick={this.handleClickSaveChanges}
-                                        intent={"#"} style={{color:"#F5F8FA"}}>Сохранить изменения</Button>
-                            </FooterBar>
-                    </div>
-                )}
-            </FooterPanelConsumer>
+            isLoadingList || !selectedItem
+                ?
+                <div style={{
+                    position: "relative",
+                    margin: "auto",
+                }}>
+                    <Spinner/>
+                </div>
+                :
+                <div style={windowStyle}>
+                    <SideMenu onChange={this.handleSideMenuChange} headerBar={
+                        <ElectiveHeaderBar style={styles.headerBar}
+                                           onAdd={this.handleElectiveAdd}/>
+                    }>
+                        <ElectiveSideItem
+                            onRemoveItem={this.handleElectiveRemove}/>
+                    </SideMenu>
+                    <ResizeSensor onResize={this.handleResizeView}>
+                        <ElectiveWeekList {...this.props}
+                                          ref={this.weekListRef}
+                                          onSaveElective={this.handleSaveElective}
+                                          {...styles} />
+                    </ResizeSensor>
+                    <FooterBar>
+                        <Button minimal icon="undo" onClick={this.handleClickCancelChanges}
+                                intent={"#"} style={{color: "#F5F8FA"}}>Отменить</Button>
+                        <Button minimal icon="edit" onClick={this.handleClickSaveChanges}
+                                intent={"#"} style={{color: "#F5F8FA"}}>Сохранить изменения</Button>
+                    </FooterBar>
+                </div>
         );
     }
 }
 
-export default Elective;
+const mapStateToProps = (state) => state.elective;
+
+const mapDispatchToProps = dispatch => ({
+    footer: bindActionCreators(footerActions, dispatch),
+    ...bindActionCreators({refreshAll, refreshItem, saveItem, addElective, removeElective}, dispatch)
+});
+
+export default withReducer("elective", electiveReducer, mapStateToProps, mapDispatchToProps)(Elective);

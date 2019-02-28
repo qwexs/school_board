@@ -73,9 +73,9 @@ class Schedule extends PureComponent {
     };
 
     render() {
-        const {windowStyle} = this.props;
+        const {windowStyle, isLoadingList, isLoadingItem} = this.props;
         return (
-            this.props.isLoadingList
+            isLoadingList
                 ?
                 <div style={{
                     position: "relative",
@@ -85,8 +85,7 @@ class Schedule extends PureComponent {
                 </div>
                 :
                 <div style={windowStyle}>
-                    <SideMenu ref={ref => this.sideMenuRef = ref}
-                        headerBar={
+                    <SideMenu headerBar={
                             <ScheduleHeaderBar style={styles.headerBar}
                                                onAdd={this.handleAddKlass}
                             />
@@ -94,7 +93,7 @@ class Schedule extends PureComponent {
                         <ScheduleSideItem {...styles}/>
                     </SideMenu>
                     {
-                        this.props.isLoadingItem
+                        isLoadingItem
                             ?
                             <div style={{
                                 position: "relative",

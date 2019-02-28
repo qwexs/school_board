@@ -5,7 +5,7 @@ import sideMenu from "./sidemenu.reducer";
 import {createAction} from "redux-actions";
 
 export const receiveList = createAction("RECEIVE_LIST",
-    (list = null) => ({list}));
+    (list = null) => ({list, defaultList: list}));
 
 export const receiveItem = createAction("RECEIVE_ITEM",
     (selectedItem = null) => ({selectedItem, defaultItem: selectedItem}));

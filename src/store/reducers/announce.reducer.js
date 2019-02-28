@@ -9,7 +9,6 @@ const initialState = {
     list: [],
     selectedItem: null,
     selectedDate: null,
-    selectedElement: null,
     isLoadingList: false,
     isLoadingItem: false,
     isDialogOpen: false,
@@ -21,16 +20,16 @@ const initialState = {
  */
 const receiveDate = createAction("ANNOUNCE/RECEIVE_DATE",
     (selectedDate = null) => ({selectedDate}));
-const setRemoveItemWeek = createAction("ANNOUNCE/REMOVE_ITEM_WEEK");
-const setSaveItemWeek = createAction("ANNOUNCE/SAVE_ITEM_WEEK");
-const setReorderListWeek = createAction("ANNOUNCE/REORDER_LIST_WEEK");
+const setRemoveWeekItem = createAction("ANNOUNCE/REMOVE_WEEK_ITEM");
+const setSaveWeekItem = createAction("ANNOUNCE/SAVE_WEEK_ITEM");
+const setReorderWeekList = createAction("ANNOUNCE/REORDER_WEEK_LIST");
 
 /**
  * action dispatcher
  */
 export const removeItemWeek = (item) => (dispatch) => {
     dispatch(setOpen(true));
-    dispatch(setRemoveItemWeek(item));
+    dispatch(setRemoveWeekItem(item));
 };
 
 export const editItemWeek = (item) => (dispatch) => {
@@ -39,12 +38,12 @@ export const editItemWeek = (item) => (dispatch) => {
 
 export const saveItemWeek = (item) => (dispatch) => {
     dispatch(setOpenDialog(false));
-    dispatch(setSaveItemWeek(item));
+    dispatch(setSaveWeekItem(item));
     dispatch(setOpen(true));
 };
 
 export const reorderWeekList = (result) => (dispatch) => {
-    dispatch(setReorderListWeek(result));
+    dispatch(setReorderWeekList(result));
     dispatch(setOpen(true));
 };
 
@@ -115,7 +114,7 @@ const announce = handleActions(new Map([
         //FIXME: take away persist state from localstorage
         draft.selectedItem = state.defaultItem;
     })],
-    [setReorderListWeek, (state, action) => produce(state, draft => {
+    [setReorderWeekList, (state, action) => produce(state, draft => {
         const {result} = action.payload;
         draft.selectedItem.education = reorder(
             state.selectedItem.education,
@@ -123,14 +122,14 @@ const announce = handleActions(new Map([
             result.destination.index
         );
     })],
-    [setSaveItemWeek, (state, action) => produce(state, draft => {
+    [setSaveWeekItem, (state, action) => produce(state, draft => {
         const findIndex = state.selectedItem.education.findIndex(item => item.index === action.payload.index);
         if (findIndex !== -1)
             draft.selectedItem.education[findIndex] = {...action.payload};
         else
             draft.selectedItem.education.push({...action.payload});
     })],
-    [setRemoveItemWeek, (state, action) => produce(state, draft => {
+    [setRemoveWeekItem, (state, action) => produce(state, draft => {
         draft.selectedItem.education = state.selectedItem.education.filter(item => item.index !== action.payload.index);
     })]
 ]), initialState);
