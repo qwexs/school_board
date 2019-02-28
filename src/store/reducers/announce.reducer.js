@@ -1,9 +1,10 @@
 import {combineActions, createAction, handleActions} from "redux-actions";
-import {setOpenDialog, isFetching, receiveItem, receiveList, sideMenuChangeItem} from "./root.reducer";
+import {setOpenDialog, isFetching, receiveItem, receiveList} from "./root.reducer";
 import {setCancelFooter, setOpen} from "./footer.reducer";
 import produce from "immer";
 import {reorder} from "../../utils/reorder";
 import moment from "moment";
+import {sideMenuChangeItem} from "./sidemenu.reducer";
 
 const initialState = {
     list: [],

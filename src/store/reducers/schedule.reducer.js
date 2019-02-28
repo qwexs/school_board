@@ -1,9 +1,10 @@
 import produce from "immer";
 import {combineActions, createAction, handleActions} from "redux-actions";
 import {setCancelFooter, setOpen} from "./footer.reducer";
-import {isFetching, receiveItem, receiveList, sideMenuChangeItem} from "./root.reducer";
+import {isFetching, receiveItem, receiveList} from "./root.reducer";
 import {listenMiddleware} from "../../store";
 import store from "../index";
+import {sideMenuChangeItem} from "./sidemenu.reducer";
 
 const initialState = {
     title: "",

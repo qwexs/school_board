@@ -65,6 +65,9 @@ class ElectiveSideItem extends React.PureComponent {
 
     render() {
         const {item} = this.props;
+        const imgSrc = typeof item.icon !== 'string'
+            ? URL.createObjectURL(item.icon)
+            : `/${item.icon}`;
         return (
             <Radium.StyleRoot>
                 <div style={styles.sideItem} className="disable-select"
@@ -87,7 +90,7 @@ class ElectiveSideItem extends React.PureComponent {
                         </div>
                     </div>
                     <div style={styles.icon}>
-                        <img style={{maxWidth: '100%', maxHeight: '100%', margin: "auto"}} src={`/${item.icon}`}
+                        <img style={{maxWidth: '100%', maxHeight: '100%', margin: "auto"}} src={imgSrc}
                              alt={item.name}/>
                     </div>
 
