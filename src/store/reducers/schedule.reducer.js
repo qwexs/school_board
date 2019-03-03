@@ -134,8 +134,11 @@ const schedule = handleActions(new Map([
     ), (state, action) => ({...state, ...action.payload})],
     [receiveItem, (state, action) => produce(state, draft => {
         const {selectedItem} = action.payload;
-        if (state.hasOwnProperty("list")) {
-            Object.assign(draft.list.find(item => item._id === selectedItem._id), selectedItem);
+        const findIndex = state.list.findIndex(item => item._id === selectedItem._id);
+        if (findIndex !== -1) {
+            Object.assign(draft.list[findIndex], selectedItem);
+        } else {
+            draft.list.push(selectedItem);
         }
         draft.selectedItem = selectedItem;
         draft.defaultItem = selectedItem;
