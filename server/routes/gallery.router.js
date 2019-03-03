@@ -63,7 +63,7 @@ router.route("/:id")
             fs.remove(dirPath, (err) => {
                 if (err) throw err;
 
-                res.status(200).send({value});
+                res.status(200).send({status:"ok"});
                 return req.app.emit('gallery', req, res);
             });
         });
@@ -99,8 +99,8 @@ router.route("/:id")
     })
     .patch((req, res) => {
         const {slideShow} = req.body;
-        Gallery.findByIdAndUpdate(req.params.id, {$set: {slideShow}}, {new: true}).then((value) => {
-            res.status(200).send(value);
+        Gallery.findByIdAndUpdate(req.params.id, {$set: {slideShow}}, {new: true}).then((item) => {
+            res.status(200).send(item);
             return res.app.emit('gallery', req, res);
         });
     })

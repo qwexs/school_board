@@ -1,11 +1,8 @@
-import {isFetching, receiveItem, receiveList} from "./root.reducer";
+import {changeItem, isFetching, receiveItem, receiveList} from "./root.reducer";
 import {combineActions, createAction, handleActions} from "redux-actions";
 import produce from "immer";
 import {setCancelFooter, setOpen} from "./footer.reducer";
-import {listenMiddleware} from "../index";
-import store from "../index";
 import {reorder} from "../../utils/reorder";
-import {sideMenuChangeItem} from "./sidemenu.reducer";
 
 const initialState = {
     list: [],
@@ -14,14 +11,6 @@ const initialState = {
     isLoadingItem: false,
     titleGroupData: null,
 };
-
-/**
- * listeners
- */
-listenMiddleware.addListener(sideMenuChangeItem.toString(), (dispatch, action) => {
-    return store.getState().hasOwnProperty('elective')
-        && dispatch(refreshItem(action.payload.selectedItem));
-});
 
 /**
  * action creators
@@ -45,6 +34,14 @@ const setReorderLessList = createAction("ELECTIVE/REORDER_LESS_LIST",
 /**
  * action dispatcher
  */
+
+export const changeItemSideMenu = (item) => (dispatch, getState) => {
+    const {isOpen} = getState().footer;
+    isOpen &&
+    dispatch(setCancelFooter());
+    dispatch(changeItem(item));
+};
+
 export const changeTitleGroup = (item) => (dispatch) => {
     const {name, teacher, place, icon} = item;
     dispatch(setTitleGroup(name, teacher, place, icon));
@@ -72,17 +69,16 @@ export const reorderLessList = (item, result) => (dispatch) => {
     dispatch(setOpen(true));
 };
 
-/**
- * action service
- */
 export const addElective = (data) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     try {
-        dispatch(isFetching(true));
-        dispatch(receiveItem(await api.createItem(getFormSendData(data))));
-        dispatch(refreshAll());
+        dispatch(isFetching(false, true));
+        const item = await api.createItem(getFormSendData(data));
+        dispatch(receiveItem(await api.getItem(item._id)));
     } catch (err) {
         throw err;
+    } finally {
+        dispatch(isFetching(false));
     }
 };
 
@@ -99,12 +95,17 @@ export const removeElective = () => async (dispatch, getState, getAPI) => {
 
 export const refreshAll = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
+    const {selectedItem} = getState().elective;
     try {
         dispatch(isFetching(true));
-        dispatch(receiveList(await api.getList()));
-        dispatch(refreshItem());
+        const list = await api.getList();
+        const newItem = (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
+        dispatch(receiveList(list));
+        dispatch(receiveItem(newItem));
     } catch (err) {
         throw err;
+    } finally {
+        dispatch(isFetching());
     }
 };
 
@@ -127,12 +128,11 @@ export const refreshItem = (item = null) => async (dispatch, getState, getAPI) =
 
 export const saveItem = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
-    const {selectedItem, list} = getState().elective;
+    const {selectedItem} = getState().elective;
     try {
         dispatch(setOpen(false));
         dispatch(isFetching(false, true));
-        await dispatch(receiveItem(await api.setItem(selectedItem._id, getFormSendData(selectedItem))));
-        dispatch(receiveList(list));
+        dispatch(receiveItem(await api.setItem(selectedItem._id, getFormSendData(selectedItem))));
     } catch (err) {
         throw err;
     } finally {
@@ -158,15 +158,22 @@ const elective = handleActions(new Map([
     [combineActions(
         isFetching,
         receiveList,
-        receiveItem,
+        changeItem,
     ), (state, action) => ({...state, ...action.payload})],
-    [setTitleGroup, (state, action) => produce(state, draft => {
-        const newItem = {...state.selectedItem, ...action.payload};
-        const findIndex = state.list.findIndex(item => item._id === state.selectedItem._id);
-        draft.selectedItem = newItem;
+    [receiveItem, (state, action) => produce(state, draft => {
+        const {selectedItem} = action.payload;
+        const findIndex = state.list.findIndex(item => item._id === selectedItem._id);
         if (findIndex !== -1) {
-            draft.list[findIndex] = {...state.list[findIndex], ...action.payload};
+            Object.assign(draft.list[findIndex], selectedItem);
+        } else {
+            draft.list.push(selectedItem);
         }
+        draft.selectedItem = selectedItem;
+        draft.defaultItem = selectedItem;
+        draft.defaultList = draft.list;
+    })],
+    [setTitleGroup, (state, action) => produce(state, draft => {
+        Object.assign(draft.selectedItem, action.payload);
     })],
     [setReorderLessList, (state, action) => produce(state, draft => {
         const {item, result} = action.payload;
@@ -193,12 +200,12 @@ const elective = handleActions(new Map([
         const {lessItem, dayItem} = action.payload;
         const findIndex = state.selectedItem.items.findIndex(findItem => findItem._id === dayItem._id);
         draft.selectedItem.items[findIndex].less.splice(lessItem.index, 1);
-
     })],
-    [setCancelFooter, state => produce(state, draft => {
-        //FIXME: take away persist state from localstorage
+    [setCancelFooter, (state, action) => produce(state, draft => {
+        //FIXME: use persist state from localstorage
         draft.selectedItem = state.defaultItem;
         draft.list = state.defaultList;
+        draft.isOpen = action.payload.isOpen;
     })],
 ]), initialState);
 

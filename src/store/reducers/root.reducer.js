@@ -1,13 +1,15 @@
 import {combineReducers} from 'redux';
 import {connectRouter} from 'connected-react-router';
 import footer from './footer.reducer';
-import sideMenu from "./sidemenu.reducer";
 import {createAction} from "redux-actions";
 
 export const receiveList = createAction("RECEIVE_LIST",
     (list = null) => ({list, defaultList: list}));
 
 export const receiveItem = createAction("RECEIVE_ITEM",
+    (selectedItem = null) => ({selectedItem, defaultItem: selectedItem}));
+
+export const changeItem = createAction("CHANGE_ITEM",
     (selectedItem = null) => ({selectedItem, defaultItem: selectedItem}));
 
 export const isFetching = createAction("IS_FETCHING",
@@ -19,7 +21,6 @@ export const setOpenDialog = createAction("OPEN_DIALOG",
 const rootReducer = (history, asyncReducers) => combineReducers({
     router: connectRouter(history),
     footer,
-    sideMenu,
     ...asyncReducers
 });
 

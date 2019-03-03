@@ -5,7 +5,6 @@ import AnnounceDialog from "./AnnounceDialog";
 import {Button, H5} from "@blueprintjs/core";
 import EmptyPage from "../../components/emptyPage";
 import {createSelector} from "reselect";
-import {withReducer} from "../../store/withReducer";
 import announceReducer, {
     reorderWeekList,
     saveItemWeek,
@@ -13,6 +12,7 @@ import announceReducer, {
 import {setOpenDialog} from "../../store/reducers/root.reducer";
 import moment from "moment";
 import {bindActionCreators} from "redux";
+import {withReducer} from "../../store/withReducer";
 
 const styles = {
     mainContainer: {
@@ -68,17 +68,6 @@ const styles = {
 
 class AnnounceList extends PureComponent {
 
-    componentDidMount() {
-        this.forceUpdate();
-    }
-
-    onDragEnd = (result) => {
-        if (!result.destination) {
-            return;
-        }
-        this.props.reorderWeekList({result});
-    };
-
     handleAddAnnounce = () => {
         this.props.openDialog();
     };
@@ -89,6 +78,13 @@ class AnnounceList extends PureComponent {
 
     handleCancelDialog = () => {
         this.props.closeDialog();
+    };
+
+    onDragEnd = (result) => {
+        if (!result.destination) {
+            return;
+        }
+        this.props.reorderWeekList({result});
     };
 
     render() {
@@ -171,12 +167,13 @@ const getTitleDay = createSelector(
     }
 );
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
+    const {announce, footer} = state;
     return {
-        footer: state.footer,
-        ...state.announce,
-        educationList: getEducationList(state.announce),
-        titleDay: getTitleDay(state.announce)
+        footer,
+        ...announce,
+        educationList: getEducationList(announce),
+        titleDay: getTitleDay(announce),
     }
 };
 
@@ -185,7 +182,7 @@ const mapDispatchToProps = (dispatch) =>
         saveDialog: (data) => saveItemWeek(data),
         openDialog: (data) => setOpenDialog(true, data),
         closeDialog: () => setOpenDialog(false),
-        reorderWeekList
+        reorderWeekList,
     }, dispatch);
 
 export default withReducer("announce", announceReducer, mapStateToProps, mapDispatchToProps)(AnnounceList);

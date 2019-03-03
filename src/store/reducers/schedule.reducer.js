@@ -1,16 +1,14 @@
 import produce from "immer";
 import {combineActions, createAction, handleActions} from "redux-actions";
 import {setCancelFooter, setOpen} from "./footer.reducer";
-import {isFetching, receiveItem, receiveList} from "./root.reducer";
-import {listenMiddleware} from "../../store";
-import store from "../index";
-import {sideMenuChangeItem} from "./sidemenu.reducer";
+import {changeItem, isFetching, receiveItem, receiveList} from "./root.reducer";
 
 const initialState = {
     title: "",
     list: [],
     selectedItem: null,
     defaultItem: null,
+    defaultList: null,
     isLoadingList: false,
     isLoadingItem: false,
 };
@@ -27,15 +25,22 @@ export const scheduleEditContent = createAction("SCHEDULE/EDIT_CONTENT",
 /**
  * action listeners
  */
-listenMiddleware.addListener(sideMenuChangeItem.toString(), (dispatch, action) => {
+/*listenMiddleware.addListener(sideMenuChangeItem.toString(), (dispatch, action) => {
     if (!store.getState().hasOwnProperty('schedule'))
-        return null;
+        return;
     return dispatch(refreshItem(action.payload.selectedItem));
-});
+});*/
 
 /**
  * action dispatcher
  */
+export const changeItemSideMenu = (item) => (dispatch, getState) => {
+    const {isOpen} = getState().footer;
+    isOpen &&
+    dispatch(setCancelFooter());
+    dispatch(changeItem(item));
+};
+
 export const editTitle = (text) => (dispatch) => {
     dispatch(scheduleEditTitle(text));
     dispatch(setOpen(true));
@@ -46,38 +51,44 @@ export const editContent = (...data) => (dispatch) => {
     dispatch(setOpen(true));
 };
 
-/**
- * action service
- */
 export const saveItem = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     const {selectedItem} = getState().schedule;
     try {
         dispatch(setOpen(false));
-        dispatch(isFetching(true));
-        await api.setItem(selectedItem._id, selectedItem);
-        dispatch(await refreshAll());
+        dispatch(isFetching(false, true));
+        dispatch(receiveItem(await api.setItem(selectedItem._id, selectedItem)));
     } catch (err) {
         throw err;
+    }
+    finally {
+        dispatch(isFetching());
     }
 };
 
 export const refreshAll = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
+    const {selectedItem} = getState().schedule;
+    if (!api)
+        return;
     try {
         dispatch(isFetching(true));
-        dispatch(receiveList(await api.getList()));
-        dispatch(await refreshItem());
+        const list = await api.getList();
+        const newItem = (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
+        dispatch(receiveList(list));
+        dispatch(receiveItem(newItem));
     } catch (err) {
         throw err;
+    } finally {
+        dispatch(isFetching());
     }
 };
 
 export const refreshItem = (item = null) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
-    const {list, selectedItem} = getState().schedule;
-    if (!list || !list.length)
+    if (!api)
         return;
+    const {list, selectedItem} = getState().schedule;
     const newItem = item || (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
     try {
         dispatch(setOpen(false));
@@ -119,18 +130,32 @@ const schedule = handleActions(new Map([
     [combineActions(
         isFetching,
         receiveList,
-        receiveItem,
+        changeItem,
     ), (state, action) => ({...state, ...action.payload})],
+    [receiveItem, (state, action) => produce(state, draft => {
+        const {selectedItem} = action.payload;
+        if (state.hasOwnProperty("list")) {
+            Object.assign(draft.list.find(item => item._id === selectedItem._id), selectedItem);
+        }
+        draft.selectedItem = selectedItem;
+        draft.defaultItem = selectedItem;
+        draft.defaultList = draft.list;
+    })],
     [scheduleEditTitle, (state, action) => produce(state, draft => {
         draft.selectedItem.name = action.payload.title;
+        const findIndex = state.list.findIndex(item => item._id === state.selectedItem._id);
+        if (findIndex !== -1)
+            draft.list[findIndex].name = action.payload.title;
     })],
     [scheduleEditContent, (state, action) => produce(state, draft => {
         const {index, keys, text} = action.payload;
         draft.selectedItem.days[index]["less"][Number(keys[0])]["text"] = text;
     })],
-    [setCancelFooter, state => produce(state, draft => {
-        //FIXME: take away persist state from localstorage
+    [setCancelFooter, (state, action) => produce(state, draft => {
+        //FIXME: use persist state from localstorage
         draft.selectedItem = state.defaultItem;
+        draft.list = state.defaultList;
+        draft.isOpen = action.payload.isOpen;
     })],
 ]), initialState);
 

@@ -89,7 +89,7 @@ class ScheduleContent extends PureComponent {
     }
 }
 
-const geTitleState = createSelector(
+const getTitleState = createSelector(
     [(state) => state.selectedItem.name],
     (title) => title
 );
@@ -111,7 +111,7 @@ const getDaysState = createSelector(
 const mapStateToProps = state => {
     const {schedule, footer} = state;
     return {
-        title: geTitleState(schedule),
+        title: getTitleState(schedule),
         days: getDaysState(schedule),
         isOpen: footer.isOpen
     }

@@ -7,7 +7,12 @@ import {Button, Spinner} from "@blueprintjs/core";
 import {ResizeSensor} from "@blueprintjs/core";
 import AnnounceHeaderBar from "./AnnounceHeaderBar";
 import {withReducer} from "../../store/withReducer";
-import announceReducer, {changeDate, refreshAll, saveItem} from "../../store/reducers/announce.reducer";
+import announceReducer, {
+    changeDate,
+    changeItemSideMenu,
+    refreshAll,
+    saveItem
+} from "../../store/reducers/announce.reducer";
 import {bindActionCreators} from "redux";
 import * as footerActions from "../../store/reducers/footer.reducer";
 
@@ -34,10 +39,13 @@ const styles = {
 };
 
 class Announce extends PureComponent {
-
-    componentDidMount() {
+    componentWillMount() {
         this.props.refreshAll();
     }
+
+    handleSideMenuItemChange = (item) => {
+        this.props.changeItemSideMenu(item);
+    };
 
     handleResizeView = (entries) => {
         if (entries) {
@@ -51,7 +59,7 @@ class Announce extends PureComponent {
     };
 
     handleCancelItem = () => {
-        this.props.footer.setCancelFooter();
+        this.props.footer.setCancelFooter(false);
     };
 
     handleChangeWeek = (date) => {
@@ -59,9 +67,9 @@ class Announce extends PureComponent {
     };
 
     render() {
-        const {windowStyle} = this.props;
+        const {windowStyle, isLoadingList, isLoadingItem, list, selectedItem} = this.props;
         return (
-            this.props.isLoadingList
+            isLoadingList
                 ?
                 <div style={{
                     position: "relative",
@@ -71,7 +79,8 @@ class Announce extends PureComponent {
                 </div>
                 :
                 <div style={windowStyle}>
-                    <SideMenu
+                    <SideMenu onChange={this.handleSideMenuItemChange}
+                              list={list} selectedItem={selectedItem}
                         headerBar={
                             <AnnounceHeaderBar style={styles.headerBar}
                                                value={this.props.selectedDate}
@@ -81,7 +90,17 @@ class Announce extends PureComponent {
                         <AnnounceSideItem {...styles}/>
                     </SideMenu>
                     <ResizeSensor onResize={this.handleResizeView}>
-                        <AnnounceList {...styles}/>
+                        {isLoadingItem
+                            ?
+                            <div style={{
+                                position: "relative",
+                                margin: "auto"
+                            }}>
+                                <Spinner/>
+                            </div>
+                            :
+                            <AnnounceList {...styles}/>
+                        }
                     </ResizeSensor>
                     <FooterBar>
                         <Button minimal icon="undo" onClick={this.handleCancelItem}
@@ -94,14 +113,12 @@ class Announce extends PureComponent {
     }
 }
 
-const mapStateToProps = state => {
-    return state.announce;
-};
+const mapStateToProps = state => state.announce;
 
 const mapDispatchToProps = dispatch => {
     return {
         footer: bindActionCreators(footerActions, dispatch),
-        ...bindActionCreators({refreshAll, changeDate, saveItem}, dispatch)
+        ...bindActionCreators({refreshAll, changeDate, saveItem, changeItemSideMenu}, dispatch)
     }
 };
 

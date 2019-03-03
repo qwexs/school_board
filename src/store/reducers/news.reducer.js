@@ -51,6 +51,8 @@ export const saveItem = (item) => async (dispatch, getState, getAPI) => {
 
 export const refreshAll = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
+    if (!api)
+        return;
     try {
         dispatch(isFetching(true));
         dispatch(receiveList(await api.getList()));

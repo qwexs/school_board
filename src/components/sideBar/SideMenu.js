@@ -2,9 +2,6 @@ import React, {forwardRef, PureComponent} from "react";
 import SideMenuItem from "./SideMenuItem";
 import Radium from "radium";
 import * as PropTypes from 'prop-types';
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {changeItem} from "../../store/reducers/sidemenu.reducer";
 
 const styles = {
     sideMenuContainer: {
@@ -24,12 +21,15 @@ const styles = {
 class SideMenu extends PureComponent {
 
     static propTypes = {
-        onChange: PropTypes.func,
+        list: PropTypes.array.isRequired,
+        selectedItem: PropTypes.object,
+        onChange: PropTypes.func.isRequired,
         headerBar: PropTypes.element,
     };
 
-    componentDidMount() {
-        this.scrollToSelect();
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.list !== prevProps.list)
+            this.scrollToSelect();
     }
 
     scrollToSelect() {
@@ -42,14 +42,12 @@ class SideMenu extends PureComponent {
 
     onClickHandler = (item) => {
         if (item._id !== this.props.selectedItem._id) {
-            this.props.changeItem(item);
-            if (this.props.onChange)
-                this.props.onChange();
+            this.props.onChange(item);
         }
     };
 
     render() {
-        const {list, headerBar, selectedItem} = this.props;
+        const {headerBar, list, selectedItem} = this.props;
         return (
             <div style={{height: "100%"}}>
                 {headerBar && headerBar}
@@ -83,9 +81,4 @@ const ForwardingSideMenuItem = forwardRef((props, ref) => {
     return <div ref={ref}>{props.children}</div>;
 });
 
-const mapStateToProps = (state) => state.sideMenu;
-
-const mapDispatchToProps = dispatch => bindActionCreators({changeItem}, dispatch);
-
-SideMenu = Radium(SideMenu);
-export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);
+export default Radium(SideMenu);

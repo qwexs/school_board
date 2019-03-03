@@ -6,7 +6,7 @@ const {Schedule, ScheduleDays, Lessons, getEmptySchedule, getEmptyLessons} = req
 
 router.route('/')
     .get((req, res) => {
-        Schedule.find({}).then((doc) => {
+        Schedule.find({}).populate('days').then((doc) => {
             res.status(200).json(doc);
         });
     })

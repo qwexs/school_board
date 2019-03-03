@@ -29,8 +29,10 @@ class Menu extends PureComponent {
     }
 
     menuClickHandler = (event, path) => {
-        this.props.history.push(path);
-        this.setState({selectedIndex: this.getLocationPathByIndex(path)});
+        if (this.props.history.location.pathname !== path) {
+            this.props.history.push(path);
+            this.setState({selectedIndex: this.getLocationPathByIndex(path)});
+        }
     };
 
     getLocationPathByIndex(path) {

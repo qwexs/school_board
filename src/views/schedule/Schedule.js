@@ -15,7 +15,8 @@ import scheduleReducer, {
     refreshAll,
     refreshItem,
     removeItem,
-    saveItem
+    saveItem,
+    changeItemSideMenu
 } from "../../store/reducers/schedule.reducer";
 import {withReducer} from "../../store/withReducer";
 
@@ -43,23 +44,27 @@ const styles = {
 class Schedule extends PureComponent {
 
     componentDidMount() {
-        this.props.service.refreshAll();
+        this.props.refreshAll();
     }
 
     handleAddKlass = (name) => {
-        this.props.service.addItem(name);
+        this.props.addItem(name);
     };
 
     handleRemoveKlass = () => {
-        this.props.service.removeItem();
+        this.props.removeItem();
     };
 
     handleClickSave = () => {
-        this.props.service.saveItem();
+        this.props.saveItem();
+    };
+
+    handleSideMenuItemChange = (item) => {
+        this.props.changeItemSideMenu(item);
     };
 
     handleClickUndo = () => {
-        this.props.footer.cancelChanges();
+        this.props.footer.setCancelFooter();
     };
 
     handleResizeView = (entries) => {
@@ -73,7 +78,7 @@ class Schedule extends PureComponent {
     };
 
     render() {
-        const {windowStyle, isLoadingList, isLoadingItem} = this.props;
+        const {windowStyle, isLoadingList, isLoadingItem, list, selectedItem} = this.props;
         return (
             isLoadingList
                 ?
@@ -85,7 +90,9 @@ class Schedule extends PureComponent {
                 </div>
                 :
                 <div style={windowStyle}>
-                    <SideMenu headerBar={
+                    <SideMenu onChange={this.handleSideMenuItemChange}
+                        list={list} selectedItem={selectedItem}
+                        headerBar={
                             <ScheduleHeaderBar style={styles.headerBar}
                                                onAdd={this.handleAddKlass}
                             />
@@ -131,8 +138,7 @@ const mapStateToProps = (state) => state.schedule;
 
 const mapDispatchToProps = dispatch => ({
     footer: bindActionCreators(footerActions, dispatch),
-    service: bindActionCreators({refreshAll, refreshItem, removeItem, saveItem, addItem}, dispatch)
+    ...bindActionCreators({refreshAll, refreshItem, removeItem, saveItem, addItem, changeItemSideMenu}, dispatch)
 });
-
 
 export default withReducer("schedule", scheduleReducer, mapStateToProps, mapDispatchToProps)(Schedule);

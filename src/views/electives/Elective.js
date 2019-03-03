@@ -8,6 +8,7 @@ import ElectiveHeaderBar from "./ElectiveHeaderBar";
 import {withReducer} from "../../store/withReducer";
 import electiveReducer, {
     addElective,
+    changeItemSideMenu,
     refreshAll,
     refreshItem,
     removeElective,
@@ -68,14 +69,15 @@ class Elective extends PureComponent {
             this.props.footer.setContentWidth(entries[0].contentRect.width + "px");
     };
 
-    handleSideMenuChange = () => {
+    handleSideMenuItemChange = (item) => {
         if (this.weekListRef.current) {
             this.weekListRef.current.scrollTop = 0;
         }
+        this.props.changeItemSideMenu(item);
     };
 
     render() {
-        const {windowStyle, isLoadingList, selectedItem} = this.props;
+        const {windowStyle, isLoadingList, list, selectedItem} = this.props;
         return (
             isLoadingList || !selectedItem
                 ?
@@ -87,7 +89,9 @@ class Elective extends PureComponent {
                 </div>
                 :
                 <div style={windowStyle}>
-                    <SideMenu onChange={this.handleSideMenuChange} headerBar={
+                    <SideMenu onChange={this.handleSideMenuItemChange}
+                              list={list} selectedItem={selectedItem}
+                        headerBar={
                         <ElectiveHeaderBar style={styles.headerBar}
                                            onAdd={this.handleElectiveAdd}/>
                     }>
@@ -115,7 +119,7 @@ const mapStateToProps = (state) => state.elective;
 
 const mapDispatchToProps = dispatch => ({
     footer: bindActionCreators(footerActions, dispatch),
-    ...bindActionCreators({refreshAll, refreshItem, saveItem, addElective, removeElective}, dispatch)
+    ...bindActionCreators({refreshAll, refreshItem, saveItem, addElective, removeElective, changeItemSideMenu}, dispatch)
 });
 
 export default withReducer("elective", electiveReducer, mapStateToProps, mapDispatchToProps)(Elective);

@@ -5,7 +5,7 @@ const initialState = {
     isOpen: false
 };
 
-export const setOpen = createAction("FOOTER/SHOWING",
+export const setOpen = createAction("FOOTER/IS_OPEN",
     isOpen => ({isOpen}));
 
 export const setContentWidth = createAction("FOOTER/CHANGE_WITH",

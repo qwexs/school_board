@@ -3,7 +3,8 @@ import routes from "../routes";
 import store from "../../store";
 
 export function getAPI() {
-    return new Api(getRouterName());
+    const routerName = getRouterName();
+    return store.getState().hasOwnProperty(routerName) && new Api(routerName);
 }
 
 export function getRouterName() {

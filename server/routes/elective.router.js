@@ -32,7 +32,7 @@ router.route('/all')
 
 router.route('/')
     .get((req, res) => {
-        Elective.find({}).then(docs => {
+        Elective.find({}).populate('items').then(docs => {
             res.status(200).json(docs);
         });
     })

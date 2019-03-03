@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 const withReducer = (key, reducer, mapStateToProps, mapDispatchToProps) => WrappedComponent => {
 
     const Extended = (props) => {
+
         store.injectReducer(key, reducer);
 
         WrappedComponent = connect(

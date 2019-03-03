@@ -65,7 +65,7 @@ class ElectiveSideItem extends React.PureComponent {
 
     render() {
         const {item} = this.props;
-        const imgSrc = typeof item.icon !== 'string'
+        const imgSrc = item.icon && typeof item.icon !== 'string'
             ? URL.createObjectURL(item.icon)
             : `/${item.icon}`;
         return (

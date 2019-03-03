@@ -4,16 +4,24 @@ import GallerySideItem from "./GallerySideItem";
 import GalleryAlbum from "./GalleryAlbum";
 import FooterBar from "../../components/footer/FooterBar";
 import {Button, ProgressBar, ResizeSensor, Spinner, Toaster} from "@blueprintjs/core";
-import {FooterPanelConsumer} from "../../components/footer/FooterBarProvider";
-import {ID} from "../../utils/ID";
 import GalleryHeaderBar from "./GalleryHeaderBar";
-import axios from "axios";
 import Modal from "../../components/Modal";
 import * as Classes from "@blueprintjs/core/lib/cjs/common/classes";
 import {Intent} from "@blueprintjs/core/lib/cjs/common/intent";
 import classNames from 'classnames';
-import emptyPage from "../../components/emptyPage";
-import * as ReactDOM from "react-dom";
+import EmptyPage from "../../components/emptyPage";
+import {withReducer} from "../../store/withReducer";
+import galleryReducer, {
+    addAlbum,
+    changeItemSideMenu,
+    deletePhotos, insertPhotos,
+    refreshAll, removeAlbum,
+    selectPhotos,
+    setSelectAll,
+    unSelectAll
+} from "../../store/reducers/gallery.reducer";
+import {bindActionCreators} from "redux";
+import * as footerActions from "../../store/reducers/footer.reducer";
 
 const styles = {
     sideItem: {
@@ -45,47 +53,49 @@ const styles = {
 
 };
 
-let isMounted = false;
-
 class Gallery extends PureComponent {
 
-    static ACTION_SELECT_ALL = "selectAll";
-    static ACTION_UN_SELECT_ALL = "unSelectAll";
-    static ACTION_DELETE = "deleteFile";
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            list: [],
-            selectedItem: null,
-            isLoadItem: true,
-            isLoad: false
-        };
-    }
-
     componentDidMount() {
-        isMounted = true;
-        this.refreshAll();
+        this.props.refreshAll();
     }
 
-    componentWillUnmount() {
-        isMounted = false;
-    }
+    handleAddAlbum = ({name, files}) => {
+        const toastKey = this.toaster.show(this.renderToastProgress(false));
 
-    refreshAll = (selectedItem = null) => {
-        axios.get('/gallery').then(value => {
-            const currentList = value.data;
-            isMounted && this.props.setOpen(false, () => {
-                this.setState({
-                    list: currentList,
-                    selectedItem: selectedItem || currentList[0],
-                    isLoad: true
-                }, () => {
-                    this.sideMenuRef && this.sideMenuRef.scrollToSelect();
-                });
-            });
+        this.props.addAlbum({name, files}).then(() => {
+            if (this.toaster) {
+                this.toaster.show(this.renderToastProgress(true), toastKey);
+            }
         });
+    };
+
+    handleInsertFiles = (files) => {
+        const toastKey = this.toaster.show(this.renderToastProgress(false));
+        this.props.insertPhotos(files).then(() => {
+            if (this.toaster) {
+                this.toaster.show(this.renderToastProgress(true), toastKey);
+            }
+        });
+    };
+
+    handleRemoveAlbum = (item) => {
+        this.props.removeAlbum(item);
+    };
+
+    handleSelectAll = () => {
+        this.props.selectAll();
+    };
+
+    handleUnSelectAll = () => {
+        this.props.unSelectAll();
+    };
+
+    handleDeleteSelected = () => {
+        this.props.deletePhotos();
+    };
+
+    handleSideMenuItemChange = (item) => {
+        this.props.changeItemSideMenu(item);
     };
 
     renderToastProgress = (isComplete) => {
@@ -106,142 +116,70 @@ class Gallery extends PureComponent {
         toaster: (ref) => (this.toaster = ref),
     };
 
-    refreshItem = (id) => {
-        this.props.setOpen(false);
-        axios.get(`/gallery/${id}`).then(value => {
-            isMounted && this.setState({selectedItem: value.data, isLoadItem: false});
-        });
-    };
-
     handleResizeView = (entries) => {
-        if (entries && this.albumListRef && this.footerBarRef) {
-            const vWidth = entries[0].contentRect.width;
-            const element = ReactDOM.findDOMNode(this.albumListRef);
-            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
-            this.footerBarRef.setState({vWidth: `calc(${vWidth}px + ${offsetScroll ? 1 : 0}vw`});
+        if (entries) {
+            const contentWidth = entries[0].contentRect.width;
+            this.props.footer.setContentWidth(contentWidth + "px");
         }
     };
 
-    onChangeItem = (item) => {
-        this.props.setOpen(false);
-        this.setState({selectedItem: item});
-        this.albumListRef.scrollToTop();
-    };
-
-    handleAddAlbum = (data) => {
-        const {name, files} = data;
-        let fromData = new FormData();
-        fromData.append('name', name);
-        fromData.append('id', ID());
-        files.forEach((file) => {
-            fromData.append('photos', file);
-        });
-
-        const toastKey = this.toaster.show(this.renderToastProgress(false));
-
-        axios.post('/gallery', fromData,
-            {headers: {'Content-Type': 'multipart/form-data'}, timeout: 7000000}).then(value => {
-            this.refreshAll(value.data);
-            if (this.toaster) {
-                this.toaster.show(this.renderToastProgress(true), toastKey);
-            }
-        });
-    };
-
-    handleRemoveAlbum = (item) => {
-        axios.delete(`/gallery/${item._id}`).then(value => {
-            this.refreshAll();
-        });
-    };
-
-    handleDeleteItems = (items) => {
-        axios.put(`/gallery/${this.state.selectedItem._id}`, {items}).then(value => {
-            this.refreshAll(value.data);
-        });
-    };
-
-    handleChangeItems = (value) => {
-        const {slideShow} = value;
-        axios.patch(`/gallery/${this.state.selectedItem._id}`, {slideShow}).then(value => {
-            this.refreshAll(value.data);
-        });
-    };
-
-    handleInsertFiles = (files) => {
-        const fromData = new FormData();
-        const {dirName} = this.state.selectedItem;
-        fromData.append('id', dirName.substring(dirName.indexOf("_"), dirName.indexOf("/")));
-        files.forEach((file) =>
-            fromData.append('photos', file));
-
-        const toastKey = this.toaster.show(this.renderToastProgress(false));
-
-        axios.post(`/gallery/${this.state.selectedItem._id}`, fromData,
-            {headers: {'Content-Type': 'multipart/form-data'}, timeout: 7000000}).then(value => {
-            this.refreshAll(value.data);
-            if (this.toaster) {
-                this.toaster.show(this.renderToastProgress(true), toastKey);
-            }
-        });
-    };
-
     render() {
-        const {windowStyle} = this.props;
+        const {windowStyle, isLoadingList, selectedItem, list} = this.props;
         return (
-            <FooterPanelConsumer>
-                {({setOpen, isOpen, setAction, action}) => (
-                    !this.state.isLoad
-                        ?
-                        <div style={{
-                            position: "relative",
-                            margin: "auto"
-                        }}>
-                            <Spinner/>
-                        </div>
-                        :
-                        <div style={windowStyle}>
-                            <SideMenu selectedItem={this.state.selectedItem}
-                                      items={this.state.list}
-                                      ref={ref => this.sideMenuRef = ref}
-                                      onChangeItem={this.onChangeItem}
-                                      {...this.props}
-                                      headerBar={
-                                          <GalleryHeaderBar onAdd={this.handleAddAlbum} style={styles.headerBar}/>
-                                      }>
-                                <GallerySideItem onRemoveItem={this.handleRemoveAlbum} {...styles}/>
-                            </SideMenu>
-                            <Modal>
-                                <Toaster ref={this.refToastHandlers.toaster}/>
-                            </Modal>
-                            <ResizeSensor onResize={this.handleResizeView}>
-                                <emptyPage notEmpty={this.state.selectedItem}>
-                                    <GalleryAlbum ref={input => this.albumListRef = input}
-                                                  item={this.state.selectedItem}
-                                                  onDeleteItems={this.handleDeleteItems}
-                                                  onChange={this.handleChangeItems}
-                                                  onInsert={this.handleInsertFiles}
-                                                  setOpen={setOpen}
-                                                  action={action}
-                                                  {...styles}/>
-                                </emptyPage>
-                            </ResizeSensor>
+            isLoadingList
+                ?
+                <div style={{
+                    position: "relative",
+                    margin: "auto"
+                }}>
+                    <Spinner/>
+                </div>
+                :
+                <div style={windowStyle}>
+                    <SideMenu onChange={this.handleSideMenuItemChange}
+                              list={list} selectedItem={selectedItem}
+                        headerBar={
+                                  <GalleryHeaderBar onAdd={this.handleAddAlbum} style={styles.headerBar}/>
+                              }>
+                        <GallerySideItem onRemoveItem={this.handleRemoveAlbum} {...styles}/>
+                    </SideMenu>
+                    <Modal>
+                        <Toaster ref={this.refToastHandlers.toaster}/>
+                    </Modal>
+                    <ResizeSensor onResize={this.handleResizeView}>
+                        <EmptyPage notEmpty={selectedItem}>
+                            <GalleryAlbum onInsertPhotos={this.handleInsertFiles} {...styles}/>
+                        </EmptyPage>
+                    </ResizeSensor>
 
-                            <FooterBar ref={ref => this.footerBarRef = ref} isOpen={isOpen}>
-                                <Button minimal icon="multi-select" intent={"#"} style={{color:"#F5F8FA"}}
-                                        onClick={() => setAction(Gallery.ACTION_SELECT_ALL)}>
-                                    Выбрать все</Button>
-                                <Button minimal icon="disable" intent={"#"} style={{color:"#F5F8FA"}}
-                                        onClick={() => setAction(Gallery.ACTION_UN_SELECT_ALL, false)}>
-                                    Снять выделение</Button>
-                                <Button minimal icon="trash" intent={"#"} style={{color:"#F5F8FA"}}
-                                        onClick={() => setAction(Gallery.ACTION_DELETE)}>Удалить</Button>
-                            </FooterBar>
-
-                        </div>
-                )}
-            </FooterPanelConsumer>
+                    <FooterBar>
+                        <Button minimal icon="multi-select" intent={"#"} style={{color: "#F5F8FA"}}
+                                onClick={this.handleSelectAll}>
+                            Выбрать все</Button>
+                        <Button minimal icon="disable" intent={"#"} style={{color: "#F5F8FA"}}
+                                onClick={this.handleUnSelectAll}>
+                            Снять выделение</Button>
+                        <Button minimal icon="trash" intent={"#"} style={{color: "#F5F8FA"}}
+                                onClick={this.handleDeleteSelected}>Удалить</Button>
+                    </FooterBar>
+                </div>
         );
     }
 }
+const mapStateToProps = (state) => state.gallery;
 
-export default Gallery;
+const mapDispatchToProps = dispatch => ({
+    footer: bindActionCreators(footerActions, dispatch),
+    ...bindActionCreators({
+        refreshAll,
+        addAlbum,
+        removeAlbum,
+        insertPhotos,
+        selectPhotos,
+        deletePhotos,
+        changeItemSideMenu,
+        selectAll: ()=> setSelectAll(),
+        unSelectAll
+    }, dispatch)
+});
+export default withReducer("gallery", galleryReducer, mapStateToProps, mapDispatchToProps)(Gallery);
