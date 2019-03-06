@@ -23,15 +23,6 @@ export const scheduleEditContent = createAction("SCHEDULE/EDIT_CONTENT",
     (index, keys, text) => ({index, keys, text}));
 
 /**
- * action listeners
- */
-/*listenMiddleware.addListener(sideMenuChangeItem.toString(), (dispatch, action) => {
-    if (!store.getState().hasOwnProperty('schedule'))
-        return;
-    return dispatch(refreshItem(action.payload.selectedItem));
-});*/
-
-/**
  * action dispatcher
  */
 export const changeItemSideMenu = (item) => (dispatch, getState) => {

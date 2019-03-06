@@ -13,10 +13,16 @@ const initialState = {
     isToaster: false,
 };
 
+/**
+ * action creators
+ */
 export const setSelectAll = createAction("GALLERY/SELECT_ALL");
 export const setUnSelectAll = createAction("GALLERY/UN_SELECT_ALL");
 const setSelectPhoto = createAction("GALLERY/SELECT_PHOTO");
 
+/**
+ * action dispatcher
+ */
 export const addAlbum = (data) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     const formData = new FormData();
@@ -126,10 +132,13 @@ export const refreshAll = () => async (dispatch, getState, getAPI) => {
 
 export const refreshItem = () => (dispatch, getState) => {
     const {list, selectedItem} = getState().gallery;
-    const currentItem = selectedItem && list.find(item => item._id === selectedItem._id) || list[0];
+    const currentItem = (selectedItem && list.find(item => item._id === selectedItem._id)) || list[0];
     dispatch(receiveItem(currentItem));
 };
 
+/**
+ * action reducer
+ */
 const gallery = handleActions(new Map([
     [combineActions(
         isFetching,
@@ -137,14 +146,10 @@ const gallery = handleActions(new Map([
         changeItem,
     ), (state, action) => ({...state, ...action.payload})],
     [setSelectAll, (state) =>  produce(state, draft => {
-        draft.selectedItem.photos.map(item => {
-            item.selected = true;
-        });
+        draft.selectedItem.photos.map(item => item.selected = true);
     })],
     [setUnSelectAll, (state) =>  produce(state, draft => {
-        draft.selectedItem.photos.map(item => {
-            item.selected = false;
-        });
+        draft.selectedItem.photos.map(item => item.selected = false);
     })],
     [receiveItem, (state, action) => produce(state, draft => {
         const {selectedItem} = action.payload;

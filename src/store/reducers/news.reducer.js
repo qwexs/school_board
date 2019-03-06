@@ -9,9 +9,15 @@ const initialState = {
     isLoadingList: false,
 };
 
+/**
+ * action creators
+ */
 export const isAlertOpen = createAction("NEWS/OPEN_ALERT",
     (isAlertOpen) => ({isAlertOpen}));
 
+/**
+ * action dispatcher
+ */
 export const showDialog = (isOpen = false, item = null) => dispatch => {
     dispatch(receiveItem(item));
     dispatch(setOpenDialog(isOpen));
@@ -78,6 +84,9 @@ export const removeItem = () => async (dispatch, getState, getAPI) => {
     }
 };
 
+/**
+ * action reducer
+ */
 const news = handleActions(new Map([
     [combineActions(
         isFetching,

@@ -34,7 +34,6 @@ const setReorderLessList = createAction("ELECTIVE/REORDER_LESS_LIST",
 /**
  * action dispatcher
  */
-
 export const changeItemSideMenu = (item) => (dispatch, getState) => {
     const {isOpen} = getState().footer;
     isOpen &&

@@ -16,10 +16,8 @@ const initializeStore = (history) => {
 
     store.asyncReducers = {};
     store.injectReducer = (key, reducer) => {
-        if (!store.asyncReducers.hasOwnProperty(key)) {
-            store.asyncReducers = {[key]: reducer};
-            store.replaceReducer(rootReducer(history, store.asyncReducers));
-        }
+        store.asyncReducers = {[key]: reducer};
+        store.replaceReducer(rootReducer(history, store.asyncReducers));
     };
     return store;
 };
