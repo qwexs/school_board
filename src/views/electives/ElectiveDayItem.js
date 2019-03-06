@@ -130,7 +130,9 @@ class ElectiveDayItem extends PureComponent {
     };
 
     onItemRemoveClick = () => {
-        this.props.handleClickItemRemove(this.state.data);
+        this.setState({edited: false}, () => {
+            this.props.handleClickItemRemove(this.state.data);
+        });
     };
 
     handleStartValueChange = (value) => {
