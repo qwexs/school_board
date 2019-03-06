@@ -25,7 +25,7 @@ class NewsDialog extends PureComponent {
 
     componentWillReceiveProps(nextProps, nextContext) {
         const {isOpen, content} = nextProps;
-        this.setState({...content || this.emptyState, isOpen, isNew: content != null});
+        this.setState({...content || this.emptyState, isOpen, isNew: content == null});
     }
 
     handleChangeInputTitle = handleStringChange(title => {

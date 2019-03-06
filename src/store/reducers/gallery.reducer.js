@@ -27,7 +27,6 @@ export const addAlbum = (data) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     const formData = new FormData();
     const {name, files} = data;
-    console.log(name, files);
 
     try {
         dispatch(isFetching(false, true));
