@@ -17,8 +17,10 @@ router.route('/')
 
             Schedule.create({name, days: Array.from(days, (i) => i._id), date: Date.now()})
                 .then(doc => {
-                    res.status(201).json(doc);
-                    return req.app.emit('schedule', req, res);
+                    return Schedule.findById(doc._id).populate('days').then(value => {
+                        res.status(200).json(value);
+                        return req.app.emit('schedule', req, res);
+                    });
                 })
                 .catch(err => {
                     res.status(500).json(err);

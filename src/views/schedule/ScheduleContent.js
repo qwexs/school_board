@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React from 'react';
 import {Button, Classes, EditableText, H4, Popover, PopoverInteractionKind} from "@blueprintjs/core";
 import * as PropTypes from "prop-types";
 import TableDay from "./TableDay";
@@ -30,64 +30,61 @@ const styles = {
     },
 };
 
-class ScheduleContent extends PureComponent {
+const ScheduleContent = React.forwardRef((props, ref) => {
 
-    static propTypes = {
-        onRemoveKlass: PropTypes.func
+    const handleChangeTitle = (text) => {
+        props.editTitle(text);
     };
 
-    handleChangeTitle = (text) => {
-        this.props.editTitle(text);
-    };
-
-    handleChangeContent = (index, dataKey, text) => {
+    const handleChangeContent = (index, dataKey, text) => {
         const keys = dataKey.split('-');
-        this.props.editContent(index, keys, text);
+        props.editContent(index, keys, text);
     };
 
-    render() {
-        return (
-            <div style={{...styles.listContainer, paddingBottom: this.props.isOpen ? 60 : 0}}>
-                <div style={{display: "flex", width: "100%"}}>
-                    <div style={{marginTop: 10, width: "100%"}}>
-                        <Popover interactionKind={PopoverInteractionKind.CLICK}
-                                 content={
-                                     <div style={{padding: 5}}>
-                                         <Button icon="trash" text={"Удалить класс"} minimal
-                                                 className={Classes.POPOVER_DISMISS}
-                                                 onClick={this.props.onRemoveKlass}/>
-                                     </div>
-                                 }
-                                 target={
-                                     <H4>
-                                         <EditableText placeholder={"Название класса..."}
-                                                       value={this.props.title}
-                                                       maxLength={20}
-                                                       minWidth={"20vw"}
-                                                       onConfirm={this.handleConfirmTitle}
-                                                       onChange={this.handleChangeTitle}/>
-                                     </H4>
-                                 }/>
-                        <div style={{
-                            width: "90%", margin: "auto",
-                            borderBottom: "2px solid silver"
-                        }}/>
-                    </div>
-                </div>
-
-                <div style={styles.tableContainer}>
-                    {this.props.days.map((itemDay, index) => {
-                        return (
-                            <div key={index} style={styles.tableCell}>
-                                <TableDay index={index} day={itemDay} onConfirm={this.handleChangeContent}/>
-                            </div>
-                        );
-                    })}
+    return (
+        <div style={{...styles.listContainer, paddingBottom: props.isOpen ? 60 : 0}} ref={ref}>
+            <div style={{display: "flex", width: "100%"}}>
+                <div style={{marginTop: 10, width: "100%"}}>
+                    <Popover interactionKind={PopoverInteractionKind.CLICK}
+                             content={
+                                 <div style={{padding: 5}}>
+                                     <Button icon="trash" text={"Удалить класс"} minimal
+                                             className={Classes.POPOVER_DISMISS}
+                                             onClick={props.onRemoveKlass}/>
+                                 </div>
+                             }
+                             target={
+                                 <H4>
+                                     <EditableText placeholder={"Название класса..."}
+                                                   value={props.title}
+                                                   maxLength={20}
+                                                   minWidth={"20vw"}
+                                                   onChange={handleChangeTitle}/>
+                                 </H4>
+                             }/>
+                    <div style={{
+                        width: "90%", margin: "auto",
+                        borderBottom: "2px solid silver"
+                    }}/>
                 </div>
             </div>
-        );
-    }
-}
+
+            <div style={styles.tableContainer}>
+                {props.days.map((itemDay, index) => {
+                    return (
+                        <div key={index} style={styles.tableCell}>
+                            <TableDay index={index} day={itemDay} onConfirm={handleChangeContent}/>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+});
+
+ScheduleContent.propTypes = {
+    onRemoveKlass: PropTypes.func
+};
 
 const getTitleState = createSelector(
     [(state) => state.selectedItem.name],
@@ -119,4 +116,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({editTitle, editContent}, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScheduleContent);
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ScheduleContent));

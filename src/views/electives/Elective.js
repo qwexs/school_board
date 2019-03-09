@@ -101,7 +101,6 @@ class Elective extends PureComponent {
                     <ResizeSensor onResize={this.handleResizeView}>
                         <ElectiveWeekList {...this.props}
                                           ref={this.weekListRef}
-                                          onSaveElective={this.handleSaveElective}
                                           {...styles} />
                     </ResizeSensor>
                     <FooterBar>

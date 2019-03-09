@@ -43,6 +43,11 @@ const styles = {
 
 class Schedule extends PureComponent {
 
+    constructor(props) {
+        super(props);
+        this.scheduleList = React.createRef();
+    }
+
     componentDidMount() {
         this.props.refreshAll();
     }
@@ -68,10 +73,10 @@ class Schedule extends PureComponent {
     };
 
     handleResizeView = (entries) => {
-        if (entries && this.scheduleList) {
+        if (entries && this.scheduleList && this.scheduleList.current) {
             const contentWidth = entries[0].contentRect.width;
-            const element = ReactDOM.findDOMNode(this.scheduleList);
-            const offsetScroll = element.scrollHeight - element.scrollTop !== element.clientHeight;
+            const {current} = this.scheduleList;
+            const offsetScroll = current.scrollHeight - current.scrollTop !== current.clientHeight;
             this.props.footer.setContentWidth(`calc(${contentWidth}px + ${offsetScroll ? 1 : 0}vw)`);
             this.lessonsPanelRef.setState({vWidth: `calc(${contentWidth / 2}px + ${offsetScroll ? 1 : 0}vw - 150px)`});
         }
@@ -115,7 +120,7 @@ class Schedule extends PureComponent {
                                 && this.props.selectedItem.days
                                 && typeof this.props.selectedItem.days[0] !== 'string'}>
                                 <ResizeSensor onResize={this.handleResizeView}>
-                                    <ScheduleContent ref={inputRef => (this.scheduleList = inputRef)}
+                                    <ScheduleContent ref={this.scheduleList}
                                                      onRemoveKlass={this.handleRemoveKlass}
                                                      {...styles}/>
                                 </ResizeSensor>

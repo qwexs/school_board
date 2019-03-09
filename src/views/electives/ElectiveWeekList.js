@@ -39,4 +39,4 @@ const ElectiveWeekList = React.forwardRef(({contentStyle, isLoadingItem, selecte
     );
 });
 
-export default ElectiveWeekList;
+export default React.memo(ElectiveWeekList);

@@ -57,7 +57,7 @@ export const saveItem = () => async (dispatch, getState, getAPI) => {
     }
 };
 
-export const refreshAll = () => async (dispatch, getState, getAPI) => {
+export const refreshAll = (item = null) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     const {selectedItem} = getState().schedule;
     if (!api)
@@ -65,7 +65,7 @@ export const refreshAll = () => async (dispatch, getState, getAPI) => {
     try {
         dispatch(isFetching(true));
         const list = await api.getList();
-        const newItem = (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
+        const newItem = item || (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
         dispatch(receiveList(list));
         dispatch(receiveItem(newItem));
     } catch (err) {
@@ -95,11 +95,12 @@ export const refreshItem = (item = null) => async (dispatch, getState, getAPI) =
 export const addItem = (name) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     try {
-        dispatch(isFetching(true));
+        dispatch(isFetching(false, true));
         dispatch(receiveItem(await api.createItem({name})));
-        dispatch(refreshAll());
     } catch (err) {
         throw err;
+    } finally {
+        dispatch(isFetching());
     }
 };
 
