@@ -57,15 +57,16 @@ export const saveItem = () => async (dispatch, getState, getAPI) => {
     }
 };
 
-export const refreshAll = (item = null) => async (dispatch, getState, getAPI) => {
+export const refreshAll = () => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     const {selectedItem} = getState().schedule;
     if (!api)
         return;
     try {
+        dispatch(setOpen(false));
         dispatch(isFetching(true));
         const list = await api.getList();
-        const newItem = item || (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
+        const newItem = (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
         dispatch(receiveList(list));
         dispatch(receiveItem(newItem));
     } catch (err) {
@@ -95,6 +96,7 @@ export const refreshItem = (item = null) => async (dispatch, getState, getAPI) =
 export const addItem = (name) => async (dispatch, getState, getAPI) => {
     const api = getAPI();
     try {
+        dispatch(setOpen(false));
         dispatch(isFetching(false, true));
         dispatch(receiveItem(await api.createItem({name})));
     } catch (err) {

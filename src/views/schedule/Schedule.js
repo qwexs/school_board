@@ -5,7 +5,6 @@ import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor, Spinner} from "@blueprintjs/core";
 import ScheduleHeaderBar from "./ScheduleHeaderBar";
 import ScheduleContent from "./ScheduleContent";
-import * as ReactDOM from "react-dom";
 import EmptyPage from "../../components/emptyPage";
 import LessonsPanel from "./LessonsPanel";
 import * as footerActions from "../../store/reducers/footer.reducer";
