@@ -30,7 +30,7 @@ const ElectiveWeekList = React.forwardRef(({contentStyle, isLoadingItem, selecte
                         borderBottom: "2px solid silver"
                     }}/>
                     {
-                        selectedItem.items && selectedItem.items.map((item, index) =>
+                        selectedItem.items.map((item, index) =>
                             <ElectiveDayList key={index} item={item} {...contentStyle}/>)
                     }
                 </div>

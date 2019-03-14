@@ -6,11 +6,11 @@ import FooterBar from "../../components/footer/FooterBar";
 import {Button, ResizeSensor, Spinner} from "@blueprintjs/core";
 import ElectiveHeaderBar from "./ElectiveHeaderBar";
 import {withReducer} from "../../store/withReducer";
+import EmptyPage from "../../components/emptyPage";
 import electiveReducer, {
     addElective,
     changeItemSideMenu,
     refreshAll,
-    refreshItem,
     removeElective,
     saveItem
 } from "../../store/reducers/elective.reducer";
@@ -79,7 +79,7 @@ class Elective extends PureComponent {
     render() {
         const {windowStyle, isLoadingList, list, selectedItem} = this.props;
         return (
-            isLoadingList || !selectedItem
+            isLoadingList
                 ?
                 <div style={{
                     position: "relative",
@@ -91,18 +91,21 @@ class Elective extends PureComponent {
                 <div style={windowStyle}>
                     <SideMenu onChange={this.handleSideMenuItemChange}
                               list={list} selectedItem={selectedItem}
-                        headerBar={
-                        <ElectiveHeaderBar style={styles.headerBar}
-                                           onAdd={this.handleElectiveAdd}/>
-                    }>
+                              headerBar={
+                                  <ElectiveHeaderBar style={styles.headerBar}
+                                                     onAdd={this.handleElectiveAdd}/>
+                              }>
                         <ElectiveSideItem
                             onRemoveItem={this.handleElectiveRemove}/>
                     </SideMenu>
-                    <ResizeSensor onResize={this.handleResizeView}>
-                        <ElectiveWeekList {...this.props}
-                                          ref={this.weekListRef}
-                                          {...styles} />
-                    </ResizeSensor>
+                    <EmptyPage
+                        notEmpty={list.length}>
+                        <ResizeSensor onResize={this.handleResizeView}>
+                            <ElectiveWeekList {...this.props}
+                                              ref={this.weekListRef}
+                                              {...styles} />
+                        </ResizeSensor>
+                    </EmptyPage>
                     <FooterBar>
                         <Button minimal icon="undo" onClick={this.handleClickCancelChanges}
                                 intent={"#"} style={{color: "#F5F8FA"}}>Отменить</Button>
@@ -118,7 +121,7 @@ const mapStateToProps = (state) => state.elective;
 
 const mapDispatchToProps = dispatch => ({
     footer: bindActionCreators(footerActions, dispatch),
-    ...bindActionCreators({refreshAll, refreshItem, saveItem, addElective, removeElective, changeItemSideMenu}, dispatch)
+    ...bindActionCreators({refreshAll, saveItem, addElective, removeElective, changeItemSideMenu}, dispatch)
 });
 
 export default withReducer("elective", electiveReducer, mapStateToProps, mapDispatchToProps)(Elective);

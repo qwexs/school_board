@@ -100,24 +100,8 @@ export const refreshAll = () => async (dispatch, getState, getAPI) => {
         const list = await api.getList();
         const newItem = (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
         dispatch(receiveList(list));
-        dispatch(receiveItem(newItem));
-    } catch (err) {
-        throw err;
-    } finally {
-        dispatch(isFetching());
-    }
-};
-
-export const refreshItem = (item = null) => async (dispatch, getState, getAPI) => {
-    const api = getAPI();
-    const {list, selectedItem} = getState().elective;
-    if (!list || !list.length)
-        return;
-    const newItem = item || (selectedItem && list.find(v => v["_id"] === selectedItem._id)) || list[0];
-    try {
-        dispatch(setOpen(false));
-        dispatch(isFetching(false, true));
-        dispatch(receiveItem(await api.getItem(newItem._id)));
+        if (newItem)
+            dispatch(receiveItem(newItem));
     } catch (err) {
         throw err;
     } finally {
