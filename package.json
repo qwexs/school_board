@@ -11,7 +11,7 @@
     "@blueprintjs/table": "^3.4.1",
     "app-root-path": "^2.1.0",
     "async": "^2.6.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bluebird": "^3.5.3",
     "classnames": "^2.2.6",
     "connect-mongo": "^2.0.3",
