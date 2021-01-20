@@ -26,7 +26,7 @@
     "history": "^4.7.2",
     "http-errors": "~1.7.1",
     "imagemagick": "^0.1.3",
-    "immer": "^2.0.0",
+    "immer": "^8.0.1",
     "mitsobox": "^0.1.4",
     "moment": "^2.24.0",
     "mongoose": "^5.4.9",
