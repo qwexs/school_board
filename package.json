@@ -10,7 +10,7 @@
     "@blueprintjs/docs-theme": "^3.0.4",
     "@blueprintjs/table": "^3.4.1",
     "app-root-path": "^2.1.0",
-    "async": "^2.6.1",
+    "async": "^3.2.2",
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "classnames": "^2.2.6",
